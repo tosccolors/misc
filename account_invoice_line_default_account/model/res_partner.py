@@ -30,5 +30,5 @@ class res_partner(orm.Model):
     }
     
     _defaults = {
-        'auto_update_account_expense': True,
+        'auto_update_account_expense': False,
     }
