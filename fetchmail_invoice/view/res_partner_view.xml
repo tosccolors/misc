@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_partner_form_x1">
+            <field name="name">Add fetchmail invoice default field</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="model">res.partner</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath
+                    expr="//page[@string='Sales &amp; Purchases']//field[@name='supplier']"
+                    position="after">
+                    <field name="fetchmail_invoice_default"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
+
