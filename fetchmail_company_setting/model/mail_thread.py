@@ -48,7 +48,7 @@ class mail_thread(orm.Model):
         assert fs_record, (
             _('Fetchmail server record with id %d not found.') %
             fetchmail_server_id)
-        return fs_record['company_id']  # might be False
+        return fs_record[['company_id'][0]  # might be False
 
     def _message_find_partners(
             self, cr, uid, message, header_fields=['From'], context=None):
