@@ -38,7 +38,7 @@ class mass_object(orm.Model):
         ir_values_obj = self.pool.get('ir.values')
 
         cr.execute("""SELECT res_id FROM ir_model_data WHERE module=%s AND name in %s""",
-                   ("mass_editing_auth", tuple('me_normal_user','group_mass_editing')))
+                   ("mass_editing_auth", ('me_normal_user','group_mass_editing')))
         grp_ids = cr.fetchall()
 
         for data in self.browse(cr, uid, ids, context=context):
