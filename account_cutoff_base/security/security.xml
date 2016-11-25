@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="res.groups" id="cutoff_user">
+            <field name="name">Cutoff User</field>
+            <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+        </record>
+    </data>
+</openerp>
