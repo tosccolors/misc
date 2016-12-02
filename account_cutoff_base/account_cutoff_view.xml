@@ -234,6 +234,7 @@
 <menuitem id="account_cutoff_mapping_menu"
     parent="account.account_account_menu"
     action="account_cutoff_mapping_action"
+    groups="cutoff_user"
     sequence="100"/>
 
 </data>
