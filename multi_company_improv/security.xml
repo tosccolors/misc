@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="base.res_partner_bank_rule" model="ir.rule">
+	        <field name="name">Partner bank company rule</field>
+	        <field name="model_id" ref="base.model_res_partner_bank"/>
+	        <field name="global" eval="True"/>
+            <field name="domain_force">['|','|',('partner_id.company_id.child_ids','child_of',[user.company_id.id]),('partner_id.company_id','child_of',[user.company_id.id]),('partner_id.company_id','=',False)]</field>
+	    </record>
+        <record id="crm_case_section_rule" model="ir.rule">
+	        <field name="name">Section rule</field>
+	        <field name="model_id" ref="crm.model_crm_case_section"/>
+	        <field name="global" eval="True"/>
+            <field name="domain_force">['|','|',('company_id.child_ids','child_of',[user.company_id.id]),('company_id','child_of',[user.company_id.id]),('company_id','=',False)]</field>
+	    </record>
+        <record id="account_banking_imported_file_rule" model="ir.rule">
+	        <field name="name">Bank Imported files rule</field>
+	        <field name="model_id" ref="account_banking.model_account_banking_imported_file"/>
+	        <field name="global" eval="True"/>
+            <field name="domain_force">['|','|',('company_id.child_ids','child_of',[user.company_id.id]),('company_id','child_of',[user.company_id.id]),('company_id','=',False)]</field>
+	    </record>
+        <record id="banking_export_sepa_rule" model="ir.rule">
+	        <field name="name">Sepa export rule</field>
+	        <field name="model_id" ref="account_banking_sepa_credit_transfer.model_banking_export_sepa"/>
+	        <field name="global" eval="True"/>
+            <field name="domain_force">['|','|',('company_id.child_ids','child_of',[user.company_id.id]),('company_id','child_of',[user.company_id.id]),('company_id','=',False)]</field>
+	    </record>
+        <record id="account_banking_account_settings_rule" model="ir.rule">
+	        <field name="name">Default Banking Account Settings Rule</field>
+	        <field name="model_id" ref="account_banking.model_account_banking_account_settings"/>
+	        <field name="global" eval="True"/>
+            <field name="domain_force">['|','|',('company_id.child_ids','child_of',[user.company_id.id]),('company_id','child_of',[user.company_id.id]),('company_id','=',False)]</field>
+	    </record>
+    </data>
+</openerp>
