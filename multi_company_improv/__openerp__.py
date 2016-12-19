@@ -43,6 +43,7 @@ that the user only sees the entries of his/her company
     ],
     'data': [
         'security.xml',
+        'crm_view.xml',
     ],
     'installable': True,
     'active': False,
