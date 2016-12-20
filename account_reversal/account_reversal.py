@@ -85,7 +85,6 @@ class account_move(orm.Model):
             raise Warning("Wrong company Period is %s but we have %s" % (
                 reversal_journal_id.company_id.name, move.company_id.name))
 
-
         reversal_ref = ''.join([x for x in [move_prefix, move.ref] if x])
         reversal_move_id = self.copy(cr, uid, move.id,
                                      default={
