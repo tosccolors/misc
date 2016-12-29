@@ -38,11 +38,5 @@
 	        <field name="global" eval="True"/>
             <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
 	    </record>
-		<record id="account_cutoff_rule" model="ir.rule">
-	        <field name="name">Account Cutoff multi-company Rule</field>
-	        <field name="model_id" ref="account_cutoff_base.model_account_cutoff"/>
-	        <field name="global" eval="True"/>
-            <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
-	    </record>
     </data>
 </openerp>
