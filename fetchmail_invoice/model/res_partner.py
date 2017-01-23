@@ -49,14 +49,20 @@ class res_partner(osv.Model):
                 # Check wether not another partner on same company default
                 company_id = (
                     this_obj.company_id and this_obj.company_id.id or False)
-                args = [('fetchmail_invoice_default', '=', True),
+                if company_id:
+                    args = [('fetchmail_invoice_default', '=', True),
                         ('id', '!=', this_obj.id),
                         ('company_id', '=', company_id),]
-                other_ids = self.search(cr, uid, args)
-                if other_ids:
+                    other_ids = self.search(cr, uid, args)
+                    if other_ids:
+                        raise osv.except_osv(
+                            _('Error!'),
+                            _('There can only be one default supplier per company')
+                            )
+                else:
                     raise osv.except_osv(
                         _('Error!'),
-                        _('There can only be one default supplier per company')
+                        _('a default supplier has to have a company defined')
                     )
         # If we get here, validation passed, only use exceptions for errors.
         return True
