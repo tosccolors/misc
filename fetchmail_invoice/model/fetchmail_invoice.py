@@ -21,7 +21,10 @@
 from openerp.osv import orm
 from openerp import tools
 from openerp.tools.translate import _
-from openerp.addons.mail.mail_message import decode
+# from openerp.addons.mail.mail_message import decode
+
+from openerp.addons.mail.models.mail_message import decode
+from openerp.exceptions import UserError
 
 
 class account_invoice(orm.Model):
@@ -39,6 +42,7 @@ class account_invoice(orm.Model):
         supplier_arg = ('supplier', '=', True)
         # Build search criteria array.
         args_list = []
+
         if force_supplier:
             # Searching just for suppliers, we do not care about user
             if company_id:
@@ -81,6 +85,7 @@ class account_invoice(orm.Model):
         # for suppliers.
         # Each email will return one or zero partners. Unless an
         # email address occurs in multiple headers.
+
         company_id = (
             ('force_company' in context
              and context['force_company']) or False)
@@ -216,16 +221,10 @@ class account_invoice(orm.Model):
         # And we should have an account property
         # (read again, as company might have changed)
         supplier_record = partner_model.read(
-            cr, uid, supplier_partner_id, ['property_account_payable'],
+            cr, uid, supplier_partner_id, ['property_account_payable_id'],
             context=local_context)
-        assert supplier_record['property_account_payable'], (
+        assert supplier_record['property_account_payable_id'], (
             _('No account payable on partner %d.') % supplier_partner_id)
-
-        custom_values.update({
-            'company_id': company_id,
-            'partner_id': supplier_partner_id,
-            'type': 'in_invoice',
-        })
 
         # And we need some information in context as well
         local_context.update({
@@ -233,10 +232,26 @@ class account_invoice(orm.Model):
             'type': 'in_invoice',
         })
 
-        custom_values.update(
-            self.onchange_partner_id(
-                cr, uid, [], 'in_invoice', supplier_partner_id,
-                company_id=company_id)['value'])
+        supplier = partner_model.browse(cr, uid, supplier_partner_id, context=local_context)
+
+        journal_id = self.pool.get('account.invoice').default_get(cr, uid, ['journal_id'], context=local_context)['journal_id']
+        if not journal_id:
+            raise UserError(_('Please define an accounting sale journal for this company.'))
+
+        custom_values.update({
+            'company_id': company_id,
+            'partner_id': supplier_partner_id,
+            'type': 'in_invoice',
+
+            'account_id': supplier.property_account_payable_id.id,
+            'journal_id': journal_id,
+        })
+
+
+        # custom_values.update(
+        #     self.onchange_partner_id(
+        #         cr, uid, [], 'in_invoice', supplier_partner_id,
+        #         company_id=company_id)['value'])
 
         # Create the resource
         res_id = super(account_invoice, self).message_new(

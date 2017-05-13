@@ -18,11 +18,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from osv import fields, osv
+from openerp.osv import fields, osv
 from openerp.tools.translate import _
 
+
 class res_partner(osv.Model):
-    """ 
+    """
     Add field to determine wether a supplier is a default supplier for
     fetchmail invoice.
     Validations:
@@ -33,13 +34,13 @@ class res_partner(osv.Model):
     _inherit = 'res.partner'
     _columns = {
         'fetchmail_invoice_default': fields.boolean(
-            'Default invoice partner', 
+            'Default invoice partner',
             help='Will be used as default partner when invoices are'
             'created from received mails'),
     }
 
-    def _check_fetchmail_invoice_default(self, cr, uid, ids):                     
-        for this_obj in self.browse(cr, uid, ids): 
+    def _check_fetchmail_invoice_default(self, cr, uid, ids):
+        for this_obj in self.browse(cr, uid, ids):
             if this_obj.fetchmail_invoice_default:
                 if not this_obj.supplier:
                     raise osv.except_osv(

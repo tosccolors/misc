@@ -18,14 +18,21 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from osv import fields, osv
+# from osv import fields, osv
 
-class fetchmail_server(osv.Model):
-    """ 
-    Add a company field to fetchmail_server.
-    """
+# class fetchmail_server(osv.Model):
+#     """
+#     Add a company field to fetchmail_server.
+#     """
+#     _inherit = 'fetchmail.server'
+#     _columns = {
+#         'company_id': fields.many2one('res.company', 'Company'),
+#         }
+
+
+from openerp import api, fields, models, _
+
+class FetchmailServer(models.Model):
     _inherit = 'fetchmail.server'
-    _columns = {
-        'company_id': fields.many2one('res.company', 'Company'),
-        }
 
+    company_id = fields.Many2one('res.company', 'Company')
