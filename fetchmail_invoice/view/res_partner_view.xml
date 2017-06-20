@@ -16,7 +16,7 @@
                 <xpath
                     expr="//page[@string='Sales &amp; Purchases']//field[@name='supplier']"
                     position="after">
-                    <field name="fetchmail_invoice_default"/>
+                    <field name="fetchmail_invoice_default" groups="base.group_no_one"/>
                 </xpath>
             </field>
         </record>
