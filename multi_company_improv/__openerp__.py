@@ -39,7 +39,9 @@ that the user only sees the entries of his/her company
     'website': 'http://www.magnus.nl/',
     'depends': ['crm',
                 'account_banking_sepa_credit_transfer',
-                'account_banking'
+                # 'account_banking'
+                'hr',
+                'sales_team',
     ],
     'data': [
         'security.xml',

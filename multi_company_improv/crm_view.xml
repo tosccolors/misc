@@ -8,7 +8,8 @@
         <record id="crm_case_section_view_form_multi" model="ir.ui.view">
             <field name="name">crm.case.section.form.multi</field>
             <field name="model">crm.case.section</field>
-            <field name="inherit_id" ref="crm.crm_case_section_view_form" />
+            <!--<field name="inherit_id" ref="crm.crm_case_section_view_form" />-->
+            <field name="inherit_id" ref="sales_team.crm_case_section_view_form" />
             <field name="arch" type="xml">
                 <field name="code" position="after">
                     <field name="company_id"/>
@@ -21,7 +22,8 @@
         <record id="crm_case_section_view_tree_multi" model="ir.ui.view">
             <field name="name">crm.case.section.tree.multi</field>
             <field name="model">crm.case.section</field>
-            <field name="inherit_id" ref="crm.crm_case_section_view_tree" />
+            <!--<field name="inherit_id" ref="crm.crm_case_section_view_tree" />-->
+            <field name="inherit_id" ref="sales_team.crm_case_section_view_tree" />
             <field name="arch" type="xml">
                     <field name="code" position="after">
                         <field name="company_id"/>

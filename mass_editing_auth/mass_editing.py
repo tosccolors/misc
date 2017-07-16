@@ -24,6 +24,9 @@ from openerp.osv import orm, fields, osv
 from openerp.tools.translate import _
 
 
+from openerp import SUPERUSER_ID
+
+
 
 class mass_object(orm.Model):
     _inherit = "mass.object"
@@ -44,7 +47,7 @@ class mass_object(orm.Model):
         for data in self.browse(cr, uid, ids, context=context):
             src_obj = data.model_id.model
             button_name = _('Mass Editing (%s)') % data.name
-            vals['ref_ir_act_window'] = action_obj.create(cr, uid, {
+            vals['ref_ir_act_window'] = action_obj.create(cr, SUPERUSER_ID, {
                 'name': button_name,
                 'type': 'ir.actions.act_window',
                 'res_model': 'mass.editing.wizard',

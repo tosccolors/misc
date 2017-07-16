@@ -123,12 +123,18 @@
             <field name="inherit_id" ref="account.view_account_analytic_line_filter" />
             <field name="type">search</field>
             <field name="arch" type="xml">
-                <xpath expr="/search//field[@name='user_id']" position="after">
+                <!--<xpath expr="/search//field[@name='user_id']" position="after">-->
+                    <!--<field name="activity" />-->
+                <!--</xpath>-->
+                <!--<xpath expr="/search/group[@string='Group By...']/filter[@string='Fin. Account']" position="after">-->
+                    <!--<filter string="Activity" context="{'group_by':'activity'}" groups="base.group_extended" icon="terp-folder-green"/>-->
+                <!--</xpath>-->
+
+                <xpath expr="." position="inside">
                     <field name="activity" />
-                </xpath>
-                <xpath expr="/search/group[@string='Group By...']/filter[@string='Fin. Account']" position="after">
                     <filter string="Activity" context="{'group_by':'activity'}" groups="base.group_extended" icon="terp-folder-green"/>
                 </xpath>
+
             </field>
         </record>
         

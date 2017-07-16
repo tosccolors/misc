@@ -29,9 +29,9 @@
 #
 ##############################################################################
 
-from osv import fields
-from osv import osv
-import decimal_precision as dp
+from openerp.osv import fields
+from openerp.osv import osv
+import openerp.addons.decimal_precision as dp
 
 
 class project_activity_al(osv.osv):

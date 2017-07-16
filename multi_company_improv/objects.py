@@ -43,13 +43,14 @@ class crm_case_section(orm.Model):
         'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'crm.case.section', context=c),
     }
 
-class banking_export_sepa(orm.Model):
-    '''SEPA export'''
-    _inherit = 'banking.export.sepa'
-
-    _columns = {
-         'company_id': fields.many2one('res.company', 'Company', required=True),
-    }
-    _defaults = {
-        'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'banking.export.sepa', context=c),
-    }
+# -- deep: Object No longer exists
+# class banking_export_sepa(orm.Model):
+#     '''SEPA export'''
+#     _inherit = 'banking.export.sepa'
+#
+#     _columns = {
+#          'company_id': fields.many2one('res.company', 'Company', required=True),
+#     }
+#     _defaults = {
+#         'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'banking.export.sepa', context=c),
+#     }
