@@ -1,0 +1,6 @@
+---Fields in module 'multi_company_improv'---
+---XML records in module 'multi_company_improv'---
+DEL ir.rule: multi_company_improv.crm_case_section_rule
+NEW ir.ui.view: multi_company_improv.crm_team_view_tree_multi
+DEL ir.ui.view: multi_company_improv.crm_case_section_view_form_multi
+DEL ir.ui.view: multi_company_improv.crm_case_section_view_tree_multi

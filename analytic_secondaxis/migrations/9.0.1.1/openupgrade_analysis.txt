@@ -1,0 +1,3 @@
+---Fields in module 'analytic_secondaxis'---
+---XML records in module 'analytic_secondaxis'---
+DEL ir.ui.view: analytic_secondaxis.account_analytic_line_extended_form
