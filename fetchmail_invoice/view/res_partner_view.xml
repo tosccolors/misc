@@ -7,10 +7,16 @@
             <field name="model">res.partner</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
+                <!--xpath expr="//sheet/div/h1/field[@name='name']" position="attributes">
+                    <attribute name="attrs">{'readonly': ['|',('is_company', '=', False),('fetchmail_invoice_default','=', True)], 'required': [('is_company', '=', True)]}</attribute>
+                </xpath-->
+                <!--xpath expr="//sheet/div/div/field[@name='is_company']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('fetchmail_invoice_default','=', True)]}</attribute>
+                </xpath-->
                 <xpath
-                    expr="//page[@string='Sales &amp; Purchases']//field[@name='supplier']"
+                    expr="//page[@name='sales_purchases']//field[@name='supplier']"
                     position="after">
-                    <field name="fetchmail_invoice_default"/>
+                    <field name="fetchmail_invoice_default" groups="base.group_no_one"/>
                 </xpath>
             </field>
         </record>
