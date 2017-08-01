@@ -18,11 +18,11 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import fields, osv
-from openerp.tools.translate import _
 
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, RedirectWarning, ValidationError
 
-class res_partner(osv.Model):
+class ResPartner(models.Model):
     """
     Add field to determine wether a supplier is a default supplier for
     fetchmail invoice.
@@ -32,21 +32,17 @@ class res_partner(osv.Model):
             - There can only be one partner per company with this attribute
     """
     _inherit = 'res.partner'
-    _columns = {
-        'fetchmail_invoice_default': fields.boolean(
-            'Default invoice partner',
-            help='Will be used as default partner when invoices are'
-            'created from received mails'),
-    }
 
-    def _check_fetchmail_invoice_default(self, cr, uid, ids):
-        for this_obj in self.browse(cr, uid, ids):
+    fetchmail_invoice_default = fields.Boolean('Default invoice partner', help='Will be used as default partner when invoices are'
+            'created from received mails')
+
+    @api.model
+    def _check_fetchmail_invoice_default(self):
+        for this_obj in self:
             if this_obj.fetchmail_invoice_default:
                 if not this_obj.supplier:
-                    raise osv.except_osv(
-                        _('Error!'),
-                        _('Default invoice partner must be a supplier')
-                    )
+                    raise ValidationError(_('Default invoice partner must be a supplier'))
+
                 # Check wether not another partner on same company default
                 company_id = (
                     this_obj.company_id and this_obj.company_id.id or False)
@@ -56,21 +52,18 @@ class res_partner(osv.Model):
                         ('company_id', '=', company_id),]
                     other_ids = self.search(cr, uid, args)
                     if other_ids:
-                        raise osv.except_osv(
-                            _('Error!'),
-                            _('There can only be one default supplier per company')
-                            )
+                        raise ValidationError(_('There can only be one default supplier per company'))
+
                 else:
-                    raise osv.except_osv(
-                        _('Error!'),
-                        _('a default supplier has to have a company defined')
-                    )
+                    raise ValidationError(_('a default supplier has to have a company defined'))
+
         # If we get here, validation passed, only use exceptions for errors.
         return True
 
-    _constraints = [
-            (_check_fetchmail_invoice_default,
-             'This partner can not be a default supplier for fetchmail',
-             ['fetchmail_invoice_default']),
-    ]
+#    _constraints = [
+#            (_check_fetchmail_invoice_default,
+#             'This partner can not be a default supplier for fetchmail',
+#             ['fetchmail_invoice_default']),
+#    ]
+
 

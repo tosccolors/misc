@@ -18,19 +18,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import orm
-from openerp import tools
-from openerp.tools.translate import _
-# from openerp.addons.mail.mail_message import decode
 
-from openerp.addons.mail.models.mail_message import decode
-from openerp.exceptions import UserError
+from odoo import tools, api, fields, models, _
+from odoo.tools.translate import _
+from odoo.tools.mail import decode_smtp_header
+from odoo.exceptions import UserError
 
 
-class account_invoice(orm.Model):
+class AccountInvoice(models.Model):
     _name = 'account.invoice'
     _inherit = 'account.invoice'
 
+    @api.cr_uid_context
     def get_partner_from_mail(
             self, cr, uid, email_address, company_id, force_supplier=False,
             context=None):
@@ -70,6 +69,7 @@ class account_invoice(orm.Model):
                 return related_partners
         return []
 
+    @api.cr_uid_context
     def message_find_partners(
             self, cr, uid, message, header_fields=['From'], context=None):
         """ Find partner for supplier invoice. Problem is that either the
@@ -91,13 +91,14 @@ class account_invoice(orm.Model):
              and context['force_company']) or False)
         partner_ids = []                                                       
         s = ', '.join(
-            [decode(message.get(h))
+            [decode_smtp_header(message.get(h))
                 for h in header_fields if message.get(h)])
         for email_address in tools.email_split(s):
             partner_ids += self.get_partner_from_mail(
                 cr, uid, email_address, company_id, context=context)
         return partner_ids
 
+    @api.cr_uid_context
     def _is_partner_supplier(self, cr, uid, partner_id, context=None):
         assert partner_id, _(
             'This method should be called with a valid partner id')
@@ -107,6 +108,7 @@ class account_invoice(orm.Model):
         assert partner_record, _('No partner found for id %d') % (partner_id,)
         return partner_record['supplier']
 
+    @api.cr_uid_context
     def message_new(
         self, cr, uid, msg_dict, custom_values=None, context=None):
         """

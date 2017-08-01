@@ -29,12 +29,11 @@
 #
 ##############################################################################
 
-from openerp.osv import fields
-from openerp.osv import osv
+from odoo import fields, models, api
 import openerp.addons.decimal_precision as dp
 
 
-class project_activity_al(osv.osv):
+class ProjectActivityAl(models.Model):
 
     """Class that inhertis osv.osv and add 2nd analytic axe to account analytic
     lines.
@@ -44,6 +43,7 @@ class project_activity_al(osv.osv):
     _name = "project.activity_al"
     _description = "Second Analytical Axes"
 
+    @api.cr_uid_context
     def search(self, cr, uid, args, offset=0, limit=None, order=None,
                context=None, count=False):
         acc_ids = []
@@ -77,6 +77,8 @@ class project_activity_al(osv.osv):
     # @param uid res.user.id that is currently loged
     # @param account a browse record of an account
     # @return a browse reccod list of the first parent that have an activites
+
+    @api.cr_uid_context
     def _get_first_AA_wich_have_activity(self, cr, uid, account):
         """Return browse record list of activities
            of the account which have an activity set
@@ -100,6 +102,8 @@ class project_activity_al(osv.osv):
     # @param context an arbitrary context
     # @param limit int of the search limit
     # @return the result of name get
+
+    @api.cr_uid_context
     def name_search(self, cr, uid, name, args=None,
                     operator='ilike', context=None, limit=80):
         """ Ovveride of osv.osv name serach function that do the search
@@ -166,6 +170,7 @@ class project_activity_al(osv.osv):
 
         return self.name_get(cr, uid, account, context=context)
 
+    @api.cr_uid_context
     def _compute_level_tree(self, cr, uid, ids, child_ids, res, field_names,
                             context=None):
         def recursive_computation(account_id, res):
@@ -191,6 +196,7 @@ class project_activity_al(osv.osv):
             res = recursive_computation(account.id, res)
         return res
 
+    @api.cr_uid_context
     def _debit_credit_bal_qtty(self, cr, uid, ids, name, arg, context=None):
         res = {}
         if context is None:
@@ -241,6 +247,7 @@ class project_activity_al(osv.osv):
             'debit', 'credit', 'balance', 'quantity'
         ], context)
 
+    @api.cr_uid_context
     def _default_company(self, cr, uid, context=None):
         user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
         if user.company_id:
@@ -249,6 +256,7 @@ class project_activity_al(osv.osv):
             cr, uid, [('parent_id', '=', False)]
         )[0]
 
+    @api.cr_uid_context
     def _get_default_currency(self, cr, uid, context=None):
         user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
         return user.company_id.currency_id.id
