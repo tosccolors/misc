@@ -20,33 +20,27 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp.osv import osv, fields
+
+from odoo import fields, models, api
 
 
-class activities_analytic_chart(osv.osv_memory):
+class activities_analytic_chart(models.TransientModel):
     _name = 'activities.analytic.chart'
     _description = 'Analytic Activities Chart'
 
-    _columns = {
-        'from_date': fields.date('From'),
-        'to_date': fields.date('To'),
-    }
+    from_date = fields.Date('From')
+    to_date = fields.Date('To')
 
-    def analytic_activities_chart_open_window(self, cr, uid, ids,
-                                              context=None):
-        mod_obj = self.pool.get('ir.model.data')
-        act_obj = self.pool.get('ir.actions.act_window')
+    @api.multi
+    def analytic_activities_chart_open_window(self):
+        mod_obj = self.env['ir.model.data']
         result_context = {}
-        if context is None:
-            context = {}
-        result = mod_obj.get_object_reference(cr, uid, 'analytic_secondaxis',
-                                              'action_activity_tree')
-        rec_id = result and result[1] or False
-        result = act_obj.read(cr, uid, [rec_id], context=context)[0]
-        data = self.read(cr, uid, ids, [])[0]
-        if data['from_date']:
-            result_context.update({'from_date': data['from_date']})
-        if data['to_date']:
-            result_context.update({'to_date': data['to_date']})
-        result['context'] = str(result_context)
-        return result
+
+        model, action_id = mod_obj.get_object_reference('analytic_secondaxis', 'action_activity_tree')
+        [action] = self.env[model].browse(action_id).read()
+        if self.from_date:
+            result_context.update({'from_date': self.from_date})
+        if self.to_date:
+            result_context.update({'to_date': self.to_date})
+        action['context'] = result_context
+        return action

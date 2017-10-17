@@ -70,7 +70,7 @@
             "analytic_secondaxis_view.xml",
             "wizard/analytic_activity_chart_view.xml",
     ],
-    "demo": ["analytic_secondaxis_demo.xml"],
+    "demo": ["demo/analytic_secondaxis_demo.xml"],
 
     "active": False,
     "installable": True

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <menuitem id="mass_editing.menu_mass_editing" name="Mass Editing"
+                  parent="sales_team.menu_sale_config" groups="group_mass_editing" sequence="6"/>
+
+    </data>
+</openerp>

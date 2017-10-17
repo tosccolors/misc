@@ -15,10 +15,11 @@
                     <newline/>
                     <label string="(Keep empty to open the current situation)" align="0.0" colspan="3"/>
                     <separator colspan="4"/>
-                    <group colspan="4" col="6">
-                        <button special="cancel" string="Cancel" icon="gtk-cancel"/>
-                        <button name="analytic_activities_chart_open_window" string="Open Charts" type="object" icon="gtk-ok"/>
-                    </group>
+                    <footer>
+                        <button special="cancel" string="Cancel" class="btn-default"/>
+                        <button name="analytic_activities_chart_open_window" string="Open Charts"
+                                type="object" default_focus="1" class="btn-primary"/>
+                    </footer>
                 </form>
             </field>
         </record>

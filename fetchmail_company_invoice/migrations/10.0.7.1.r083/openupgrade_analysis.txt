@@ -1,0 +1,6 @@
+---Fields in module 'fetchmail_company_invoice'---
+fetchmail_company_invoice / res.partner              / fetchmail_invoice_default (boolean): previously in module fetchmail_invoice
+---XML records in module 'fetchmail_company_invoice'---
+NEW ir.ui.view: fetchmail_company_invoice.fetchmail_server_form_x1
+NEW ir.ui.view: fetchmail_company_invoice.view_partner_form_x1
+DEL ir.ui.view: fetchmail_company_setting.fetchmail_server_form_x1
