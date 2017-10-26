@@ -19,7 +19,7 @@ class ProductProduct(models.Model):
         product = super(ProductProduct, self).create(vals)
         template_vals = {}
         if 'categ_id' not in vals:
-            template_vals['categ_id'] = product.product_tmpl_id.categ_id
+            template_vals['categ_id'] = product.product_tmpl_id.categ_id.id
         if template_vals:
             product.write(template_vals)
         return product
