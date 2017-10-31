@@ -26,11 +26,10 @@
     "category": "Tools",
     "website": "http://www.magnus.nl",
     "description": """This module provides the authorisation for the Mass Editing module""",
-    'depends': ['sales_team','mass_editing'],
+    'depends': ['mass_editing'],
     'data': [
         "security/security.xml",
         "security/ir.model.access.csv",
-        'views/mass_editing_view.xml',
     ],
     'installable': True,
     'application': True,
