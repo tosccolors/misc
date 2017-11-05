@@ -11,10 +11,10 @@
     'author': 'Agile Business Group, Odoo Community Association (OCA)',
     'website': 'https://www.agilebg.com/',
     'depends': [
-        'stock',
+        'stock', 'hr_expense', 'delivery',
     ],
     'data': [
-#        'views/product_product_view.xml'
+
     ],
     'installable': True,
 }
