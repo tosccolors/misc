@@ -16,10 +16,13 @@ class ProductProduct(models.Model):
 
     @api.model
     def create(self, vals):
-        product = super(ProductProduct, self).create(vals)
         template_vals = {}
-        if 'categ_id' not in vals:
+        if 'categ_id' in vals:
+            product = super(ProductProduct, self.with_context(create_product_product_categ=vals['categ_id'])).create(
+                vals)
+        else:
+            product = super(ProductProduct, self).create(vals)
             template_vals['categ_id'] = product.product_tmpl_id.categ_id.id
-        if template_vals:
-            product.write(template_vals)
+            if template_vals:
+                product.write(template_vals)
         return product
