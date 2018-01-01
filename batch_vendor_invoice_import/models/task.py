@@ -15,5 +15,5 @@ class Task(models.Model):
         string='Operating Unit',
         required=False,
         translate=False,
-        readonly=True
+        readonly=False
         )
