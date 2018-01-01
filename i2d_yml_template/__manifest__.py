@@ -19,9 +19,9 @@
    :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
    :alt: License: AGPL-3
 
-==============
-i2d_xml_template
-==============
+================
+i2d_yml_template
+================
 
 This module extends the functionality of OCA edi/account_invoice_import_invoice2data to support maintaining templates.
 
@@ -121,7 +121,8 @@ To contribute to this module, please visit https://odoo-community.org.
     },
 
     # always loaded
-    'data': ['i2d_yml_template_view.xml'
+    'data': ['data/external_file_location.xml',
+             'views/i2d_yml_template_view.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

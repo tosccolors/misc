@@ -8,6 +8,7 @@ import logging
 import odoo
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+import os
 
 
 _logger = logging.getLogger(__name__)
@@ -34,3 +35,11 @@ class IrAttachmentMetadata(models.Model):
             with cls.connect(location) as conn:
                 if self.file_type == 'delete_external_location':
                     conn.remove(path)
+
+    '''@api.multi
+    def unlink(self):
+        if self.file_type == 'export_external_location' and self.state == 'done':
+            self.file_type = 'delete_external_location'
+            self._run()
+            self._cr.commit()
+        super(IrAttachmentMetadata, self).unlink()'''

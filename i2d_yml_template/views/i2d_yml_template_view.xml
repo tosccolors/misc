@@ -7,6 +7,7 @@
             <tree string="Prototype">
                 <field name="name"/>
                 <field name="yml_content" invisible="1"/>
+                <field name="attach_meta_id"/>
                 <field name="state"/>
             </tree>
         </field>
@@ -23,8 +24,21 @@
                         string="Delete from Filesystem" type="object"/>
                 <field name="state" widget="statusbar" statusbar_visible="new,saved,deleted"/>
             </header>
-                <field name="name"/>
-                <field name="yml_content" invisible="0"/>
+                <group colspan="4">
+                    <group>
+                        <field name="name"/>
+                        <field name="attach_meta_id" readonly="1"/>
+                        <field name="regexr_iframe" invisible="0"/>
+                    </group>
+                    <group>
+                        <field name="yml_content" />
+                    </group>
+                </group>
+            </form>
+            <form string="Embedded Webpage" version="7.0"  edit="false"
+                attrs="{'invisible': [('regexr_iframe', '=', False)]}">
+                <iframe marginheight="0" marginwidth="0" frameborder = "0"
+                    src="https://regexr.com/" width="100%" height="1000"/>
             </form>
         </field>
     </record>
@@ -40,7 +54,7 @@
     <menuitem id="menu_i2d_yml_template"
               name="YML Templates"
               parent="account.menu_finance_configuration"
-              groups="group_account_manager"
+              groups="account.group_account_manager"
               action="open_i2d_yml_template_list"
               sequence="1"/>
 </odoo>
