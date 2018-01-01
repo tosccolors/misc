@@ -16,14 +16,24 @@ _logger = logging.getLogger(__name__)
 class IrAttachmentMetadata(models.Model):
     _inherit = ['ir.attachment.metadata']
 
+    operating_unit_id = fields.Many2one(
+        'operating.unit',
+        string='Operating Unit',
+        required=False,
+        translate=False,
+        readonly=True
+    )
+
 
     @api.multi
     def _run(self):
         super(IrAttachmentMetadata, self)._run()
-        if self.task_id.name == 'import PDF invoices':
+        if self.location_id == self.env.ref('batch_vendor_invoice_import.batch_invoice_import_location'):
             vals = {
                 'invoice_file': self.datas,
                 'invoice_filename': self.name,
-                'task_id': self.task_id.id
+                'task_id': self.task_id.id,
+                'company_id': self.company_id.id,
+                'operating_unit_id': self.operating_unit_id.id,
             }
             self.env['account.invoice.import'].create(vals).create_invoice_action()

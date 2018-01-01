@@ -87,8 +87,8 @@ class I2dYmlTemplate(models.Model):
                 res.run()
                 self.write({'state': 'deleted'})
 
-    @api.multi
+    '''@api.multi
     def unlink(self):
         if self.state == 'saved':
             raise UserError(_('This YML temlate is still present in the filesystem. You first have to delete it there'))
-        super(I2dYmlTemplate, self).unlink()
+        super(I2dYmlTemplate, self).unlink()'''

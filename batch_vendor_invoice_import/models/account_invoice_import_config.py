@@ -11,6 +11,9 @@ class account_invoice_import_config(models.Model):
 
     operating_unit_id = fields.Many2one('operating.unit',
         string=_("Operating Unit"),
+        ondelete='cascade',
+        default=lambda self: self.env['operating.unit']._company_default_get(
+            'account.invoice.import.config'),
         required=False,
         translate=False,
         readonly=False

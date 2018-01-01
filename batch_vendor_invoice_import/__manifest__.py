@@ -19,9 +19,9 @@
    :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
    :alt: License: AGPL-3
 
-==============
+===========================
 batch_vendor_invoice_import
-==============
+===========================
 
 This module extends the functionality of account_invoice_import to support batch importing of vendor invoices
 and to allow you to not having to use the single invoice upload in the mentioned module. This possibility remains for testing purposes.
@@ -124,8 +124,9 @@ To contribute to this module, please visit https://odoo-community.org.
 
     # always loaded
     'data': [
-#            'views/account_invoice_import_config_view.xml',
+            'data/external_file_location.xml',
             'views/task_view.xml',
+            'views/attachment_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

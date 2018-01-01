@@ -22,7 +22,8 @@ class AccountInvoiceImport(models.TransientModel):
     _inherit = 'account.invoice.import'
 
     task_id = fields.Many2one('external.file.task', string="Import Task", readonly=True)
-
+    company_id = fields.Many2one('res.company', )
+    operating_unit_id = fields.Many2one('operating.unit', )
 
     @api.multi
     def create_invoice_action(self, parsed_inv=None):
@@ -38,6 +39,12 @@ class AccountInvoiceImport(models.TransientModel):
         else:
             return super(AccountInvoiceImport, self).create_invoice_action(parsed_inv=None)
 
+    @api.model
+    def _prepare_create_invoice_vals(self, parsed_inv, import_config=False):
+        (vals, import_config) = super(AccountInvoiceImport, self)._prepare_create_invoice_vals(parsed_inv, import_config)
+        vals['company_id'] = self.company_id.id or False
+        vals['operating_unit_id'] = self.operating_unit_id.id or False
+        return (vals, import_config)
 
     @api.model
     def invoice2data_parse_invoice(self, file_data):
