@@ -125,7 +125,7 @@ To contribute to this module, please visit https://odoo-community.org.
     # always loaded
     'data': [
             'data/external_file_location.xml',
-            'views/account_invoice_import_config.xml',
+            'views/account_invoice_import_config_view.xml',
             'views/task_view.xml',
             'views/attachment_view.xml',
     ],
