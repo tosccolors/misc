@@ -35,12 +35,3 @@ class IrAttachmentMetadata(models.Model):
             with cls.connect(location) as conn:
                 if self.file_type == 'delete_external_location':
                     conn.remove(path)
-
-    @api.multi
-    def unlink(self):
-        for attach in self:
-            if attach.file_type == 'export_external_location' and attach.state == 'done':
-                attach.file_type = 'delete_external_location'
-                attach._run()
-                attach._cr.commit()
-        super(IrAttachmentMetadata, self).unlink()

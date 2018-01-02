@@ -116,7 +116,7 @@ To contribute to this module, please visit https://odoo-community.org.
     # any module necessary for this one to work correctly
     'depends': ['external_file_location',
                 'account_operating_unit',
-                'account_invoice_import'
+                'account_invoice_import_invoice2data'
     ],
     'external_dependencies': {
         'python': [],

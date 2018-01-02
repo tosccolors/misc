@@ -46,16 +46,14 @@ class I2dYmlTemplate(models.Model):
             'task_id': self.env.ref('i2d_yml_template.i2d_yml_template_task').id,
             'file_type': 'export_external_location',
             'datas_fname': self.name +'.yml',
-            'datas': b64encode(self.yml_content),
+            'datas': b64encode(self.yml_content.encode('utf8')),
             'name': self.name,
             'description': self.description,
             'res_name': self.name,
             'res_model': 'i2d.yml.template',
             'res_id': self.id,
-#                'res_field': ,
             'type': 'binary',
             'state': 'pending',
-#                'state_message':,
             'mimetype': 'text/plain',
         }
         if self.state == 'new':
@@ -77,7 +75,6 @@ class I2dYmlTemplate(models.Model):
                 'datas_fname': self.name + '.yml',
                 'type': 'binary',
                 'state': 'pending',
-                #                'state_message':,
                 'mimetype': 'text/plain',
             }
             if self.state == 'saved':
@@ -87,8 +84,9 @@ class I2dYmlTemplate(models.Model):
                 res.run()
                 self.write({'state': 'deleted'})
 
-    '''@api.multi
+    @api.multi
     def unlink(self):
-        if self.state == 'saved':
-            raise UserError(_('This YML temlate is still present in the filesystem. You first have to delete it there'))
-        super(I2dYmlTemplate, self).unlink()'''
+        for tmpl in self:
+            if self.state == 'saved':
+                tmpl.action_delete()
+        super(I2dYmlTemplate, self).unlink()
