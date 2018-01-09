@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name' : 'Netherlands BTW Statement Intergartion Operating Unit',
+    'name' : 'Integrate Netherlands BTW Statement & Operating Unit',
     'version': '10.0.1.0.0',
     'category': 'Localization',
     'description': """
