@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from odoo import _, api, fields, models, SUPERUSER_ID, tools
-from odoo.tools.safe_eval import safe_eval
 
 class MailComposer(models.TransientModel):
     _inherit = 'mail.compose.message'
@@ -20,7 +19,7 @@ class MailComposer(models.TransientModel):
             inv_ids = []
             if 'active_model' in ctx and ctx['active_model'] == 'account.invoice':
                 for invoice_obj in self.env['account.invoice'].browse(ctx['active_ids']):
-                    if invoice_obj.partner_id.transmit_invoice == 'email' and invoice_obj.state != 'cancel':
+                    if invoice_obj.partner_id.transmit_invoice == 'email':
                         inv_ids.append(invoice_obj.id)
                         self.res_id = inv_ids[0]
             ctx.update({'active_ids':inv_ids}),ctx.update({'active_id':inv_ids[0]}) if inv_ids else ctx
