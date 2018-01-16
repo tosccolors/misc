@@ -8,12 +8,10 @@
     'website': 'http://www.magnus.nl',
     'author': 'Magnus - Willem Hulshof',
     'depends': [
-        'base',
-        'account',
+        'account_invoice_transmit_method'
         ],
     'data': [
         "views/mass_mail_view.xml",
-        "views/res_partner_view.xml"
     ],
     'installable': True
 }

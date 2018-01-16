@@ -19,9 +19,11 @@ class MailComposer(models.TransientModel):
             inv_ids = []
             if 'active_model' in ctx and ctx['active_model'] == 'account.invoice':
                 for invoice_obj in self.env['account.invoice'].browse(ctx['active_ids']):
-                    if invoice_obj.partner_id.transmit_invoice == 'email':
-                        inv_ids.append(invoice_obj.id)
-                        self.res_id = inv_ids[0]
+                    if invoice_obj.transmit_method_code:
+                        transmit_code = invoice_obj.transmit_method_code.strip().lower()
+                        if transmit_code == 'mail':
+                            inv_ids.append(invoice_obj.id)
+                            self.res_id = inv_ids[0]
             ctx.update({'active_ids':inv_ids}),ctx.update({'active_id':inv_ids[0]}) if inv_ids else ctx
         return super(MailComposer, self.with_context(ctx)).send_mail()
 
