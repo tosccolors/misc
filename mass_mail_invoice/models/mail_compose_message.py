@@ -23,8 +23,10 @@ class MailComposer(models.TransientModel):
                         transmit_code = invoice_obj.transmit_method_code.strip().lower()
                         if transmit_code == 'mail':
                             inv_ids.append(invoice_obj.id)
-                            self.res_id = inv_ids[0]
-            ctx.update({'active_ids':inv_ids}),ctx.update({'active_id':inv_ids[0]}) if inv_ids else ctx
+            if inv_ids:
+                ctx.update({'active_ids':inv_ids}),ctx.update({'active_id':inv_ids[0]})
+            else:
+                return {'type': 'ir.actions.act_window_close'}
         return super(MailComposer, self.with_context(ctx)).send_mail()
 
 MailComposer()
