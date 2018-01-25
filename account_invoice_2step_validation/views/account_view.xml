@@ -10,27 +10,27 @@
                     <xpath expr="//form/sheet/group"  position="attributes">
                         <attribute name="groups">account.group_account_invoice</attribute>
                     </xpath>
-                    <group string="Amount" position="attributes">
+                    <xpath expr="//notebook/page[1]/group/group[1]" position="attributes">
                         <attribute name="groups">account.group_account_invoice</attribute>
-                    </group>
-                    <group string="Accounting Documents" position="attributes">
+                    </xpath>
+                    <xpath expr="//notebook/page[1]/group/group[2]" position="attributes">
                         <attribute name="groups">account.group_account_invoice</attribute>
-                    </group>
-                    <group string="Dates" position="attributes">
+                    </xpath>
+                    <xpath expr="//notebook/page[1]/group/group[3]" position="attributes">
                         <attribute name="groups">account.group_account_invoice</attribute>
-                    </group>
-                    <group string="Taxes" position="attributes">
+                    </xpath>
+                    <xpath expr="//notebook/page[1]/group/group[4]" position="attributes">
                         <attribute name="groups">account.group_account_invoice</attribute>
-                    </group>
-                    <group string="Currency" position="attributes">
+                    </xpath>
+                    <xpath expr="//notebook/page[1]/group/group[6]" position="attributes">
                         <attribute name="groups">account.group_account_invoice,base.group_multi_currency</attribute>
-                    </group>
-                    <group string="Matching" position="attributes">
+                    </xpath>
+                    <xpath expr="//notebook/page[1]/group/group[5]" position="attributes">
                         <attribute name="groups">account.group_account_invoice</attribute>
-                    </group>
-                    <group string="States" position="attributes">
+                    </xpath>
+                    <xpath expr="//notebook/page[1]/group/group[7]" position="attributes">
                         <attribute name="groups">account.group_account_invoice</attribute>
-                    </group>
+                    </xpath>
                 </data>
             </field>
         </record>
