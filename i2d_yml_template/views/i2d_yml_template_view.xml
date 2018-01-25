@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+  <data>
     <record id="i2d_yml_template_base_tree_view" model="ir.ui.view">
         <field name="name">Base tree View for I2D YML Templates</field>
         <field name="model">i2d.yml.template</field>
@@ -57,4 +58,5 @@
               groups="account.group_account_manager"
               action="open_i2d_yml_template_list"
               sequence="1"/>
+  </data>
 </odoo>
