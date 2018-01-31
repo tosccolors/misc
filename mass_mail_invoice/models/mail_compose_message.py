@@ -19,13 +19,13 @@ class MailComposer(models.TransientModel):
         if 'invoice_mass_mail' in ctx and ctx['invoice_mass_mail'] == True:
             mail_inv_ids = []
             download_inv_ids = []
+            user_obj = self.env.user
             res = {'type': 'ir.actions.act_window_close'} # by default close wizard will be called.
             if 'active_model' in ctx and ctx['active_model'] == 'account.invoice':
                 for invoice_obj in self.env['account.invoice'].browse(ctx['active_ids']):
                     if invoice_obj.transmit_method_code:
                         transmit_code = invoice_obj.transmit_method_code.strip().lower()
                         invoice_obj.sent_date = date.today()
-                        user_obj = self.env['res.users'].browse([invoice_obj.create_uid.id])
                         if transmit_code == 'post' and user_obj.printing_action:
                             if user_obj.printing_action == 'client':
                                 download_inv_ids.append(invoice_obj.id)
