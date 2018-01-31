@@ -16,6 +16,7 @@ class MailComposer(models.TransientModel):
     @api.multi
     def send_mail(self, auto_commit=False):
         ctx = self.env.context.copy()
+        res = {}
         if 'invoice_mass_mail' in ctx and ctx['invoice_mass_mail'] == True:
             mail_inv_ids = []
             download_inv_ids = []
