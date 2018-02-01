@@ -45,7 +45,6 @@ class MailComposer(models.TransientModel):
                     'report_name': 'account.report_invoice',
                     'context': ctx
                   }
-
         return res
 
 MailComposer()
