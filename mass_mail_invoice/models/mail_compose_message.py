@@ -39,12 +39,7 @@ class MailComposer(models.TransientModel):
                 res = super(MailComposer, self.with_context(ctx)).send_mail()
 
             if download_inv_ids:
-                ctx.update({'active_ids':download_inv_ids})
-                res = {
-                    'type': 'ir.actions.report.xml',
-                    'report_name': 'account.report_invoice',
-                    'context': ctx
-                  }
+                res = self.env['report'].get_action(download_inv_ids, 'account.report_invoice')
 
         return res
 
