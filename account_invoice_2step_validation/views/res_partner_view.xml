@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partners_form_2_step" model="ir.ui.view">
+        <field name="name">Partner 2step Validation</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="sector_id" position="attributes" >
+                <attribute name="attrs" >{'required': [('customer','=', True)]}</attribute>
+            </field>
+            <field name="email" position="attributes" >
+                <attribute name="attrs" >{'required': [('customer','=', True)]}</attribute>
+            </field>
+            <field name="supplier" position="after">
+                <field name="vendor_owner" attrs="{'required': [('supplier','=', True)]}"/>
+            </field>
+            <field name="user_id" position="attributes" >
+                <attribute name="attrs" >{'required': [('customer','=', True)]}</attribute>
+            </field>
+        </field>
+    </record>
+
+</odoo>

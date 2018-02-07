@@ -17,7 +17,9 @@ class MailComposer(models.TransientModel):
     def send_mail(self, auto_commit=False):
         ctx = self.env.context.copy()
         res = {}
-        if 'invoice_mass_mail' in ctx and ctx['invoice_mass_mail'] == True:
+        if not ('invoice_mass_mail' in ctx and ctx['invoice_mass_mail'] == True):
+            return super(MailComposer, self).send_mail()
+        else:
             mail_inv_ids = []
             download_inv_ids = []
             user_obj = self.env.user
@@ -34,7 +36,7 @@ class MailComposer(models.TransientModel):
                                 self.env['report'].print_document(record_ids=[invoice_obj.id], report_name='account.report_invoice', html=None, data=None)
                         elif transmit_code == 'mail':
                             mail_inv_ids.append(invoice_obj.id)
-            if mail_inv_ids:
+            if len(mail_inv_ids) >= 1:
                 ctx.update({'active_ids':mail_inv_ids}),ctx.update({'active_id':mail_inv_ids[0]})
                 res = super(MailComposer, self.with_context(ctx)).send_mail()
 
@@ -42,5 +44,3 @@ class MailComposer(models.TransientModel):
                 res = self.env['report'].get_action(download_inv_ids, 'account.report_invoice')
 
         return res
-
-MailComposer()

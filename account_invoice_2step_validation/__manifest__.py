@@ -39,17 +39,18 @@ Enchanced to add
 * Verification status on the Invoice
 
     """,
-    'author'  : 'Eurogroup Consulting - Willem Hulshof',
-    'website' : 'http://www.eurogroupconsulting.nl',
+    'author'  : 'Magnus - Willem Hulshof',
+    'website' : 'http://www.magnus.nl',
     'depends' : ['account',
-		'account_cancel',
-		'account_voucher',
-        "account_payment_order", # -- added: deep
-        "project",
-        "publishing_accounts"
+		         'account_cancel',
+		         'account_voucher',
+                 "account_payment_order", # -- added: deep
+                 "project",
+                 "publishing_accounts"
     ],
     'data' : ["security/account_security.xml",
 	          "views/res_company_view.xml",
+              "views/res_partner_view.xml",
               "views/account_view.xml",
 	          "views/account_invoice_view.xml",
               "wizard/wizard_view.xml",

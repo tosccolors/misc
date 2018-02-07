@@ -89,6 +89,12 @@ class Invoice(models.Model):
     verif_tresh_exceeded = fields.Boolean(string='Verification Treshold',
         store=True, readonly=True, compute='_compute_amount', track_visibility='always', copy=False)
 
+    @api.onchange('partner_id', 'company_id')
+    def _onchange_partner_id(self):
+        res = super(Invoice, self)._onchange_partner_id()
+        if self.type in ('in_invoice', 'in_refund'):
+            self.user_id = self.partner_id.vendor_owner.id
+        return res
 
     @api.multi
     def action_date_assign(self):

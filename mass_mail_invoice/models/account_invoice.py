@@ -5,5 +5,3 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     sent_date = fields.Date(string="Sent Date")
-
-AccountInvoice()
