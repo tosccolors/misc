@@ -25,5 +25,6 @@ class Partner(models.Model):
     _inherit = 'res.partner'
 
 
-    vendor_owner = fields.Many2one('res.user', string="Vendor Manager")
+    vendor_owner = fields.Many2one('res.users', string='Vendor Manager')
+
 

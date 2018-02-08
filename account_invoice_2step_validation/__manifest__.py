@@ -46,7 +46,6 @@ Enchanced to add
 		         'account_voucher',
                  "account_payment_order", # -- added: deep
                  "project",
-                 "publishing_accounts"
     ],
     'data' : ["security/account_security.xml",
 	          "views/res_company_view.xml",

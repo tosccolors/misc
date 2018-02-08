@@ -5,18 +5,10 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <field name="sector_id" position="attributes" >
-                <attribute name="attrs" >{'required': [('customer','=', True)]}</attribute>
-            </field>
-            <field name="email" position="attributes" >
-                <attribute name="attrs" >{'required': [('customer','=', True)]}</attribute>
-            </field>
             <field name="supplier" position="after">
-                <field name="vendor_owner" attrs="{'required': [('supplier','=', True)]}"/>
+                <field name="vendor_owner" attrs="{'required': [('is_company','=',True),('supplier','=', True)]}"/>
             </field>
-            <field name="user_id" position="attributes" >
-                <attribute name="attrs" >{'required': [('customer','=', True)]}</attribute>
-            </field>
+
         </field>
     </record>
 
