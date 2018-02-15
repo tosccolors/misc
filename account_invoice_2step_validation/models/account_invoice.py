@@ -108,10 +108,22 @@ class Invoice(models.Model):
     # Invoice date is set either of Record's date or today's date
 
     # Overridden:
+#    @api.multi
+#    def invoice_validate(self):
+#        self.write({'state':'open'})
+#        return True
+
+    # Overridden:
     @api.multi
-    def invoice_validate(self):
-        self.write({'state':'open'})
-        return True
+    def action_invoice_paid(self):
+        # lots of duplicate calls to action_invoice_paid, so we remove those already paid
+        to_pay_invoices = self.filtered(lambda inv: inv.state != 'paid')
+        if to_pay_invoices.filtered(lambda inv: inv.state not in ['auth','verif']):
+            raise UserError(_('Invoice must be authorized and/or verified in order to set it to register payment.'))
+        if to_pay_invoices.filtered(lambda inv: not inv.reconciled):
+            raise UserError(
+                _('You cannot pay an invoice which is partially paid. You need to reconcile payment entries first.'))
+        return to_pay_invoices.write({'state': 'paid'})
 
     @api.multi
     def action_invoice_auth(self):
