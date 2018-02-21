@@ -113,12 +113,23 @@ class Invoice(models.Model):
 #        self.write({'state':'open'})
 #        return True
 
+    @api.multi
+    def _write(self, vals):
+        pre_not_reconciled = self.filtered(lambda invoice: not invoice.reconciled)
+        pre_reconciled = self - pre_not_reconciled
+        res = super(AccountInvoice, self)._write(vals)
+        reconciled = self.filtered(lambda invoice: invoice.reconciled)
+        not_reconciled = self - reconciled
+        (reconciled & pre_reconciled).filtered(lambda invoice: invoice.state in ['auth','verified']).action_invoice_paid()
+        (not_reconciled & pre_not_reconciled).filtered(lambda invoice: invoice.state == 'paid').action_invoice_re_open()
+        return res
+
     # Overridden:
     @api.multi
     def action_invoice_paid(self):
         # lots of duplicate calls to action_invoice_paid, so we remove those already paid
         to_pay_invoices = self.filtered(lambda inv: inv.state != 'paid')
-        if to_pay_invoices.filtered(lambda inv: inv.state not in ['auth','verif']):
+        if to_pay_invoices.filtered(lambda inv: inv.state not in ['auth','verified']):
             raise UserError(_('Invoice must be authorized and/or verified in order to set it to register payment.'))
         if to_pay_invoices.filtered(lambda inv: not inv.reconciled):
             raise UserError(
