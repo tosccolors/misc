@@ -117,7 +117,7 @@ class Invoice(models.Model):
     def _write(self, vals):
         pre_not_reconciled = self.filtered(lambda invoice: not invoice.reconciled)
         pre_reconciled = self - pre_not_reconciled
-        res = super(AccountInvoice, self)._write(vals)
+        res = super(Invoice, self)._write(vals)
         reconciled = self.filtered(lambda invoice: invoice.reconciled)
         not_reconciled = self - reconciled
         (reconciled & pre_reconciled).filtered(lambda invoice: invoice.state in ['auth','verified']).action_invoice_paid()
