@@ -120,7 +120,8 @@ class Invoice(models.Model):
         res = super(Invoice, self)._write(vals)
         reconciled = self.filtered(lambda invoice: invoice.reconciled)
         not_reconciled = self - reconciled
-        (reconciled & pre_reconciled).filtered(lambda invoice: invoice.state in ['auth','verified']).action_invoice_paid()
+        (reconciled & pre_reconciled).filtered(lambda invoice: invoice.state in ['auth','verified'] and
+                                                               invoice.type in ['in_invoice','in_refund']).action_invoice_paid()
         (not_reconciled & pre_not_reconciled).filtered(lambda invoice: invoice.state == 'paid').action_invoice_re_open()
         return res
 
@@ -129,8 +130,12 @@ class Invoice(models.Model):
     def action_invoice_paid(self):
         # lots of duplicate calls to action_invoice_paid, so we remove those already paid
         to_pay_invoices = self.filtered(lambda inv: inv.state != 'paid')
-        if to_pay_invoices.filtered(lambda inv: inv.state not in ['auth','verified']):
+        if to_pay_invoices.filtered(lambda inv: inv.state not in ['auth','verified'] and
+                                                               inv.type in ['in_invoice','in_refund']):
             raise UserError(_('Invoice must be authorized and/or verified in order to set it to register payment.'))
+        if to_pay_invoices.filtered(lambda inv: inv.state not in ['open'] and
+                                                               inv.type in ['out_invoice','out_refund']):
+            raise UserError(_('Invoice must be open in order to set it to register payment.'))
         if to_pay_invoices.filtered(lambda inv: not inv.reconciled):
             raise UserError(
                 _('You cannot pay an invoice which is partially paid. You need to reconcile payment entries first.'))
