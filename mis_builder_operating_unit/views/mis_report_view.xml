@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- MIS Report Instance Inherited-->
+        <record model="ir.ui.view" id="mis_report_instance_view_form">
+            <field name="name">mis.report.instance.view.form (mis_builder_analytic_filter)</field>
+            <field name="model">mis.report.instance</field>
+            <field name="inherit_id" ref="mis_builder.mis_report_instance_view_form" />
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="operating_unit_ids" widget="many2many_tags" groups="base.group_multi_company"/>
+                </field>
+            </field>
+         </record>
+    </data>
+</odoo>
