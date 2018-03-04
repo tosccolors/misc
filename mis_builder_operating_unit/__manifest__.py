@@ -16,7 +16,7 @@
         'views/account_view.xml',
         'views/mis_report_view.xml'
     ],
-    'installable': True,
+    'installable': False,
     'application': True,
     'license': 'AGPL-3',
 }

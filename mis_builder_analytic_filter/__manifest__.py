@@ -21,4 +21,5 @@
     'qweb': [
         'static/src/xml/mis_widget.xml'
     ],
+    'installable': False,
 }
