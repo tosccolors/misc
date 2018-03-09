@@ -7,8 +7,7 @@
 
     'summary': """
         This module facilitates splitting revenue to different Operating Units by
-        allowing different OU's on the invoice lines. and having another OU in the header, so accounts payable 
-        and tax is in another OU from the revenue lines""",
+        allowing different OU's on the invoice lines. """,
 
     'description': """
         This module facilitates splitting revenue to different Operating Units by
