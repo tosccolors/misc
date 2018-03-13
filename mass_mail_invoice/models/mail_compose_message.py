@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import _, api, fields, models, SUPERUSER_ID, tools
 from datetime import date
+from odoo.addons.queue_job.job import job, related_action
+from odoo.addons.queue_job.exception import FailedJobError
 
 class MailComposer(models.TransientModel):
     _inherit = 'mail.compose.message'
@@ -37,10 +39,14 @@ class MailComposer(models.TransientModel):
                         elif transmit_code == 'mail':
                             mail_inv_ids.append(invoice_obj.id)
             if len(mail_inv_ids) >= 1:
-                ctx.update({'active_ids':mail_inv_ids}),ctx.update({'active_id':mail_inv_ids[0]})
-                res = super(MailComposer, self.with_context(ctx)).send_mail()
-
+                self.with_delay(description='mass_mail_invoice').send_mail_job_queue(mail_inv_ids)
             if download_inv_ids:
                 res = self.env['report'].get_action(download_inv_ids, 'account.report_invoice')
 
         return res
+
+    @job
+    def send_mail_job_queue(self, mail_inv_ids):
+        ctx = self.env.context.copy()
+        ctx.update({'active_ids': mail_inv_ids}), ctx.update({'active_id': mail_inv_ids[0]})
+        self.with_context(ctx).send_mail(False)
