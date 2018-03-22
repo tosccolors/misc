@@ -37,21 +37,22 @@ class AccountInvoiceImport(models.TransientModel):
                 "This invoice has been created automatically via file import"))
             return True
         else:
-            return super(AccountInvoiceImport, self).create_invoice_action(parsed_inv=None)
+            return super(AccountInvoiceImport, self).create_invoice_action(parsed_inv)
 
     @api.model
     def _prepare_create_invoice_vals(self, parsed_inv, import_config=False):
         (vals, import_config) = super(AccountInvoiceImport, self)._prepare_create_invoice_vals(parsed_inv, import_config)
-        vals['company_id'] = self.company_id.id or False
-        vals['operating_unit_id'] = self.operating_unit_id.id or False
+        if self.task_id:
+            vals['company_id'] = self.company_id.id or False
+            vals['operating_unit_id'] = self.operating_unit_id.id or False
         return (vals, import_config)
 
     @api.model
     def invoice2data_parse_invoice(self, file_data):
         if not self.task_id:
-            return self.invoice2data_to_parsed_inv(super(AccountInvoiceImport, self).invoice2data_parse_invoice(file_data))
-        else:
+            return super(AccountInvoiceImport, self).invoice2data_parse_invoice(file_data)
 
+        else:
             logger.info('Trying to analyze PDF invoice with invoice2data lib')
             fd, file_name = mkstemp()
             try:
@@ -82,14 +83,14 @@ class AccountInvoiceImport(models.TransientModel):
             if not invoice2data_res:
                 invoice2data_res = {}
                 invoice2data_res['pdf_failed'] = 'This PDF invoice doesn\'t match a known template of the invoice2data lib.'
-            logger.info('Result of invoice2data PDF extraction: %s', invoice2data_res)
+            logger.info('Result of invoice2data batch PDF extraction: %s', invoice2data_res)
             return self.invoice2data_to_parsed_inv(invoice2data_res)
 
     @api.model
     def invoice2data_to_parsed_inv(self, invoice2data_res):
-        if self.task_id \
-        and invoice2data_res.get('pdf_failed', False) == 'PDF Invoice parsing failed.'\
-        or  invoice2data_res.get('pdf_failed', False) == 'This PDF invoice doesn\'t match a known template of the invoice2data lib.':
+        if self.task_id and (invoice2data_res.get('pdf_failed', False) == 'PDF Invoice parsing failed.'\
+                            or invoice2data_res.get('pdf_failed', False) == 'This PDF invoice doesn\'t match a known'
+                                                                            ' template of the invoice2data lib.'):
             parsed_inv = {
                     'partner': {
                         'name':'Dummy',
@@ -104,4 +105,5 @@ class AccountInvoiceImport(models.TransientModel):
 
         else:
             parsed_inv = super(AccountInvoiceImport, self).invoice2data_to_parsed_inv(invoice2data_res)
+
         return parsed_inv

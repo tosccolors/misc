@@ -23,6 +23,8 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).invoice_line_move_line_get()
         p = 0
         for line in self.invoice_line_ids:
+            if line.quantity == 0:
+                continue
             res[p]['operating_unit_id'] = line.operating_unit_id.id
             p += 1
         return res
