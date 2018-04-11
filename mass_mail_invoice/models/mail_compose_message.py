@@ -39,11 +39,20 @@ class MailComposer(models.TransientModel):
                         elif transmit_code == 'mail':
                             mail_inv_ids.append(invoice_obj.id)
             if len(mail_inv_ids) >= 1:
-                self.with_delay(description='mass_mail_invoice').send_mail_job_queue(mail_inv_ids)
+                self.with_delay(description='mass_mail_invoice')._split_jobs(mail_inv_ids)
             if download_inv_ids:
                 res = self.env['report'].get_action(download_inv_ids, 'account.report_invoice')
 
         return res
+
+    @job
+    def _split_jobs(self, inv_ids):
+        size = 50
+#        size = self.chunk_size
+#        eta = fields.Datetime.from_string(self.execution_datetime)
+        for x in xrange(0, len(inv_ids), size):
+            chunk = inv_ids[x:x + size]
+            self.with_delay().send_mail_job_queue(chunk)
 
     @job
     def send_mail_job_queue(self, mail_inv_ids):
