@@ -24,6 +24,14 @@ class AccountInvoiceImport(models.TransientModel):
     task_id = fields.Many2one('external.file.task', string="Import Task", readonly=True)
     company_id = fields.Many2one('res.company', )
     operating_unit_id = fields.Many2one('operating.unit', )
+    paired_id = fields.Many2one('ir.attachment.metadata', string='Paired Exported Attachment')
+
+    @api.multi
+    def parse_invoice(self):
+        parsed_inv = super(AccountInvoiceImport, self).parse_invoice()
+        if self.paired_id:
+            parsed_inv['attachments'][self.paired_id.name] = self.paired_id.datas
+        return parsed_inv
 
     @api.multi
     def create_invoice_action(self, parsed_inv=None):
