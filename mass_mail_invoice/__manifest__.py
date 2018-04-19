@@ -12,7 +12,8 @@
         ],
     'data': [
         "views/mass_mail_view.xml",
-        "views/account_invoice_view.xml"
+        "views/account_invoice_view.xml",
+        "views/partner.xml"
     ],
     'installable': True
 }
