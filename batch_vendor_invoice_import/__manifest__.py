@@ -128,6 +128,7 @@ To contribute to this module, please visit https://odoo-community.org.
             'views/account_invoice_import_config_view.xml',
             'views/task_view.xml',
             'views/attachment_view.xml',
+            'views/res_partner_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

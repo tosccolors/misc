@@ -6,3 +6,4 @@ from . import account_invoice_import
 from . import account_invoice_import_config
 from . import attachment
 from . import task
+from . import res_partner

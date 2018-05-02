@@ -36,7 +36,7 @@ class ResPartner(models.Model):
     fetchmail_invoice_default = fields.Boolean('Default invoice partner', help='Will be used as default partner when invoices are'
             'created from received mails')
 
-    @api.model
+    @api.constrains('fetchmail_invoice_default')
     def _check_fetchmail_invoice_default(self):
         for this_obj in self:
             if this_obj.fetchmail_invoice_default:
@@ -60,10 +60,5 @@ class ResPartner(models.Model):
         # If we get here, validation passed, only use exceptions for errors.
         return True
 
-#    _constraints = [
-#            (_check_fetchmail_invoice_default,
-#             'This partner can not be a default supplier for fetchmail',
-#             ['fetchmail_invoice_default']),
-#    ]
 
 
