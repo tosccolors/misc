@@ -36,7 +36,7 @@ class Task(models.Model):
             if not len(attach_ocr) == 1:
                 raise ValidationError(_(
                     "There has to be one and only one exported file relating to this Invoice: '%s',"
-                    " either there are no files or more than one" % filename))
+                    " either there are no files or more than one: %d" % (filename, len(attach_ocr))))
             vals_add = {
                 'company_id': attach_ocr.company_id.id,
                 'operating_unit_id': attach_ocr.operating_unit_id.id,
