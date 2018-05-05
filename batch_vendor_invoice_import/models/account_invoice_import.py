@@ -221,7 +221,8 @@ class AccountInvoiceImport(models.TransientModel):
             except Exception:
                 invoice2data_res = {}
                 invoice2data_res['pdf_failed'] = 'PDF Invoice parsing failed.'
-            if invoice2data_res == {}:
+            if not invoice2data_res:
+                invoice2data_res = {}
                 invoice2data_res['pdf_failed'] = 'This PDF invoice doesn\'t match a known template of the invoice2data lib.'
             logger.info('Result of invoice2data batch PDF extraction: %s', invoice2data_res)
             return self.invoice2data_to_parsed_inv(invoice2data_res)
