@@ -246,3 +246,51 @@ class AccountInvoiceImport(models.TransientModel):
             parsed_inv = super(AccountInvoiceImport, self).invoice2data_to_parsed_inv(invoice2data_res)
 
         return parsed_inv
+
+    @api.model
+    def pre_process_parsed_inv(self, parsed_inv):
+        if parsed_inv.get('pre-processed'):
+            return parsed_inv
+        parsed_inv['pre-processed'] = True
+        if 'chatter_msg' not in parsed_inv:
+            parsed_inv['chatter_msg'] = []
+        if parsed_inv.get('type') in ('out_invoice', 'out_refund'):
+            return parsed_inv
+        prec_ac = self.env['decimal.precision'].precision_get('Account')
+        prec_pp = self.env['decimal.precision'].precision_get('Product Price')
+        prec_uom = self.env['decimal.precision'].precision_get(
+            'Product Unit of Measure')
+        if 'amount_tax' in parsed_inv and 'amount_untaxed' not in parsed_inv:
+            parsed_inv['amount_untaxed'] = \
+                parsed_inv['amount_total'] - parsed_inv['amount_tax']
+        elif (
+                'amount_untaxed' not in parsed_inv and
+                'amount_tax' not in parsed_inv):
+            # For invoices that never have taxes
+            parsed_inv['amount_untaxed'] = parsed_inv['amount_total']
+        # Support the 2 refund methods; if method a) is used, we convert to
+        # method b)
+        if not parsed_inv.get('type'):
+            parsed_inv['type'] = 'in_invoice'  # default value
+        if (
+                parsed_inv['type'] == 'in_invoice' and
+                float_compare(
+                    parsed_inv['amount_total'], 0, precision_digits=prec_ac) < 0):
+            parsed_inv['type'] = 'in_refund'
+            for entry in ['amount_untaxed', 'amount_total']:
+                parsed_inv[entry] *= -1
+            for line in parsed_inv.get('lines', []):
+                line['qty'] *= -1
+                if 'price_subtotal' in line:
+                    line['price_subtotal'] *= -1
+        # Rounding work
+        for entry in ['amount_untaxed', 'amount_total']:
+            parsed_inv[entry] = float_round(
+                parsed_inv[entry], precision_digits=prec_ac)
+        for line in parsed_inv.get('lines', []):
+            line['qty'] = float_round(line['qty'], precision_digits=prec_uom)
+            line['price_unit'] = float_round(
+                line['price_unit'], precision_digits=prec_pp)
+        log_parsed_inv = {x: parsed_inv[x] for x in parsed_inv if x not in ('attachments')}
+        logger.debug('Result of invoice parsing parsed_inv=%s', log_parsed_inv)
+        return parsed_inv
