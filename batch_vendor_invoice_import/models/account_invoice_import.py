@@ -4,6 +4,7 @@
 
 from odoo import models, api, tools, fields, _
 from odoo.exceptions import UserError
+from odoo.tools import float_compare, float_round, float_is_zero
 import os
 from tempfile import mkstemp
 import pkg_resources
