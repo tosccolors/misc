@@ -37,7 +37,7 @@ class IrAttachmentMetadata(models.Model):
         if self.location_id == self.env.ref('batch_vendor_invoice_import.batch_invoice_import_location'):
             vals = {
                 'invoice_file': self.datas,
-                'invoice_filename': self.paired_id.name.replace('.pdf', '-ocr.pdf'),
+                'invoice_filename': self.paired_id.name.replace('.pdf', '-ocr.pdf') if '.pdf' in self.paired_id.name else self.paired_id.name.replace('.PDF', '-ocr.PDF'),
                 'task_id': self.task_id.id,
                 'company_id': self.company_id.id,
                 'operating_unit_id': self.operating_unit_id.id,
