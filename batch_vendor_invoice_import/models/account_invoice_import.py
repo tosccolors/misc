@@ -191,41 +191,48 @@ class AccountInvoiceImport(models.TransientModel):
     def invoice2data_parse_invoice(self, file_data):
         if not self.task_id:
             return super(AccountInvoiceImport, self).invoice2data_parse_invoice(file_data)
-
         else:
-            logger.info('Trying to analyze PDF invoice with invoice2data lib')
-            fd, file_name = mkstemp()
-            try:
-                os.write(fd, file_data)
-            finally:
-                os.close(fd)
-            # Transfer log level of Odoo to invoice2data
-            loggeri2data.setLevel(logger.getEffectiveLevel())
-            local_templates_dir = tools.config.get(
-                'invoice2data_templates_dir', False)
-            logger.debug(
-                'invoice2data local_templates_dir=%s', local_templates_dir)
-            templates = []
-            if local_templates_dir and os.path.isdir(local_templates_dir):
-                templates += read_templates(local_templates_dir)
-            exclude_built_in_templates = tools.config.get(
-                'invoice2data_exclude_built_in_templates', False)
-            if not exclude_built_in_templates:
-                templates += read_templates(
-                    pkg_resources.resource_filename('invoice2data', 'templates'))
-            logger.debug(
-                'Calling invoice2data.extract_data with templates=%s',
-                templates)
-            try:
-                invoice2data_res = extract_data(file_name, templates=templates)
-            except Exception:
-                invoice2data_res = {}
-                invoice2data_res['pdf_failed'] = 'PDF Invoice parsing failed.'
-            if not invoice2data_res:
-                invoice2data_res = {}
-                invoice2data_res['pdf_failed'] = 'This PDF invoice doesn\'t match a known template of the invoice2data lib.'
-            logger.info('Result of invoice2data batch PDF extraction: %s', invoice2data_res)
+            invoice2data_res = self.invoice2data_parse_invoice_batch(file_data)
+            if invoice2data_res.get('pdf_failed', False) and self.paired_id:
+                file_data_2 = self.paired_id.datas.decode('base64')
+                invoice2data_res = self.invoice2data_parse_invoice_batch(file_data_2)
             return self.invoice2data_to_parsed_inv(invoice2data_res)
+
+    @api.model
+    def invoice2data_parse_invoice_batch(self, file_data):
+        logger.info('Trying to analyze PDF invoice with invoice2data lib')
+        fd, file_name = mkstemp()
+        try:
+            os.write(fd, file_data)
+        finally:
+            os.close(fd)
+        # Transfer log level of Odoo to invoice2data
+        loggeri2data.setLevel(logger.getEffectiveLevel())
+        local_templates_dir = tools.config.get(
+            'invoice2data_templates_dir', False)
+        logger.debug(
+            'invoice2data local_templates_dir=%s', local_templates_dir)
+        templates = []
+        if local_templates_dir and os.path.isdir(local_templates_dir):
+            templates += read_templates(local_templates_dir)
+        exclude_built_in_templates = tools.config.get(
+            'invoice2data_exclude_built_in_templates', False)
+        if not exclude_built_in_templates:
+            templates += read_templates(
+                pkg_resources.resource_filename('invoice2data', 'templates'))
+        logger.debug(
+            'Calling invoice2data.extract_data with templates=%s',
+            templates)
+        try:
+            invoice2data_res = extract_data(file_name, templates=templates)
+        except Exception:
+            invoice2data_res = {}
+            invoice2data_res['pdf_failed'] = 'PDF Invoice parsing failed.'
+        if not invoice2data_res:
+            invoice2data_res = {}
+            invoice2data_res['pdf_failed'] = 'This PDF invoice doesn\'t match a known template of the invoice2data lib.'
+        logger.info('Result of invoice2data batch PDF extraction: %s', invoice2data_res)
+        return invoice2data_res
 
     @api.model
     def invoice2data_to_parsed_inv(self, invoice2data_res):
