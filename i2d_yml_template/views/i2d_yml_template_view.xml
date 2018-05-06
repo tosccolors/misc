@@ -28,8 +28,11 @@
                 </header>
                     <group colspan="4">
                         <group>
+                            <field name="partner_id" required="1"/>
                             <field name="name"/>
                             <field name="attach_meta_id" readonly="1"/>
+                            <field name="partner_vat" invisible="0"/>
+                            <field name="invoice_import_id" invisible="0"/>
                             <field name="regexr_iframe" invisible="0"/>
                         </group>
                         <group>

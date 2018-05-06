@@ -22,7 +22,7 @@ class I2dYmlTemplate(models.Model):
         string=_("Name"),
         required=True,
         translate=False,
-        readonly=False
+        readonly=False,
     )
     description = fields.Char(
         string=_("Description"),
@@ -38,6 +38,19 @@ class I2dYmlTemplate(models.Model):
         ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='new')
     attach_meta_id = fields.Many2one('ir.attachment.metadata', string='Attachment Meta ID')
     regexr_iframe = fields.Boolean('iFrame with regexpr hulp')
+    partner_id = fields.Many2one('res.partner', string='Vendor', domain=[('supplier','=',True),('is_company','=',True)])
+    partner_vat = fields.Char(related='partner_id.vat', string='VAT of Vendor' )
+    invoice_import_id = fields.Many2one('account.invoice.import.config', related='partner_id.invoice_import_id',)
+
+    @api.multi
+    @api.onchange('partner_id' )
+    def onchange_partner_id(self):
+        """
+        Update the following fields when the partner is changed:
+        - Name
+        """
+        if self.partner_id and not self.name:
+            self.name = self.partner_id.name
 
     @api.multi
     def action_export_filesystem(self):
