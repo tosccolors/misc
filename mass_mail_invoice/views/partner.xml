@@ -10,9 +10,6 @@
                 <xpath expr="//field[@name='customer_invoice_transmit_method_id']" position="attributes">
                     <attribute name="required">True</attribute>
                 </xpath>
-                <xpath expr="//field[@name='supplier_invoice_transmit_method_id']" position="attributes">
-                    <attribute name="required">True</attribute>
-                </xpath>
             </field>
         </record>
 
