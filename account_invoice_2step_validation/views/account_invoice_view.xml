@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="account.invoice_tree"/>
             <field name="arch" type="xml">
                 <tree position="attributes">
-                    <attribute name="colors">blue:state == 'draft';black:state in ('proforma','proforma2','auth', 'verified');green:state == 'paid';purple:state == 'open';gray:state == 'cancel'</attribute>
+                    <attribute name="colors">blue:state == 'draft';red:state == 'start_wf';black:state in ('proforma','proforma2','auth', 'verified');green:state == 'paid';purple:state == 'open';gray:state == 'cancel'</attribute>
                 </tree>
             </field>
         </record>
@@ -24,6 +24,13 @@
 		            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="replace">
                         <field name="account_id" groups="account.group_account_invoice,account_invoice_2step_validation.goedk_facturen"
                                 domain="[('company_id', '=', parent.company_id), ('internal_type', '=', 'other')]"/>
+                    </xpath>
+                    <xpath expr="//header/button[@name='action_invoice_open']" position="before">
+                        <button name="action_invoice_start_wf" states="draft" string="Start Workflow" type="object" class="oe_highlight" groups="account.group_account_invoice"/>
+                        <button name="action_wf_draft" states="start_wf" string="Back to Draft" type="object" class="oe_highlight" groups="account_invoice_2step_validation.authorize"/>
+                    </xpath>
+                    <xpath expr="//header/button[@name='action_invoice_open']" position="attributes">
+                            <attribute name="states" >start_wf</attribute>
                     </xpath>
                     <xpath expr="//header/button[@name='action_invoice_open']" position="after">
                         <button name="action_invoice_auth" states="open" string="Authorize" type="object" class="oe_highlight" groups="account_invoice_2step_validation.authorize"/>
@@ -41,7 +48,7 @@
                                 groups="account.group_account_invoice"/>
                     </xpath>
 		            <xpath expr="//header/field[@name='state']"	position="replace">
-                        <field name="state" widget="statusbar" statusbar_visible="draft,open,auth,verified,paid" statusbar_colors='{"proforma":"blue","proforma2":"blue"}'/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,start_wf,open,auth,verified,paid" statusbar_colors='{"proforma":"blue","proforma2":"blue"}'/>
                     </xpath>
                 </data>
             </field>
@@ -54,7 +61,7 @@
             <field name="inherit_id" ref="account_cancel.invoice_supplier_cancel_form_inherit"/>
             <field name="arch" type="xml">
                 <xpath expr="//button[@name='action_invoice_cancel']" position="replace">
-                    <button name="action_invoice_cancel" type="object" states="draft,proforma2,open,auth,verified" string="Cancel Invoice" groups="account.group_account_invoice"/>
+                    <button name="action_invoice_cancel" type="object" states="draft,start_wf,proforma2,open,auth,verified" string="Cancel Invoice" groups="account.group_account_invoice"/>
                 </xpath>
             </field>
         </record>
@@ -69,12 +76,13 @@
 		            <xpath expr="//search/filter[@name='invoices']" position="replace">
                         <filter name="auth2" string="to be Verified" domain="[('state','=','auth'),('verif_tresh_exceeded','=', True)]" help="Authorized Invoices greater than Verification treshold"/>
                         <filter name="verif" string="Verified" domain="[('state','=','verified')]" help="Verified Invoices"/>
-			            <filter name="invoices" string="Posted Invoices" domain="[('state','not in',['draft','cancel'])]" help="Proforma/Open/Authorized/Paid Invoices"/>
+			            <filter name="invoices" string="Posted Invoices" domain="[('state','not in',['draft', 'start_wf','cancel'])]" help="Proforma/Open/Authorized/Paid Invoices"/>
                     </xpath>
 		            <xpath expr="//search/filter[@name='unpaid']" position="replace">
-			            <filter name="unpaid" string="Unpaid" domain="[('state','in',['open','auth','verified'])]" help="Unpaid Invoices"/>
+			            <filter name="unpaid" string="Unpaid" domain="[('state','in',['start_wf','open','auth','verified'])]" help="Unpaid Invoices"/>
 		            </xpath>
                     <xpath expr="//search/filter[@name='draft']" position="after">
+                        <filter name="start_wf" string="Start Workflow" domain="[('state','=','start_wf')]" help="Invoices that were started in the workflow by accounting"/>
 			            <filter name="open" string="Open Invoices" domain="[('state','=','open')]" help="Open Invoices"/>
                         <filter name="auth" string="Authorized" domain="[('state','=','auth')]" help="Authorized Invoices"/>
                     </xpath>

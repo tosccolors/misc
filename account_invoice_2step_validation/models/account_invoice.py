@@ -57,6 +57,7 @@ class Invoice(models.Model):
 
     state = fields.Selection([
         ('draft','Draft'),
+        ('start_wf', 'Start Workflow'),
         ('proforma','Pro-forma'),
         ('proforma2','Pro-forma'),
         ('open','Open'),
@@ -66,6 +67,7 @@ class Invoice(models.Model):
         ('cancel','Cancelled'),
         ],'Status', index=True, readonly=True, track_visibility='onchange',
         help=' * The \'Draft\' status is used when a user is encoding a new and unconfirmed Invoice. \
+        \n* The \'Start Workflow\' when invoice is in Start Workflow status, invoice can be adapted by first validator and validated. \
         \n* The \'Pro-forma\' when invoice is in Pro-forma status,invoice does not have an invoice number. \
         \n* The \'Authorized\' status is used when invoice is already posted, but not yet confirmed for payment. \
         \n* The \'Verified\' status is used when invoice is already authorized, but not yet confirmed for payment, because it is of higher value than Company Verification treshold. \
@@ -103,15 +105,6 @@ class Invoice(models.Model):
                 inv._onchange_payment_term_date_invoice()
         return True
 
-    # -- added by deep
-    # no need to override the method: action_move_create
-    # Invoice date is set either of Record's date or today's date
-
-    # Overridden:
-#    @api.multi
-#    def invoice_validate(self):
-#        self.write({'state':'open'})
-#        return True
 
     @api.multi
     def _write(self, vals):
@@ -142,6 +135,20 @@ class Invoice(models.Model):
         return to_pay_invoices.write({'state': 'paid'})
 
     @api.multi
+    def action_invoice_open(self):
+        # lots of duplicate calls to action_invoice_open, so we remove those already open
+        to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
+        if to_open_invoices.filtered(lambda inv: inv.state not in ['proforma2', 'start_wf']):
+            raise UserError(_("Invoice must be in Start Workflow or Pro-forma state in order to validate it."))
+        to_open_invoices.action_date_assign()
+        to_open_invoices.action_move_create()
+        return to_open_invoices.invoice_validate()
+
+    @api.multi
+    def action_invoice_start_wf(self):
+        self.write({'state': 'start_wf'})
+
+    @api.multi
     def action_invoice_auth(self):
         self.write({'state':'auth'})
 
@@ -160,8 +167,8 @@ class Invoice(models.Model):
     #Overridden:
     @api.multi
     def action_invoice_cancel(self):
-        if self.filtered(lambda inv: inv.state not in ['proforma2', 'draft', 'open', 'auth']):
-            raise UserError(_("Invoice must be in draft, Pro-forma or open state in order to be cancelled."))
+        if self.filtered(lambda inv: inv.state not in ['proforma2', 'start_wf', 'draft', 'open', 'auth']):
+            raise UserError(_("Invoice must be in draft, Start Workflow, Pro-forma, open or Authorized state in order to be cancelled."))
         return self.action_cancel()
 
 
