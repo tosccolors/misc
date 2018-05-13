@@ -54,18 +54,22 @@ class Invoice(models.Model):
         else:
             self.verif_tresh_exceeded = False
 
-
-    state = fields.Selection([
-        ('draft','Draft'),
+    name = fields.Char(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    origin = fields.Char(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    reference=fields.Char(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    reference_type=fields.Selection(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    comment=fields.Text(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    state=fields.Selection([
+        ('draft', 'Draft'),
         ('start_wf', 'Start Workflow'),
-        ('proforma','Pro-forma'),
-        ('proforma2','Pro-forma'),
-        ('open','Open'),
-        ('auth','Authorized'),
-        ('verified','Verified'),
-        ('paid','Paid'),
-        ('cancel','Cancelled'),
-        ],'Status', index=True, readonly=True, track_visibility='onchange',
+        ('proforma', 'Pro-forma'),
+        ('proforma2', 'Pro-forma'),
+        ('open', 'Open'),
+        ('auth', 'Authorized'),
+        ('verified', 'Verified'),
+        ('paid', 'Paid'),
+        ('cancel', 'Cancelled'),
+    ], 'Status', index=True, readonly=True, track_visibility='onchange',
         help=' * The \'Draft\' status is used when a user is encoding a new and unconfirmed Invoice. \
         \n* The \'Start Workflow\' when invoice is in Start Workflow status, invoice can be adapted by first validator and validated. \
         \n* The \'Pro-forma\' when invoice is in Pro-forma status,invoice does not have an invoice number. \
@@ -74,22 +78,40 @@ class Invoice(models.Model):
         \n* The \'Open\' status is used when user create invoice,a invoice number is generated.Its in open status till user does not pay invoice. \
         \n* The \'Paid\' status is set automatically when the invoice is paid. Its related journal entries may or may not be reconciled. \
         \n* The \'Cancelled\' status is used when user cancel invoice.')
+    date_invoice=fields.Date(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    date_due=fields.Date(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    partner_id=fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    payment_term_id=fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    date=fields.Date(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    account_id=fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    invoice_line_ids = fields.One2many(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    tax_line_ids = fields.One2many(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    currency_id = fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    journal_id = fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    company_id = fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    partner_bank_id = fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    user_id = fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)],'open':[('readonly',False)]})
+    fiscal_position_id = fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    verif_tresh_exceeded = fields.Boolean(string='Verification Treshold',
+                                          store=True, readonly=True, compute='_compute_amount',
+                                          track_visibility='always', copy=False)
+    supplier_invoice_number = fields.Char(states={'draft': [('readonly', False)], 'start_wf': [('readonly', False)]})
+    payment_mode_id = fields.Many2one(states={'draft': [('readonly', False)], 'start_wf': [('readonly', False)]})
 
-    payment_term = fields.Many2one('account.payment.term', 'Payment Terms',readonly=True, states={'draft':[('readonly',False)]},
-        help="If you use payment terms, the due date will be computed automatically at the generation "\
-            "of accounting entries. If you keep the payment term and the due date empty, it means direct payment. "\
-            "The payment term may compute several due dates, for example 50% now, 50% in one month.",)# groups="account.group_account_invoice")
-
-    user_id = fields.Many2one('res.users', 'Salesperson', readonly=True, track_visibility='onchange', states={'draft':[('readonly',False)],'open':[('readonly',False)]})
-    reference = fields.Char('Invoice Reference', size=64, help="The partner reference of this invoice.",)# groups="account.group_account_invoice")
+    ## Necessary??
+#    payment_term = fields.Many2one('account.payment.term', 'Payment Terms',readonly=True, states={'draft':[('readonly',False)]},
+#        help="If you use payment terms, the due date will be computed automatically at the generation "\
+#            "of accounting entries. If you keep the payment term and the due date empty, it means direct payment. "\
+#            "The payment term may compute several due dates, for example 50% now, 50% in one month.",)# groups="account.group_account_invoice")
+#    user_id = fields.Many2one('res.users', 'Salesperson', readonly=True, track_visibility='onchange', states={'draft':[('readonly',False)],'open':[('readonly',False)]})
+#    reference = fields.Char('Invoice Reference', size=64, help="The partner reference of this invoice.",)# groups="account.group_account_invoice")
 
     # TODO: FIXME
     # amount_to_pay = fields.related('residual',
     #     type='float', string='Amount to be paid',
     #     help='The amount which should be paid at the current date.',)# groups="account.group_account_invoice")
 
-    verif_tresh_exceeded = fields.Boolean(string='Verification Treshold',
-        store=True, readonly=True, compute='_compute_amount', track_visibility='always', copy=False)
+
 
     @api.onchange('partner_id', 'company_id')
     def _onchange_partner_id(self):

@@ -5,10 +5,16 @@
         <record id="invoice_tree_auth" model="ir.ui.view">
             <field name="name">account.invoice.tree.inherit_auth</field>
             <field name="model">account.invoice</field>
-            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="inherit_id" ref="account.invoice_supplier_tree"/>
             <field name="arch" type="xml">
                 <tree position="attributes">
-                    <attribute name="colors">blue:state == 'draft';red:state == 'start_wf';black:state in ('proforma','proforma2','auth', 'verified');green:state == 'paid';purple:state == 'open';gray:state == 'cancel'</attribute>
+                    <!--attribute name="colors">blue:state == 'draft';red:state == 'start_wf';black:state in ('proforma','proforma2','auth', 'verified');
+                                                                                green:state == 'paid';purple:state == 'open';gray:state == 'cancel'</attribute-->
+                    <attribute name="decoration-info">state == 'draft'</attribute>
+                    <attribute name="decoration-muted">state == 'cancel'</attribute>
+                    <attribute name="decoration-warning">state == 'start_wf'</attribute>
+                    <attribute name="decoration-primary">state == 'open'</attribute>
+                    <attribute name="decoration-success">state == 'paid'</attribute>
                 </tree>
             </field>
         </record>
@@ -27,10 +33,12 @@
                     </xpath>
                     <xpath expr="//header/button[@name='action_invoice_open']" position="before">
                         <button name="action_invoice_start_wf" states="draft" string="Start Workflow" type="object" class="oe_highlight" groups="account.group_account_invoice"/>
-                        <button name="action_wf_draft" states="start_wf" string="Back to Draft" type="object" class="oe_highlight" groups="account_invoice_2step_validation.authorize"/>
                     </xpath>
                     <xpath expr="//header/button[@name='action_invoice_open']" position="attributes">
                             <attribute name="states" >start_wf</attribute>
+                    </xpath>
+                    <xpath expr="//header/button[@name='action_invoice_cancel']" position="attributes">
+                            <attribute name="states" >start_wf,draft,proforma2</attribute>
                     </xpath>
                     <xpath expr="//header/button[@name='action_invoice_open']" position="after">
                         <button name="action_invoice_auth" states="open" string="Authorize" type="object" class="oe_highlight" groups="account_invoice_2step_validation.authorize"/>

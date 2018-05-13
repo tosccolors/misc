@@ -26,6 +26,8 @@ Enchanced to add
 		         'account_voucher',
                  "account_payment_order", # -- added: deep
                  "project",
+                 'account_invoice_supplier_ref_unique',
+                 'account_payment_partner'
     ],
     'data' : ["security/account_security.xml",
 	          "views/res_company_view.xml",
