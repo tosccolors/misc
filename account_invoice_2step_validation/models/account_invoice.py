@@ -160,8 +160,10 @@ class Invoice(models.Model):
     def action_invoice_open(self):
         # lots of duplicate calls to action_invoice_open, so we remove those already open
         to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
-        if to_open_invoices.filtered(lambda inv: inv.state not in ['proforma2', 'start_wf']):
-            raise UserError(_("Invoice must be in Start Workflow or Pro-forma state in order to validate it."))
+        if to_open_invoices.filtered(lambda inv: (inv.type in ('in_invoice', 'in_refund') and inv.state != 'start_wf') or \
+                    (inv.type in ('out_invoice', 'out_refund') and inv.state not in ('draft', 'proforma', 'proforma2'))):
+            raise UserError(_("Invoice must be in Start Workflow in the case of a Vendor Invoice or "
+                              "Draft/Pro-forma state in the case of a Customer Invoice in order to validate it."))
         to_open_invoices.action_date_assign()
         to_open_invoices.action_move_create()
         return to_open_invoices.invoice_validate()
