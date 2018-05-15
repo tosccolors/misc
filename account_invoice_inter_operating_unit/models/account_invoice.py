@@ -136,6 +136,8 @@ class AccountInvoice(models.Model):
                 not float_compare(self.amount_total,
                                   dest_invoice.amount_total,
                                   precision_digits=precision)):
+            if dest_invoice.type in ('in_invoice', 'in_refund'):
+                dest_invoice.action_invoice_start_wf()
             dest_invoice.action_invoice_open()
         else:
             # Add warning in chatter if the total amounts are different
@@ -162,6 +164,8 @@ class AccountInvoice(models.Model):
             :rtype dest_journal_type : string
             :param dest_company : the company of the created invoice
             :rtype dest_company : res.company record
+            :param dest_ou : the operating unit of the created invoice
+            :rtype dest_ou : operating.unit record
         """
         self.ensure_one()
         # find the correct journal
@@ -206,6 +210,7 @@ class AccountInvoice(models.Model):
                 'payment_term_id', False),
             'date_due': self.date_due,
             'company_id': dest_ou.company_id.id,
+            'operating_unit_id': dest_ou.id,
             'partner_bank_id': dest_partner_data.get(
                 'partner_bank_id', False),
             'auto_generated': True,

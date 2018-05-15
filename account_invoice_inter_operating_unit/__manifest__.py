@@ -17,7 +17,7 @@
         'account_accountant',
         'onchange_helper',
         'account_operating_unit',
-
+        'account_invoice_2step_validation',
     ],
     'data': [
         'views/operating_unit_view.xml',
