@@ -24,7 +24,9 @@ class AccountInvoice(models.Model):
             # nor the invoices that were already validated in the past
             dest_ou = self.env['operating.unit']._find_operating_unit_from_partner(
                 src_invoice.partner_id.id)
-            if src_invoice.operating_unit_id == dest_ou.id:
+            if not dest_ou:
+                continue
+            if src_invoice.operating_unit_id.id == dest_ou.id:
                 raise UserError(_(
                     "You cannot create invoice with the same operating unit from "
                     "and to"))
