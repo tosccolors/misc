@@ -30,7 +30,8 @@ class Task(models.Model):
             }
         elif self.location_id == self.env.ref('batch_vendor_invoice_import.batch_invoice_import_location'):
             ## pairing with files sent to OCR
-            name = unidecode(filename.replace('.pdf', ''))
+            extension = self.filename.replace('*', '')
+            name = unidecode(filename.replace(extension, ''))
             attach_ocr = self.env['ir.attachment.metadata'].search([('internal_hash', '=', name),
                         ('location_id', '=', self.env.ref('batch_vendor_invoice_import.batch_invoice_import_export_location').id)])
             if not len(attach_ocr) == 1:
@@ -41,8 +42,6 @@ class Task(models.Model):
                 'company_id': attach_ocr.company_id.id,
                 'operating_unit_id': attach_ocr.operating_unit_id.id,
                 'paired_id': attach_ocr.id,
-#                'name': attach_ocr.filename,
-#                'datas_fname': filename,
             }
         vals.update(vals_add)
         return vals

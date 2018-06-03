@@ -50,142 +50,14 @@ class AccountInvoiceImport(models.TransientModel):
 
     @api.model
     def _prepare_create_invoice_vals(self, parsed_inv, import_config=False):
+        if self.task_id and self.company_id:
+            parsed_inv['partner']['company_id'] = self.company_id
+        (vals,config) = super(AccountInvoiceImport, self)._prepare_create_invoice_vals(self, parsed_inv, import_config=import_config)
         if self.task_id:
-            assert parsed_inv.get('pre-processed'), 'pre-processing not done'
-            aio = self.env['account.invoice']
-            ailo = self.env['account.invoice.line']
-            bdio = self.env['business.document.import']
-            rpo = self.env['res.partner']
-            company = self.company_id or False
-            start_end_dates_installed = hasattr(ailo, 'start_date') and \
-                                        hasattr(ailo, 'end_date')
-            if parsed_inv['type'] in ('out_invoice', 'out_refund'):
-                partner_type = 'customer'
-            else:
-                partner_type = 'supplier'
-            if parsed_inv['partner'].get('default_supplier') and parsed_inv['partner']['default_supplier'] == True and company:
-                partner = rpo.search([('default_supplier','=', True),('company_id','=', company.id)])
-            else:
-                partner = bdio._match_partner(
-                parsed_inv['partner'], parsed_inv['chatter_msg'],
-                partner_type=partner_type)
-            partner = partner.commercial_partner_id
-            currency = bdio._match_currency(
-                parsed_inv.get('currency'), parsed_inv['chatter_msg'])
-            vals = {
-                'partner_id': partner.id,
-                'currency_id': currency.id,
-                'type': parsed_inv['type'],
-                'company_id': company.id,
-                'origin': parsed_inv.get('origin'),
-                'reference': parsed_inv.get('invoice_number'),
-                'date_invoice': parsed_inv.get('date'),
-                'journal_id':
-                    aio.with_context(type=parsed_inv['type'])._default_journal().id,
-                'invoice_line_ids': [],
-            }
-            vals = aio.play_onchanges(vals, ['partner_id'])
-            vals['invoice_line_ids'] = []
-            # Force due date of the invoice
-            if parsed_inv.get('date_due'):
-                vals['date_due'] = parsed_inv.get('date_due')
-            # Bank info
-            if parsed_inv.get('iban'):
-                partner = rpo.browse(vals['partner_id'])
-                partner_bank = bdio._match_partner_bank(
-                    partner, parsed_inv['iban'], parsed_inv.get('bic'),
-                    parsed_inv['chatter_msg'], create_if_not_found=True)
-                if partner_bank:
-                    vals['partner_bank_id'] = partner_bank.id
-            config = import_config  # just to make variable name shorter
-            if not config:
-                config = partner.invoice_import2import_config()
-
-            if config['invoice_line_method'].startswith('1line'):
-                if config['invoice_line_method'] == '1line_no_product':
-                    if config['taxes']:
-                        invoice_line_tax_ids = [(6, 0, config['taxes'].ids)]
-                    else:
-                        invoice_line_tax_ids = False
-                    il_vals = {
-                        'account_id': config['account'].id,
-                        'invoice_line_tax_ids': invoice_line_tax_ids,
-                        'price_unit': parsed_inv.get('amount_untaxed'),
-                    }
-                elif config['invoice_line_method'] == '1line_static_product':
-                    product = config['product']
-                    il_vals = {'product_id': product.id, 'invoice_id': vals}
-                    il_vals = ailo.play_onchanges(il_vals, ['product_id'])
-                    il_vals.pop('invoice_id')
-                if config.get('label'):
-                    il_vals['name'] = config['label']
-                elif parsed_inv.get('description'):
-                    il_vals['name'] = parsed_inv['description']
-                elif not il_vals.get('name'):
-                    il_vals['name'] = _('MISSING DESCRIPTION')
-                self.set_1line_price_unit_and_quantity(il_vals, parsed_inv)
-                self.set_1line_start_end_dates(il_vals, parsed_inv)
-                vals['invoice_line_ids'].append((0, 0, il_vals))
-            elif config['invoice_line_method'].startswith('nline'):
-                if not parsed_inv.get('lines'):
-                    raise UserError(_(
-                        "You have selected a Multi Line method for this import "
-                        "but Odoo could not extract/read any XML file inside "
-                        "the PDF invoice."))
-                if config['invoice_line_method'] == 'nline_no_product':
-                    static_vals = {
-                        'account_id': config['account'].id,
-                    }
-                elif config['invoice_line_method'] == 'nline_static_product':
-                    sproduct = config['product']
-                    static_vals = {'product_id': sproduct.id, 'invoice_id': vals}
-                    static_vals = ailo.play_onchanges(static_vals, ['product_id'])
-                    static_vals.pop('invoice_id')
-                else:
-                    static_vals = {}
-                for line in parsed_inv['lines']:
-                    il_vals = static_vals.copy()
-                    if config['invoice_line_method'] == 'nline_auto_product':
-                        product = bdio._match_product(
-                            line['product'], parsed_inv['chatter_msg'],
-                            seller=partner)
-                        il_vals = {'product_id': product.id, 'invoice_id': vals}
-                        il_vals = ailo.play_onchanges(il_vals, ['product_id'])
-                        il_vals.pop('invoice_id')
-                    elif config['invoice_line_method'] == 'nline_no_product':
-                        taxes = bdio._match_taxes(
-                            line.get('taxes'), parsed_inv['chatter_msg'])
-                        il_vals['invoice_line_tax_ids'] = [(6, 0, taxes.ids)]
-                    if line.get('name'):
-                        il_vals['name'] = line['name']
-                    elif not il_vals.get('name'):
-                        il_vals['name'] = _('MISSING DESCRIPTION')
-                    if start_end_dates_installed:
-                        il_vals['start_date'] = \
-                            line.get('date_start') or parsed_inv.get('date_start')
-                        il_vals['end_date'] = \
-                            line.get('date_end') or parsed_inv.get('date_end')
-                    uom = bdio._match_uom(
-                        line.get('uom'), parsed_inv['chatter_msg'])
-                    il_vals['uom_id'] = uom.id
-                    il_vals.update({
-                        'quantity': line['qty'],
-                        'price_unit': line['price_unit'],  # TODO fix for tax incl
-                    })
-                    vals['invoice_line_ids'].append((0, 0, il_vals))
-            # Write analytic account + fix syntax for taxes
-            aacount_id = config.get('account_analytic') and \
-                         config['account_analytic'].id or False
-            if aacount_id:
-                for line in vals['invoice_line_ids']:
-                    line[2]['account_analytic_id'] = aacount_id
-            vals['company_id'] = company.id or False
+            vals['company_id'] = self.company_id.id or False
             vals['operating_unit_id'] = self.operating_unit_id.id or False
-            return (vals, config)
+        return (vals, config)
 
-        else:
-            return super(AccountInvoiceImport, self)._prepare_create_invoice_vals(parsed_inv,
-                                                                                         import_config)
 
     @api.model
     def invoice2data_parse_invoice(self, file_data):
@@ -303,3 +175,29 @@ class AccountInvoiceImport(models.TransientModel):
         log_parsed_inv = {x: parsed_inv[x] for x in parsed_inv if x not in ('attachments')}
         logger.debug('Result of invoice parsing parsed_inv=%s', log_parsed_inv)
         return parsed_inv
+
+
+
+class BusinessDocumentImport(models.AbstractModel):
+    _inherit = 'business.document.import'
+
+    @api.model
+    def _hook_match_partner(self, partner_dict, chatter_msg, domain, partner_type_label):
+        rpo = self.env['res.partner']
+        if partner_dict.get('default_supplier') and partner_dict[
+            'default_supplier'] == True and partner_dict.get('company_id'):
+            partner = rpo.search([('default_supplier', '=', True), ('company_id', '=', partner_dict['company_id'].id)])
+            return partner
+
+        if partner_dict.get('vat') and partner_dict.get('company_id'):
+            vat = partner_dict['vat'].replace(' ', '').upper()
+            # use base_vat_sanitized
+            company_id = partner_dict['company_id'].id
+            partner = rpo.search(
+                domain + [
+                    ('parent_id', '=', False),
+                    ('sanitized_vat', '=', vat),
+                    ('company_id','=', company_id)])
+            if not partner:
+                return False
+        return partner if len(partner) == 1 else partner[0]
