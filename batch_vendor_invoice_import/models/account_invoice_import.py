@@ -56,6 +56,8 @@ class AccountInvoiceImport(models.TransientModel):
         if self.task_id:
             vals['company_id'] = self.company_id.id or False
             vals['operating_unit_id'] = self.operating_unit_id.id or False
+            vals['journal_id'] = self.env['account.invoice'].with_context(type=parsed_inv['type'],
+                                                                          company_id=vals['company_id'])._default_journal().id
         return (vals, config)
 
 
