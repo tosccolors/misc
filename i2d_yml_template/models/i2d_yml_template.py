@@ -38,9 +38,8 @@ class I2dYmlTemplate(models.Model):
         ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='new')
     attach_meta_id = fields.Many2one('ir.attachment.metadata', string='Attachment Meta ID')
     regexr_iframe = fields.Boolean('iFrame with regexpr hulp')
-    partner_id = fields.Many2one('res.partner', string='Vendor', domain=[('supplier','=',True),('is_company','=',True)])
-    partner_vat = fields.Char(related='partner_id.vat', string='VAT of Vendor' )
-    invoice_import_id = fields.Many2one('account.invoice.import.config', related='partner_id.invoice_import_id',)
+    partner_ids = fields.One2many('yml.template.partner', 'template_id', string='Template Vendors', copy=True)
+
 
     @api.multi
     @api.onchange('partner_id' )
@@ -103,3 +102,14 @@ class I2dYmlTemplate(models.Model):
             if self.state == 'saved':
                 tmpl.action_delete()
         super(I2dYmlTemplate, self).unlink()
+
+
+class YmlTemplatePartner(models.Model):
+    _name = "yml.template.partner"
+
+    template_id = fields.Many2one('i2d.yml.template', string='Template')
+    partner_id = fields.Many2one('res.partner', string='Vendor',
+                                 domain=[('supplier', '=', True), ('is_company', '=', True)])
+    partner_vat = fields.Char(related='partner_id.vat', string='VAT of Vendor')
+    invoice_import_id = fields.Many2one('account.invoice.import.config', related='partner_id.invoice_import_id', )
+    company_id = fields.Many2one('res.company', related='partner_id.company_id', string='Partner Company')
