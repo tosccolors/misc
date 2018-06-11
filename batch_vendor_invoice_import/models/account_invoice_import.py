@@ -52,7 +52,7 @@ class AccountInvoiceImport(models.TransientModel):
     def _prepare_create_invoice_vals(self, parsed_inv, import_config=False):
         if self.task_id and self.company_id:
             parsed_inv['partner']['company_id'] = self.company_id
-        (vals,config) = super(AccountInvoiceImport, self)._prepare_create_invoice_vals(self, parsed_inv, import_config=import_config)
+        (vals, config) = super(AccountInvoiceImport, self)._prepare_create_invoice_vals(parsed_inv, import_config=import_config)
         if self.task_id:
             vals['company_id'] = self.company_id.id or False
             vals['operating_unit_id'] = self.operating_unit_id.id or False
