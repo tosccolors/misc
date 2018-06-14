@@ -53,11 +53,12 @@ class AccountInvoiceImport(models.TransientModel):
         if self.task_id and self.company_id:
             parsed_inv['partner']['company_id'] = self.company_id
         (vals, config) = super(AccountInvoiceImport, self)._prepare_create_invoice_vals(parsed_inv, import_config=import_config)
-        if self.task_id:
-            vals['company_id'] = self.company_id.id or False
+        if self.task_id and self.company_id:
+            aio = self.env['account.invoice']
+            vals['company_id'] = self.company_id.id
             vals['operating_unit_id'] = self.operating_unit_id.id or False
-            vals['journal_id'] = self.env['account.invoice'].with_context(type=parsed_inv['type'],
-                                                                          company_id=vals['company_id'])._default_journal().id
+            vals['journal_id'] = aio.with_context(type=parsed_inv['type'], company_id=vals['company_id'])._default_journal().id
+            vals = aio.play_onchanges(vals, ['partner_id', 'company_id'])
         return (vals, config)
 
 
