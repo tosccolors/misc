@@ -26,6 +26,7 @@ class AccountInvoiceImport(models.TransientModel):
     company_id = fields.Many2one('res.company', )
     operating_unit_id = fields.Many2one('operating.unit', )
     paired_id = fields.Many2one('ir.attachment.metadata', string='Paired Exported Attachment')
+    user_id = fields.Many2one(related='task_id.user_id',)
 
     @api.multi
     def parse_invoice(self):
@@ -50,17 +51,9 @@ class AccountInvoiceImport(models.TransientModel):
 
     @api.model
     def _prepare_create_invoice_vals(self, parsed_inv, import_config=False):
-        if self.task_id and self.company_id:
-            parsed_inv['partner']['company_id'] = self.company_id
-        (vals, config) = super(AccountInvoiceImport, self)._prepare_create_invoice_vals(parsed_inv, import_config=import_config)
-        if self.task_id and self.company_id:
-            aio = self.env['account.invoice']
-            vals['company_id'] = self.company_id.id
-            vals['operating_unit_id'] = self.operating_unit_id.id or False
-            vals['journal_id'] = aio.with_context(type=parsed_inv['type'], company_id=vals['company_id'])._default_journal().id
-            vals = aio.play_onchanges(vals, ['partner_id', 'company_id'])
-        return (vals, config)
-
+        if self.task_id and self.company_id and self.user_id:
+            return super(AccountInvoiceImport, self).sudo(self.user_id)._prepare_create_invoice_vals(parsed_inv, import_config=import_config)
+        return super(AccountInvoiceImport, self)._prepare_create_invoice_vals(parsed_inv, import_config=import_config)
 
     @api.model
     def invoice2data_parse_invoice(self, file_data):
@@ -181,7 +174,7 @@ class AccountInvoiceImport(models.TransientModel):
 
 
 
-class BusinessDocumentImport(models.AbstractModel):
+'''class BusinessDocumentImport(models.AbstractModel):
     _inherit = 'business.document.import'
 
     @api.model
@@ -203,4 +196,4 @@ class BusinessDocumentImport(models.AbstractModel):
                     ('company_id','=', company_id)])
             if not partner:
                 return False
-        return partner if len(partner) == 1 else partner[0]
+        return partner if len(partner) == 1 else partner[0]'''

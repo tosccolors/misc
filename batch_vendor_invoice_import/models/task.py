@@ -5,7 +5,7 @@
 import odoo
 from odoo import models, fields, api, _
 from odoo import tools
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 from unidecode import unidecode
 
 class Task(models.Model):
@@ -18,6 +18,21 @@ class Task(models.Model):
         translate=False,
         readonly=False
         )
+    user_id = fields.Many2one(
+        'res.users',
+        string='User Invoice Import',
+        required=False,
+        translate=False,
+        readonly=False
+        )
+
+    @api.multi
+    @api.constrains('user_id')
+    def _check_company(self):
+        for task in self:
+            if task.company_id and task.user_id and not task.company_id == task.user_id.company_id:
+                raise UserError(_('Configuration error!\nThe company\
+                        must be the same as the company of the user in the task.'))
 
     @api.multi
     def _prepare_attachment_vals(self, datas, filename, md5_datas):
