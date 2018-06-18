@@ -174,26 +174,13 @@ class AccountInvoiceImport(models.TransientModel):
 
 
 
-'''class BusinessDocumentImport(models.AbstractModel):
+class BusinessDocumentImport(models.AbstractModel):
     _inherit = 'business.document.import'
 
     @api.model
     def _hook_match_partner(self, partner_dict, chatter_msg, domain, partner_type_label):
         rpo = self.env['res.partner']
-        if partner_dict.get('default_supplier') and partner_dict[
-            'default_supplier'] == True and partner_dict.get('company_id'):
-            partner = rpo.search([('default_supplier', '=', True), ('company_id', '=', partner_dict['company_id'].id)])
+        if partner_dict.get('default_supplier') and partner_dict['default_supplier'] == True :
+            partner = rpo.search([('default_supplier', '=', True)])
             return partner
-
-        if partner_dict.get('vat') and partner_dict.get('company_id'):
-            vat = partner_dict['vat'].replace(' ', '').upper()
-            # use base_vat_sanitized
-            company_id = partner_dict['company_id'].id
-            partner = rpo.search(
-                domain + [
-                    ('parent_id', '=', False),
-                    ('sanitized_vat', '=', vat),
-                    ('company_id','=', company_id)])
-            if not partner:
-                return False
-        return partner if len(partner) == 1 else partner[0]'''
+        return False
