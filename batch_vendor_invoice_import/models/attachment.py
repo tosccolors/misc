@@ -37,18 +37,17 @@ class IrAttachmentMetadata(models.Model):
         """
         Run the process for each attachment metadata
         """
-        other_recordset = self.filtered(lambda a: not a.location_id == self.env.ref('batch_vendor_invoice_import.batch_invoice_import_location'))
-        biil_recordset = self - other_recordset
+        biil_recordset = self.filtered(lambda a: a.location_id == self.env.ref('batch_vendor_invoice_import.batch_invoice_import_location'))
+        other_recordset = self - biil_recordset
+        import pdb; pdb.set_trace()
         super(IrAttachmentMetadata, other_recordset).run()
         for attachment in biil_recordset:
-            ctx = self._context.copy()
-            if self.paired_id.task_id.user_id:
-                user_id = self.paired_id.task_id.user_id.id
-            elif self.task_id.user_id:
-                user_id = self.task_id.user_id.id
+            if attachment.paired_id.task_id.user_id:
+                user_id = attachment.paired_id.task_id.user_id.id
+            elif attachment.task_id.user_id:
+                user_id = attachment.task_id.user_id.id
             else:
                 user_id = self.env.uid
-            ctx.update({'uid': user_id})
             with api.Environment.manage():
                 with odoo.registry(self.env.cr.dbname).cursor() as new_cr:
                     new_env = api.Environment(
