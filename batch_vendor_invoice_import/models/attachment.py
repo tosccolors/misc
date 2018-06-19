@@ -25,11 +25,54 @@ class IrAttachmentMetadata(models.Model):
         readonly=True
     )
     paired_id = fields.Many2one('ir.attachment.metadata', string='Paired Exported Attachment')
+    user_id = fields.Many2one(related='task_id.user_id', relation='res.users', string='User from Task')
 
     _sql_constraints = [
         ('hash_uniq', 'unique(internal_hash, location_id)',
          _('Hash of Invoice must be unique per import/export location!')),
     ]
+
+    @api.multi
+    def run(self):
+        """
+        Run the process for each attachment metadata
+        """
+        other_recordset = self.filtered(lambda a: not a.location_id == self.env.ref('batch_vendor_invoice_import.batch_invoice_import_location'))
+        biil_recordset = self - other_recordset
+        super(IrAttachmentMetadata, other_recordset).run()
+        for attachment in biil_recordset:
+            ctx = self._context.copy()
+            if self.paired_id.task_id.user_id:
+                user_id = self.paired_id.task_id.user_id.id
+            elif self.task_id.user_id:
+                user_id = self.task_id.user_id.id
+            else:
+                user_id = self.env.uid
+            ctx.update({'uid': user_id})
+            with api.Environment.manage():
+                with odoo.registry(self.env.cr.dbname).cursor() as new_cr:
+                    new_env = api.Environment(
+                        new_cr, user_id, self.env.context)
+                    attach = attachment.with_env(new_env)
+                    try:
+                        attach._run()
+                    except Exception, e:
+                        attach.env.cr.rollback()
+                        _logger.exception(e)
+                        attach.write(
+                            {
+                                'state': 'failed',
+                                'state_message': e,
+                            })
+                        attach.env.cr.commit()
+                    else:
+                        vals = {
+                            'state': 'done',
+                            'sync_date': fields.Datetime.now(),
+                        }
+                        attach.write(vals)
+                        attach.env.cr.commit()
+        return True
 
     @api.multi
     def _run(self):

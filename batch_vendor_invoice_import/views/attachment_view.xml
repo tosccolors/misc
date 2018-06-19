@@ -7,6 +7,8 @@
         <field name="arch" type="xml">
             <field name="company_id" position="after">
                 <field name="operating_unit_id"/>
+                <field name="user_id"/>
+                <field name="task_id"/>
             </field>
         </field>
     </record>
@@ -18,6 +20,7 @@
             <field name="create_date" position="after">
                     <field name="company_id" />
                     <field name="operating_unit_id"/>
+                    <field name="user_id"/>
             </field>
         </field>
     </record>
@@ -28,6 +31,7 @@
         <field name="arch" type="xml">
                 <filter name="my_documents_filter" position="after">
                     <filter name="import_invoices" string="Import Invoices" domain="[('location_id', '=', %(batch_vendor_invoice_import.batch_invoice_import_location)d)]"/>
+                    <filter name="import_export_invoices" string="Import/Export Invoices" domain="[('location_id', '=', %(batch_vendor_invoice_import.batch_invoice_import_export_location)d)]"/>
                 </filter>
                 <field name="type" position="after">
                     <field name="task_id" />

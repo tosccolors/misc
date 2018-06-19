@@ -49,11 +49,6 @@ class AccountInvoiceImport(models.TransientModel):
         else:
             return super(AccountInvoiceImport, self).create_invoice_action(parsed_inv)
 
-    @api.model
-    def _prepare_create_invoice_vals(self, parsed_inv, import_config=False):
-        if self.task_id and self.company_id and self.user_id:
-            return super(AccountInvoiceImport, self).sudo(self.user_id)._prepare_create_invoice_vals(parsed_inv, import_config=import_config)
-        return super(AccountInvoiceImport, self)._prepare_create_invoice_vals(parsed_inv, import_config=import_config)
 
     @api.model
     def invoice2data_parse_invoice(self, file_data):
@@ -176,6 +171,7 @@ class AccountInvoiceImport(models.TransientModel):
 
 class BusinessDocumentImport(models.AbstractModel):
     _inherit = 'business.document.import'
+
 
     @api.model
     def _hook_match_partner(self, partner_dict, chatter_msg, domain, partner_type_label):

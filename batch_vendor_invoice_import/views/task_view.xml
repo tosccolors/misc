@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <record id="view_location_form" model="ir.ui.view">
+        <field name="model">external.file.location</field>
+        <field name="inherit_id" ref="external_file_location.view_location_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group/field/tree/field[@name='company_id']" position="after" >
+                 <field name="user_id" />
+            </xpath>
+        </field>
+    </record>
+
     <record id="view_task_form" model="ir.ui.view">
         <field name="model">external.file.task</field>
         <field name="inherit_id" ref="external_file_location.view_task_form"/>
@@ -14,16 +24,14 @@
         </field>
     </record>
 
+
     <record id="view_task_tree" model="ir.ui.view">
         <field name="model">external.file.task</field>
+        <field name="inherit_id" ref="external_file_location.view_task_tree"/>
         <field name="arch" type="xml">
-            <tree name="Tasks">
-                <field name="name" select="1"/>
-                <field name="method_type"/>
-                <field name="filename"/>
-                <field name="filepath"/>
-                <field name="user_id"/>
-            </tree>
+                <field name="company_id" position="after">
+                    <field name="user_id" />
+                </field>
         </field>
     </record>
 
