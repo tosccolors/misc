@@ -39,7 +39,6 @@ class IrAttachmentMetadata(models.Model):
         """
         biil_recordset = self.filtered(lambda a: a.location_id == self.env.ref('batch_vendor_invoice_import.batch_invoice_import_location'))
         other_recordset = self - biil_recordset
-        import pdb; pdb.set_trace()
         super(IrAttachmentMetadata, other_recordset).run()
         for attachment in biil_recordset:
             if attachment.paired_id.task_id.user_id:
