@@ -82,8 +82,8 @@ class IrAttachmentMetadata(models.Model):
                 'invoice_file': self.datas,
                 'invoice_filename': self.paired_id.name.replace(ee, '-ocr' + extension),
                 'task_id': self.task_id.id,
-                'company_id': self.company_id.id,
-                'operating_unit_id': self.operating_unit_id.id,
+                'company_id': self.paired_id.company_id.id,
+                'operating_unit_id': self.paired_id.operating_unit_id.id,
                 'paired_id': self.paired_id.id,
             }
             self.env['account.invoice.import'].create(vals).create_invoice_action()

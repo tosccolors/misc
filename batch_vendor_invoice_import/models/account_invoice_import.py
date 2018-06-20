@@ -49,6 +49,12 @@ class AccountInvoiceImport(models.TransientModel):
         else:
             return super(AccountInvoiceImport, self).create_invoice_action(parsed_inv)
 
+    @api.model
+    def _prepare_create_invoice_vals(self, parsed_inv, import_config=False):
+        (vals, config) = super(AccountInvoiceImport, self)._prepare_create_invoice_vals(parsed_inv, import_config=import_config)
+        if self.task_id:
+            vals['operating_unit_id'] = self.operating_unit_id.id or False
+        return (vals, config)
 
     @api.model
     def invoice2data_parse_invoice(self, file_data):
