@@ -203,9 +203,12 @@ class Invoice(models.Model):
         result_payorder_ids = []
         action_payment_type = 'debit'
         for inv in self:
-            if inv.state != 'verified' and not (inv.state == 'auth' and inv.verif_tresh_exceeded == False):
+            if inv.type in ['in_invoice','in_refund'] and inv.state != 'verified' and not (inv.state == 'auth' and inv.verif_tresh_exceeded == False):
                 raise UserError(_(
-                    "The invoice %s is not in auth or verified state") % inv.number)
+                    "The Supplier invoice %s is not in auth or verified state") % inv.number)
+            if inv.type in ['out_invoice','out_refund'] and inv.state != 'open':
+                raise UserError(_(
+                    "The Customer invoice %s is not in open state") % inv.number)
             if not inv.payment_mode_id:
                 raise UserError(_(
                     "No Payment Mode on invoice %s") % inv.number)
