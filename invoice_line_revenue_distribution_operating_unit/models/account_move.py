@@ -46,7 +46,7 @@ class AccountMoveLine(models.Model):
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-
+    #override post(), when first post, nothing extra. When move.name exists, it cannot be first posting. Then 'OU-balancing' lines are unlinked.
     @api.multi
     def post(self):
         for move in self:
