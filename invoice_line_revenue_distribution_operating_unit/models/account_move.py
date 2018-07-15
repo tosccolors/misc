@@ -18,8 +18,7 @@ class AccountMoveLine(models.Model):
             if line.analytic_account_id and line.analytic_account_id.linked_operating_unit:
                 line.operating_unit_id = line.analytic_account_id.operating_unit_ids.id
             elif not line.operating_unit_id:
-                line.operating_unit_id = self.env['res.users'].\
-                                            operating_unit_default_get(self._uid)
+                line.operating_unit_id = self.env['res.users'].operating_unit_default_get(self._uid)
 
     operating_unit_id = fields.Many2one('operating.unit', compute='_compute_operating_unit',
                                         string='Operating Unit', store=True)
