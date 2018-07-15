@@ -11,16 +11,14 @@ from odoo.exceptions import UserError
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
-    @api.depends('analytic_account_id', 'operating_unit_id')
+    @api.onchange('analytic_account_id')
     @api.multi
-    def _compute_operating_unit(self):
-        for line in self:
-            if line.analytic_account_id and line.analytic_account_id.linked_operating_unit:
-                line.operating_unit_id = line.analytic_account_id.operating_unit_ids.id
-            elif not line.operating_unit_id:
-                line.operating_unit_id = self.env['res.users'].operating_unit_default_get(self._uid)
+    def onchange_operating_unit(self):
+            if self.analytic_account_id and self.analytic_account_id.linked_operating_unit:
+                self.operating_unit_id = self.analytic_account_id.operating_unit_ids.id
 
-    operating_unit_id = fields.Many2one('operating.unit', compute='_compute_operating_unit',
+
+    operating_unit_id = fields.Many2one('operating.unit',
                                         string='Operating Unit', store=True)
 
 
@@ -28,13 +26,36 @@ class AccountMoveLine(models.Model):
     @api.constrains('operating_unit_id', 'analytic_account_id')
     def _check_analytic_operating_unit(self):
         for rec in self:
+            if (rec.analytic_account_id
+                and rec.analytic_account_id.linked_operating_unit
+                and rec.operating_unit_id
+                and not rec.operating_unit_id.id == rec.analytic_account_id.operating_unit_ids.id):
+                    raise UserError(_('The Operating Unit in the'
+                                  ' Move Line must be the defined linked'
+                                  'Operating Unit in the Analytic Account'))
             if (rec.operating_unit_id
                 and rec.analytic_account_id
                 and not rec.analytic_account_id.linked_operating_unit
                 and not len(rec.analytic_account_id.operating_unit_ids) == 0
                 and not rec.operating_unit_id in rec.analytic_account_id.operating_unit_ids):
-                raise UserError(_('The Operating Unit in the'
+                    raise UserError(_('The Operating Unit in the'
                                   ' Move Line must be in the defined '
                                   'Operating Units in the Analytic Account'
                                   ' or no OU\'s must be defined .'))
+
+class AccountMove(models.Model):
+    _inherit = "account.move"
+
+
+    @api.multi
+    def post(self):
+        for move in self:
+            if not move.company_id.ou_is_self_balanced or not move.name:
+                continue
+            for line in move.line_ids:
+                if line.name == 'OU-Balancing':
+                    line.with_context(wip=True).unlink()
+        res = super(AccountMove, self).post()
+        return res
+
 
