@@ -11,12 +11,12 @@ from odoo.exceptions import UserError
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
-    @api.depends('account_analytic_id', 'operating_unit_id')
+    @api.depends('analytic_account_id', 'operating_unit_id')
     @api.multi
     def _compute_operating_unit(self):
         for line in self:
-            if line.account_analytic_id and line.account_analytic_id.linked_operating_unit:
-                line.operating_unit_id = line.account_analytic_id.operating_unit_ids.id
+            if line.analytic_account_id and line.analytic_account_id.linked_operating_unit:
+                line.operating_unit_id = line.analytic_account_id.operating_unit_ids.id
             elif not line.operating_unit_id:
                 line.operating_unit_id = self.env['res.users'].\
                                             operating_unit_default_get(self._uid)
@@ -26,14 +26,14 @@ class AccountMoveLine(models.Model):
 
 
     @api.multi
-    @api.constrains('operating_unit_id', 'account_analytic_id')
+    @api.constrains('operating_unit_id', 'analytic_account_id')
     def _check_analytic_operating_unit(self):
         for rec in self:
             if (rec.operating_unit_id
-                and rec.account_analytic_id
-                and not rec.account_analytic_id.linked_operating_unit
-                and not len(rec.account_analytic_id.operating_unit_ids) == 0
-                and not rec.operating_unit_id in rec.account_analytic_id.operating_unit_ids):
+                and rec.analytic_account_id
+                and not rec.analytic_account_id.linked_operating_unit
+                and not len(rec.analytic_account_id.operating_unit_ids) == 0
+                and not rec.operating_unit_id in rec.analytic_account_id.operating_unit_ids):
                 raise UserError(_('The Operating Unit in the'
                                   ' Move Line must be in the defined '
                                   'Operating Units in the Analytic Account'
