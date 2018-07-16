@@ -19,14 +19,12 @@ class AccountCutoff(models.Model):
         query = ("""DELETE FROM account_cutoff_line
                     WHERE parent_id = %s;
         """)
-        self.env.cr.execute(query, (self.id))
+        self.env.cr.execute(query, [self.id])
         if self.forecast:
             domain = [
                 ('start_date', '<=', self.end_date),
                 ('end_date', '>=', self.start_date),
                 ('journal_id', 'in', self.source_journal_ids.ids),
-                ('company_id', '=', self.company_id.id),
-                ('cutoff_type', '=', self.type),
                 ]
         else:
             domain = [
@@ -34,10 +32,9 @@ class AccountCutoff(models.Model):
                 ('journal_id', 'in', self.source_journal_ids.ids),
                 ('end_date', '>', cutoff_date_str),
                 ('date', '<=', cutoff_date_str),
-                ('company_id', '=', self.company_id.id),
-                ('cutoff_type', '=', self.type),
                 ]
-        where = self._where_calc(self, domain, active_test=True)
+        import pdb; pdb.set_trace()
+        where = self.env['account.move.line']._where_calc(domain, active_test=True)
         from_clause, where_clause, where_clause_params = where.get_sql()
         where_str = where_clause and (" WHERE %s" % where_clause) or ''
         sql_query = ("""
@@ -69,7 +66,7 @@ class AccountCutoff(models.Model):
                               ELSE a.cutoff_account_id
                             END AS cutoff_account_id,
                             l.analytic_account_id AS analytic_account_id, 
-                            l.end_date - l.start_date +1 AS total_days,
+                            l.end_date - l.start_date + 1 AS total_days,
                             CASE
                               {1}
                             END AS prepaid_days,
@@ -79,7 +76,7 @@ class AccountCutoff(models.Model):
                     FROM           
                             account_move_line l
                                     LEFT JOIN account_cutoff_mapping a ON (a.account_id = l.account_id)
-                            WHERE {3}                
+                    WHERE {3}{4};                
         """.format(self.id,
                    "WHEN l.start_date > %s THEN total_days ELSE l.end_date - %s" % self.cutoff_date if not self.forecast
                    else "WHEN l.start_date < %s AND l.end_date > %s THEN total_days - (%s - start_date) - (end_date - %s)"
@@ -88,7 +85,15 @@ class AccountCutoff(models.Model):
                         % (self.start_date, self.end_date, self.start_date, self.end_date, self.start_date, self.end_date, self.end_date,
                            self.start_date, self.end_date),
                    self.company_currency_id.id,
-                   where_str
+                   "AND l.start_date != %s "
+                   "AND l.journal_id in %s "
+                   "AND l.end_date > %s "
+                   "AND l.date <= %s" % (False, self.source_journal_ids.ids, cutoff_date_str, cutoff_date_str) if not self.forecast
+                   else
+                    "AND l.start_date <= %s "
+                    "AND l.journal_id in %s "
+                    "AND l.end_date >= %s " % (self.end_date, self.source_journal_ids.ids, self.start_date),
+                    "AND a.company_id = %s AND a.cutoff_type = %s" % (self.company_id.id, self.type),
                    ))
         self.env.cr.execute(query, locals())
         return True
