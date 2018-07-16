@@ -85,12 +85,12 @@ class AccountCutoff(models.Model):
                         % (self.start_date, self.end_date, self.start_date, self.end_date, self.start_date, self.end_date, self.end_date,
                            self.start_date, self.end_date),
                    self.company_currency_id.id,
-                   "AND l.start_date != %s "
+                   "l.start_date != %s "
                    "AND l.journal_id in %s "
                    "AND l.end_date > %s "
                    "AND l.date <= %s" % (False, self.source_journal_ids.ids, cutoff_date_str, cutoff_date_str) if not self.forecast
                    else
-                    "AND l.start_date <= %s "
+                    "l.start_date <= %s "
                     "AND l.journal_id in %s "
                     "AND l.end_date >= %s " % (self.end_date, self.source_journal_ids.ids, self.start_date),
                     "AND a.company_id = %s AND a.cutoff_type = %s" % (self.company_id.id, self.type),
