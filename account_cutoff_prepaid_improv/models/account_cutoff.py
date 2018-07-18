@@ -20,23 +20,6 @@ class AccountCutoff(models.Model):
                     WHERE parent_id = %s;
         """)
         self.env.cr.execute(query, [self.id])
-        if self.forecast:
-            domain = [
-                ('start_date', '<=', self.end_date),
-                ('end_date', '>=', self.start_date),
-                ('journal_id', 'in', self.source_journal_ids.ids),
-                ]
-        else:
-            domain = [
-                ('start_date', '!=', False),
-                ('journal_id', 'in', self.source_journal_ids.ids),
-                ('end_date', '>', cutoff_date_str),
-                ('date', '<=', cutoff_date_str),
-                ]
-        import pdb; pdb.set_trace()
-        where = self.env['account.move.line']._where_calc(domain, active_test=True)
-        from_clause, where_clause, where_clause_params = where.get_sql()
-        where_str = where_clause and (" WHERE %s" % where_clause) or ''
         sql_query = ("""
                     INSERT into account_cutoff_line (
                                                     parent_id, 
@@ -78,10 +61,10 @@ class AccountCutoff(models.Model):
                                     LEFT JOIN account_cutoff_mapping a ON (a.account_id = l.account_id)
                     WHERE {3}{4};                
         """.format(self.id,
-                   "WHEN l.start_date > %s THEN total_days ELSE l.end_date - %s" % self.cutoff_date if not self.forecast
-                   else "WHEN l.start_date < %s AND l.end_date > %s THEN total_days - (%s - start_date) - (end_date - %s)"
-                        "WHEN l.start_date > %s AND l.end_date > %s THEN total_days - (end_date - %s)"
-                        "WHEN l.start_date > %s AND l.end_date < %s THEN total_days"
+                   'WHEN l.start_date > %s THEN total_days ELSE l.end_date - %s' % self.cutoff_date if not self.forecast
+                   else 'WHEN l.start_date < %s AND l.end_date > %s THEN total_days - (%s - start_date) - (end_date - %s) '
+                        'WHEN l.start_date > %s AND l.end_date > %s THEN total_days - (end_date - %s) '
+                        'WHEN l.start_date > %s AND l.end_date < %s THEN total_days'
                         % (self.start_date, self.end_date, self.start_date, self.end_date, self.start_date, self.end_date, self.end_date,
                            self.start_date, self.end_date),
                    self.company_currency_id.id,
