@@ -35,7 +35,11 @@ class AccountCutoff(models.Model):
                                                     prepaid_days, 
                                                     amount, 
                                                     currency_id, 
-                                                    cutoff_amount
+                                                    cutoff_amount,
+                                                    create_uid,
+                                                    create_date,
+                                                    write_uid,
+                                                    write_date
                                                     )
                     SELECT {0} AS parent_id,
                             l.id AS move_line_id, 
@@ -55,7 +59,11 @@ class AccountCutoff(models.Model):
                             END AS prepaid_days,
                             l.credit - l.debit AS amount, 
                             {2} AS currency_id, 
-                            (l.debit - l.credit) * prepaid_days / total_days AS cutoff_amount 
+                            (l.debit - l.credit) * prepaid_days / total_days AS cutoff_amount,
+                            {5} as create_uid,
+                            {6} as create_date,
+                            {5} as write_uid,
+                            {6} as write_date
                     FROM           
                             account_move_line l
                                     LEFT JOIN account_cutoff_mapping a ON (a.account_id = l.account_id)
@@ -77,6 +85,9 @@ class AccountCutoff(models.Model):
                     "AND l.journal_id in %s "
                     "AND l.end_date >= %s " % (self.end_date, self.source_journal_ids.ids, self.start_date),
                     "AND a.company_id = %s AND a.cutoff_type = %s" % (self.company_id.id, self.type),
+                   self._uid,
+                   str(fields.Datetime.to_string(fields.datetime.now()))
+
                    ))
         self.env.cr.execute(query, locals())
         return True
