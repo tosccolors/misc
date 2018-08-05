@@ -26,6 +26,7 @@ class IrAttachmentMetadata(models.Model):
     )
     paired_id = fields.Many2one('ir.attachment.metadata', string='Paired Exported Attachment')
     user_id = fields.Many2one(related='task_id.user_id', relation='res.users', string='User from Task')
+    parsed_invoice_text = fields.Text('Parsed Invoice Text')
 
     _sql_constraints = [
         ('hash_uniq', 'unique(internal_hash, location_id)',

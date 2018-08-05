@@ -9,6 +9,7 @@
                 <field name="operating_unit_id"/>
                 <field name="user_id"/>
                 <field name="task_id"/>
+                <field name="parsed_invoice_text"/>
             </field>
         </field>
     </record>
