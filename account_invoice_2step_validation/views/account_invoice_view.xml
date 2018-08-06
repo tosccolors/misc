@@ -58,6 +58,9 @@
 		            <xpath expr="//header/field[@name='state']"	position="replace">
                         <field name="state" widget="statusbar" statusbar_visible="draft,start_wf,open,auth,verified,paid" statusbar_colors='{"proforma":"blue","proforma2":"blue"}'/>
                     </xpath>
+                    <xpath expr="//notebook/page/group/group[2]/field[@name='outstanding_credits_debits_widget']" position="attributes">
+                            <attribute name="attrs" >{'invisible': [('state', '!=', 'verified')]}</attribute>,
+                    </xpath>
                 </data>
             </field>
         </record>
