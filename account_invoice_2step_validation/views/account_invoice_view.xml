@@ -36,6 +36,7 @@
                     </xpath>
                     <xpath expr="//header/button[@name='action_invoice_open']" position="attributes">
                             <attribute name="states" >start_wf</attribute>
+                            <attribute name="groups" >account_invoice_2step_validation.vendor_manager,account.group_account_invoice</attribute>
                     </xpath>
                     <xpath expr="//header/button[@name='action_invoice_cancel']" position="attributes">
                             <attribute name="states" >start_wf,draft,proforma2</attribute>

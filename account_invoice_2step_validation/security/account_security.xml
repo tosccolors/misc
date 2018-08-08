@@ -2,6 +2,16 @@
 <openerp>
 <data noupdate="1">
 
+    <record id="account_invoice_2step_validation.vendor_manager" model="res.groups">
+        <field name="name">Vendor Manager</field>
+        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="account_invoice_2step_validation.super_vendor_manager" model="res.groups">
+        <field name="name">Super Vendor Manager</field>
+        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+        <field name="implied_ids" eval="[(4, ref('account_invoice_2step_validation.vendor_manager'))]"/>
+    </record>
     <record id="account_invoice_2step_validation.goedk_facturen" model="res.groups">
         <field name="name">Factuur Controleur</field>
         <field name="category_id" ref="base.module_category_accounting_and_finance"/>
@@ -16,6 +26,10 @@
         <field name="category_id" ref="base.module_category_accounting_and_finance"/>
         <field name="implied_ids" eval="[(4, ref('account.group_account_user'))]"/>
         <field name="implied_ids" eval="[(4, ref('account_invoice_2step_validation.authorize'))]"/>
+    </record>
+    <record id="verification" model="res.groups">
+        <field name="name">Verification</field>
+        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
     </record>
     
     <menuitem name="Finance"
@@ -37,10 +51,7 @@
                action="account.action_invoice_tree2" parent="account.menu_finance_payables"
                groups="account.group_account_invoice,account_invoice_2step_validation.goedk_facturen"/>
 
-    <record id="verification" model="res.groups">
-        <field name="name">Verification</field>
-        <field name="category_id" ref="base.module_category_accounting_and_finance"/>
-    </record>
+
 
     
     <record model="ir.rule" id="domain_open_auth_paid_rule">
@@ -53,6 +64,28 @@
         <field name="perm_create" eval="False"/>
         <field name="perm_unlink" eval="False"/>
         <field name="groups" eval="[(4, ref('account_invoice_2step_validation.goedk_facturen'))]"/>
+    </record>
+    <record model="ir.rule" id="vendor_manager">
+        <field name="name">Vendor Manager</field>
+        <field name="model_id" ref="model_account_invoice"/>
+        <field name="domain_force">[('user_id','=',user.id),('type','in',('in_invoice','in_refund')),('state','!=','draft')]</field>
+        <field name="global" eval="False"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="groups" eval="[(4, ref('account_invoice_2step_validation.vendor_manager'))]"/>
+    </record>
+    <record model="ir.rule" id="super_vendor_manager">
+        <field name="name">Super Vendor Manager</field>
+        <field name="model_id" ref="model_account_invoice"/>
+        <field name="domain_force">[('type','in',('in_invoice','in_refund')),('state','!=','draft')]</field>
+        <field name="global" eval="False"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="groups" eval="[(4, ref('account_invoice_2step_validation.super_vendor_manager'))]"/>
     </record>
 
 
