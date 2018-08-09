@@ -18,10 +18,14 @@ class AccountAccount(models.Model):
     @api.multi
     def write(self, vals):
         accounts = []
+        aml = self.env['account.move.line']
         for account in self:
-            if vals.get('reconcile') and not account.reconcile:
+            if vals.get('reconcile') \
+                     and not account.reconcile \
+                     and not len(aml.search([('account_id','=', account.id),('reconciled','=', True)])) > 0\
+                     and len(aml.search([('account_id','=', account.id)])) > 0:
                 accounts.append(account.id)
-                vals.pop
+                vals.pop('reconcile')
             elif vals.get('reconcile') == False:
                 move_lines = self.env['account.move.line'].search([('account_id', 'in', self.ids)], limit=1)
                 if len(move_lines):
@@ -37,6 +41,8 @@ class AccountAccount(models.Model):
                 raise UserError(_('You are trying to switch on reconciliation on %s %s %s, that already has reconcile True') %
                                 (account.code, account.name, account.company_id.name))
         str_lst = ','.join([str(item) for item in ids])
+
+        # UPDATE query to compute residual amounts
         sql_aml = ("""UPDATE account_move_line
                     SET 
                     reconciled = false,
@@ -46,15 +52,17 @@ class AccountAccount(models.Model):
                                                 AND currency_id IS NOT NULL 
                                                 THEN amount_currency 
                                                 ELSE 0 
-                                               END,
-                    WHERE account_id in {1};""".format(
-                    str_lst
+                                               END
+                    {0};""".format(
+                    "WHERE account_id in (%s)" % str_lst
                     ))
         self.env.cr.execute(sql_aml)
+
+        # UPDATE query to set reconcile = true in account_account
         sql_account = ("""UPDATE account_account
                     SET 
                     reconcile = true
-                    WHERE account_id in {1};""".format(
-                    str_lst
+                    {0};""".format(
+                    "WHERE id in (%s)" % str_lst
                     ))
         self.env.cr.execute(sql_account)
