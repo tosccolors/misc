@@ -27,6 +27,7 @@ Enchanced to add
                  "account_payment_order", # -- added: deep
                  "project",
                  'account_invoice_supplier_ref_unique',
+                 'account_invoice_check_total',
                  'account_payment_partner'
     ],
     'data' : ["security/account_security.xml",
