@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
 <data noupdate="1">
 
     <record id="account_invoice_2step_validation.vendor_manager" model="res.groups">
@@ -65,7 +65,7 @@
         <field name="perm_unlink" eval="False"/>
         <field name="groups" eval="[(4, ref('account_invoice_2step_validation.goedk_facturen'))]"/>
     </record>
-    <record model="ir.rule" id="vendor_manager">
+    <record model="ir.rule" id="vendor_manager_rule">
         <field name="name">Vendor Manager</field>
         <field name="model_id" ref="model_account_invoice"/>
         <field name="domain_force">[('user_id','=',user.id),('type','in',('in_invoice','in_refund')),('state','!=','draft')]</field>
@@ -76,7 +76,7 @@
         <field name="perm_unlink" eval="False"/>
         <field name="groups" eval="[(4, ref('account_invoice_2step_validation.vendor_manager'))]"/>
     </record>
-    <record model="ir.rule" id="super_vendor_manager">
+    <record model="ir.rule" id="super_vendor_manager_rule">
         <field name="name">Super Vendor Manager</field>
         <field name="model_id" ref="model_account_invoice"/>
         <field name="domain_force">[('type','in',('in_invoice','in_refund')),('state','!=','draft')]</field>
@@ -114,4 +114,4 @@
     </record>
 
 </data>
-</openerp>
+</odoo>
