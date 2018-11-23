@@ -9,22 +9,9 @@ class AccountInvoiceLine(models.Model):
 
     @api.one
     def asset_create(self):
+        res = super(AccountInvoiceLine, self).asset_create()
         if self.asset_category_id:
-            vals = {
-                'name': self.name,
-                'code': self.invoice_id.number or False,
-                'category_id': self.asset_category_id.id,
-                'value': self.price_subtotal_signed,
-                'partner_id': self.invoice_id.partner_id.id,
-                'company_id': self.invoice_id.company_id.id,
-                'currency_id': self.invoice_id.company_currency_id.id,
-                'date': self.invoice_id.date_invoice,
-                'invoice_id': self.invoice_id.id,
-                'operating_unit_id': self.operating_unit_id.id,
-            }
-            changed_vals = self.env['account.asset.asset'].onchange_category_id_values(vals['category_id'])
-            vals.update(changed_vals['value'])
-            asset = self.env['account.asset.asset'].create(vals)
-            if self.asset_category_id.open_asset:
-                asset.validate()
-        return True
+            assets = self.env['account.asset.asset'].search([('code', '=', self.invoice_id.number), ('company_id', '=', self.company_id.id)])
+            if assets:
+                assets.write({'operating_unit_id': self.invoice_id.operating_unit_id.id or False})
+        return res
