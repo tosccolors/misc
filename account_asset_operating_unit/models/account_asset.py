@@ -21,8 +21,9 @@ class AccountAssetDepreciationLine(models.Model):
         for line in self:
             if line.move_id:
                 operating_unit_id = line.asset_id.operating_unit_id.id or False
+                analytic_account_id = line.asset_id.analytic_account_id.id or False
                 line.move_id.write({'operating_unit_id': operating_unit_id})
-                line.move_id.line_ids.write({'operating_unit_id': operating_unit_id})
+                line.move_id.line_ids.write({'operating_unit_id': operating_unit_id, 'analytic_account_id': analytic_account_id})
         return move_ids
 
     @api.multi
@@ -30,6 +31,7 @@ class AccountAssetDepreciationLine(models.Model):
         move_ids = super(AccountAssetDepreciationLine, self).create_grouped_move(post_move=post_move)
         if self[0].move_id:
             operating_unit_id = self[0].asset_id.operating_unit_id.id or False
+            analytic_account_id = self[0].asset_id.analytic_account_id.id or False
             self[0].move_id.write({'operating_unit_id': operating_unit_id})
-            self[0].move_id.line_ids.write({'operating_unit_id': operating_unit_id})
+            self[0].move_id.line_ids.write({'operating_unit_id': operating_unit_id, 'analytic_account_id': analytic_account_id})
         return move_ids
