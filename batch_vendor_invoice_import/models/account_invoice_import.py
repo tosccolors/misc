@@ -34,8 +34,8 @@ class AccountInvoiceImport(models.TransientModel):
     user_id = fields.Many2one(related='task_id.user_id',)
 
     @api.multi
-    def parse_invoice(self):
-        parsed_inv = super(AccountInvoiceImport, self).parse_invoice()
+    def parse_invoice(self, invoice_file_b64, invoice_filename):
+        parsed_inv = super(AccountInvoiceImport, self).parse_invoice(invoice_file_b64, invoice_filename)
         if self.paired_id:
             parsed_inv['attachments'][self.paired_id.name] = self.paired_id.datas
         return parsed_inv
