@@ -46,7 +46,7 @@ class AccountInvoiceImport(models.TransientModel):
         self.ensure_one()
         if self.task_id:
             if parsed_inv is None:
-                parsed_inv = self.parse_invoice()
+                parsed_inv = self.parse_invoice(self.invoice_file, self.invoice_filename)
             invoice = self.create_invoice(parsed_inv)
             invoice.message_post(_(
                 "This invoice has been created automatically via file import"))
