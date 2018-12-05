@@ -111,6 +111,5 @@ class YmlTemplatePartner(models.Model):
     partner_id = fields.Many2one('res.partner', string='Vendor',
                                  domain=[('supplier', '=', True), ('is_company', '=', True)])
     partner_vat = fields.Char(related='partner_id.vat', string='VAT of Vendor')
-    invoice_import_ids = fields.One2many('account.invoice.import.config',
-                                        related='partner_id.invoice_import_ids', )
+    invoice_import_id = fields.Many2one('account.invoice.import.config', related='partner_id.invoice_import_id', )
     company_id = fields.Many2one('res.company', related='partner_id.company_id', string='Partner Company')
