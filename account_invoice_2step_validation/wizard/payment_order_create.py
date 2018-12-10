@@ -34,16 +34,20 @@ class AccountPaymentLineCreate(models.TransientModel):
     @api.multi
     def _prepare_move_line_domain(self):
         domain = super(AccountPaymentLineCreate, self)._prepare_move_line_domain()
-        if self.invoice:
-            domain += ['|',
-                       '&',
-                       ('invoice_id.type','in', ['out_invoice','out_refund']),('invoice_id.state', '=', 'open'),
-                       '&',
-                       ('invoice_id.type','in', ['in_invoice','in_refund']),
-                       '|',
-                      ('invoice_id.state', '=', 'verified'),
-                      '&',
-                      ('invoice_id.state', '=', 'auth'),('invoice_id.verif_tresh_exceeded','=', False),
-                      ]
+        domain += ['&',
+                   ('invoice_id', '!=', False),
+                   '|',
+                   '&',
+                   ('invoice_id.type','in', ['out_invoice','out_refund']),
+                   ('invoice_id.state', '=', 'open'),
+                   '&',
+                   ('invoice_id.type','in', ['in_invoice','in_refund']),
+
+                   '|',
+                   ('invoice_id.state', '=', 'verified'),
+                   '&',
+                   ('invoice_id.state', '=', 'auth'),
+                   ('invoice_id.verif_tresh_exceeded','=', False),
+                  ]
         return domain
 

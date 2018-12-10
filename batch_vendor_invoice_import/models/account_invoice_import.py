@@ -34,8 +34,8 @@ class AccountInvoiceImport(models.TransientModel):
     user_id = fields.Many2one(related='task_id.user_id',)
 
     @api.multi
-    def parse_invoice(self, invoice_file_b64, invoice_filename):
-        parsed_inv = super(AccountInvoiceImport, self).parse_invoice(invoice_file_b64, invoice_filename)
+    def parse_invoice(self):
+        parsed_inv = super(AccountInvoiceImport, self).parse_invoice()
         if self.paired_id:
             parsed_inv['attachments'][self.paired_id.name] = self.paired_id.datas
         return parsed_inv
@@ -46,7 +46,7 @@ class AccountInvoiceImport(models.TransientModel):
         self.ensure_one()
         if self.task_id:
             if parsed_inv is None:
-                parsed_inv = self.parse_invoice(self.invoice_file, self.invoice_filename)
+                parsed_inv = self.parse_invoice()
             invoice = self.create_invoice(parsed_inv)
             invoice.message_post(_(
                 "This invoice has been created automatically via file import"))

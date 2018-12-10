@@ -244,7 +244,7 @@ class Invoice(models.Model):
                     inv.message_post(_(
                         '%d payment lines added to the new draft payment '
                         'order %s which has been automatically created.')
-                                     % (count, payorder.name))
+                        % (count, payorder.name))
                 else:
                     inv.message_post(_(
                         '%d payment lines added to the existing draft '
