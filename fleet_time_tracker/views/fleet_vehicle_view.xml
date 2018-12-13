@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <!--Add model_track_ids to fleet.vehicle-->
+    <record id="view_fleet_vehicle_view_form_tracker_inherit" model="ir.ui.view">
+        <field name="name">fleet.vehicle.tracker</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="model">fleet.vehicle</field>
+        <field type="xml" name="arch">
+            <xpath expr="//group[@col='2'][2]" position="after">
+                <div name="time_track" string="Time Data Tracker">
+                    <field name="model_track_ids" readonly="1" context="{'active_model':'fleet.vehicle', 'relation_ref':True}"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
