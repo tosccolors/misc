@@ -35,8 +35,7 @@
                                 <tree string="Partners for this Template" editable="top">
                                     <field name="partner_id" required="1"/>
                                     <field name="partner_vat" invisible="0"/>
-                                    <field name="invoice_import_ids"
-                                           invisible="0"/>
+                                    <field name="invoice_import_id" invisible="0"/>
                                     <field name="company_id" invisible="0"/>
                                 </tree>
                             </field>

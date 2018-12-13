@@ -16,51 +16,22 @@ class AccountAssetDepreciationLine(models.Model):
 
     @api.multi
     def create_move(self, post_move=True):
-        created_moves = self.env['account.move']
-        prec = self.env['decimal.precision'].precision_get('Account')
+        move_ids = super(AccountAssetDepreciationLine, self).create_move(
+            post_move=post_move)
         for line in self:
-            category_id = line.asset_id.category_id
-            operating_unit_id = line.asset_id.operating_unit_id.id or False
-            depreciation_date = self.env.context.get('depreciation_date') or line.depreciation_date or fields.Date.context_today(self)
-            company_currency = line.asset_id.company_id.currency_id
-            current_currency = line.asset_id.currency_id
-            amount = current_currency.with_context(date=depreciation_date).compute(line.amount, company_currency)
-            asset_name = line.asset_id.name + ' (%s/%s)' % (line.sequence, len(line.asset_id.depreciation_line_ids))
-            move_line_1 = {
-                'name': asset_name,
-                'account_id': category_id.account_depreciation_id.id,
-                'debit': 0.0 if float_compare(amount, 0.0, precision_digits=prec) > 0 else -amount,
-                'credit': amount if float_compare(amount, 0.0, precision_digits=prec) > 0 else 0.0,
-                'journal_id': category_id.journal_id.id,
-                'partner_id': line.asset_id.partner_id.id,
-                'analytic_account_id': category_id.account_analytic_id.id if category_id.type == 'sale' else False,
-                'currency_id': company_currency != current_currency and current_currency.id or False,
-                'amount_currency': company_currency != current_currency and - 1.0 * line.amount or 0.0,
-                'operating_unit_id': operating_unit_id
-            }
-            move_line_2 = {
-                'name': asset_name,
-                'account_id': category_id.account_depreciation_expense_id.id,
-                'credit': 0.0 if float_compare(amount, 0.0, precision_digits=prec) > 0 else -amount,
-                'debit': amount if float_compare(amount, 0.0, precision_digits=prec) > 0 else 0.0,
-                'journal_id': category_id.journal_id.id,
-                'partner_id': line.asset_id.partner_id.id,
-                'analytic_account_id': category_id.account_analytic_id.id if category_id.type == 'purchase' else False,
-                'currency_id': company_currency != current_currency and current_currency.id or False,
-                'amount_currency': company_currency != current_currency and line.amount or 0.0,
-                'operating_unit_id': operating_unit_id
-            }
-            move_vals = {
-                'ref': line.asset_id.code,
-                'date': depreciation_date or False,
-                'journal_id': category_id.journal_id.id,
-                'line_ids': [(0, 0, move_line_1), (0, 0, move_line_2)],
-                'operating_unit_id': operating_unit_id
-            }
-            move = self.env['account.move'].create(move_vals)
-            line.write({'move_id': move.id, 'move_check': True})
-            created_moves |= move
+            if line.move_id:
+                operating_unit_id = line.asset_id.operating_unit_id.id or False
+                analytic_account_id = line.asset_id.analytic_account_id.id or False
+                line.move_id.write({'operating_unit_id': operating_unit_id})
+                line.move_id.line_ids.write({'operating_unit_id': operating_unit_id, 'analytic_account_id': analytic_account_id})
+        return move_ids
 
-        if post_move and created_moves:
-            created_moves.filtered(lambda m: any(m.asset_depreciation_ids.mapped('asset_id.category_id.open_asset'))).post()
-        return [x.id for x in created_moves]
+    @api.multi
+    def create_grouped_move(self, post_move=True):
+        move_ids = super(AccountAssetDepreciationLine, self).create_grouped_move(post_move=post_move)
+        if self[0].move_id:
+            operating_unit_id = self[0].asset_id.operating_unit_id.id or False
+            analytic_account_id = self[0].asset_id.analytic_account_id.id or False
+            self[0].move_id.write({'operating_unit_id': operating_unit_id})
+            self[0].move_id.line_ids.write({'operating_unit_id': operating_unit_id, 'analytic_account_id': analytic_account_id})
+        return move_ids

@@ -8,10 +8,10 @@
     'version': '10.0.1.0.0',
     'category': 'Product Management',
     'license': 'AGPL-3',
-    'author': 'Agile Business Group, Odoo Community Association (OCA)',
-    'website': 'https://www.agilebg.com/',
+    'author': 'Agile Business Group, Magnus, Odoo Community Association (OCA)',
+    'website': 'https://www.magnus.nl/',
     'depends': [
-        'stock', 'hr_expense', 'delivery',
+        'hr_expense', 'delivery',
     ],
     'data': [
 
