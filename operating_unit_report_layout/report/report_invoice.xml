@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+<template id="external_layout_ou">
+    <!-- Multicompany -->
+    <t t-if="not o and doc">
+        <t t-set="o" t-value="doc"/>
+    </t>
+    <t t-if="o and 'company_id' in o">
+        <t t-set="company" t-value="o.company_id"/>
+    </t>
+    <t t-if="not o or not 'company_id' in o">
+        <t t-set="company" t-value="res_company"/>
+    </t>
+    <t t-if="o and 'operating_unit_id' in o">
+        <t t-set="ou" t-value="o.operating_unit_id"/>
+    </t>
+    <t t-if="not o or not 'operating_unit_id' in o">
+        <t t-set="ou" t-value="operating_unit"/>
+    </t>
+
+    <t t-call="operating_unit_report_layout.external_layout_ou_header" />
+    <t t-raw="0" />
+</template>
+
+<template id="external_layout_ou_header">
+    <div class="header">
+        <div class="row">
+            <div class="row backgroundimage" style="position:relative;font-size:3em;
+                        width:100%;height:100%;z-index:1000;padding-left:5px;">
+                <img t-if="ou.logo" t-att-src="'data:image/png;base64,%s' % ou.report_background_image1"
+                        style="width:100%; display: block;"/>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="account.report_invoice">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+        </t>
+    </t>
+</template>
+
+</data>
+</odoo>
