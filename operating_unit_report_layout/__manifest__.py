@@ -7,10 +7,11 @@
     'summary': "This module creates basic layouts for reports.",
 
     'description': """
-        This module creates a basic external layout (external_layout_ou) and a paperformat (paperformat_ou_layout).\n
+        This module creates a basic paperformat (id: paperformat_ou_layout) and image fields (logo, report_background_image1) in operating unit.\n
         Usage:\n
-        To extend/inherit the basic external layout please use the module name and the id (Ex: <t t-call="operating_unit_report_layout.external_layout_ou" />).\n
-        To extend/inherit the basic paperformat please use the module name and the id (Ex: <report paperformat="operating_unit_report_layout.paperformat_ou_layout" />).\n
+        To extend/inherit this module please add this module name in the dependency list of your module.\n
+        To extend/inherit the basic paperformat please use the module name and the id (Ex: <record id="operating_unit_report_layout.paperformat_ou_layout" model="report.paperformat">).\n
+        To use this paperformat please mention the module name and the id (Ex: <report paperformat="operating_unit_report_layout.paperformat_ou_layout" />).\n
 
     """,
 
@@ -29,10 +30,9 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        # 'views/views.xml',
+        'views/operating_unit_view.xml',
         # 'views/templates.xml',
         'report/report.xml',
-        'report/report_invoice.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
