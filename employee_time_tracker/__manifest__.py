@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "fleet_time_tracker",
+    'name': "employee_time_tracker",
 
     'summary': """
-            Fleet time tracker
+            Enables time dependent relation between hr employee and hr department
     """,
 
     'description': """
@@ -20,13 +20,13 @@
         'version': '0.1',
 
         # any module necessary for this one to work correctly
-        'depends': ['data_time_tracker', 'fleet'],
+        'depends': ['data_time_tracker', 'hr'],
 
         # always loaded
         'data': [
             # 'security/ir.model.access.csv',
             'views/hr_department_view.xml',
-            'views/res_partner_view.xml',
+            'views/hr_employee_view.xml',
         ],
         # only loaded in demonstration mode
         'demo': [
