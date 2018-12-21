@@ -2,9 +2,9 @@
 <odoo>
 
     <!--Add model_track_ids to hr.department-->
-    <record id="hr.department.form_tracker_inherit" model="ir.ui.view">
-        <field name="name">hr.department.form</field>
-        <field name="inherit_id" ref="hr.employee.form"/>
+    <record id="hr.view_department_form_tracker_inherit" model="ir.ui.view">
+        <field name="name">hr.view_department_form</field>
+        <field name="inherit_id" ref="hr.view_department_form"/>
         <field name="model">hr.department</field>
         <field type="xml" name="arch">
             <xpath expr="//page[last()]" position="after">
