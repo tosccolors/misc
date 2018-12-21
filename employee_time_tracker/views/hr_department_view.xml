@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <!--Add model_track_ids to hr.department-->
+    <record id="hr.department.form_tracker_inherit" model="ir.ui.view">
+        <field name="name">hr.department.form</field>
+        <field name="inherit_id" ref="hr.employee.form"/>
+        <field name="model">hr.department</field>
+        <field type="xml" name="arch">
+            <xpath expr="//page[last()]" position="after">
+                <div name="time_track" string="Time Data Tracker">
+                    <field name="model_track_ids" readonly="1" context="{'active_model':'hr.department', 'relation_ref':True}"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
