@@ -25,7 +25,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'report'],
+    'depends': ['base', 'report', 'operating_unit'],
 
     # always loaded
     'data': [
