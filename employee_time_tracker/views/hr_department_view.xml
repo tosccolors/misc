@@ -2,7 +2,7 @@
 <odoo>
 
     <!--Add relation_track_ids to hr.department-->
-    <record id="hr.view_department_form_tracker_inherit" model="ir.ui.view">
+    <record id="hr_view_department_form_tracker_inherit" model="ir.ui.view">
         <field name="name">hr.view_department_form</field>
         <field name="inherit_id" ref="hr.view_department_form"/>
         <field name="model">hr.department</field>
