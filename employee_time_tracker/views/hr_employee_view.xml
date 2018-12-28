@@ -14,7 +14,7 @@
             </xpath>
         </field>
         <field type="xml" name="arch">
-            <xpath expr="//page[@name=time_track]" position="before">
+            <xpath expr="//page[last()]" position="before">
                 <page name="time_track" string="Fee rate history">
                     <field name="model_track_ids" readonly="1" context="{'active_model':'hr.employee', 'relation_ref':True}"/>
                 </page>
