@@ -9,7 +9,7 @@
         <field type="xml" name="arch">
             <xpath expr="//form/sheet/group[1]" position="after">
                 <notebook>
-                    <page name="time_track" string="Time Data Tracker">
+                    <page name="time_track" string="Employee history">
                         <field name="relation_track_ids" readonly="1" context="{'active_model':'hr.department', 'relation_ref':False}"/>
                     </page>
                 </notebook>
