@@ -11,15 +11,9 @@
                 <page name="time_track" string="Department history">
                     <field name="model_track_ids" readonly="1" context="{'active_model':'hr.employee', 'relation_ref':True}"/>
                 </page>
-            </xpath>
-        </field>
-        <field type="xml" name="arch">
-            <xpath expr="//page[last()]" position="before">
                 <page name="time_track" string="Fee rate history">
-                    <field name="model_track_ids" readonly="1" context="{'active_model':'hr.employee', 'relation_ref':True}"/>
+                    <field name="relation_track_ids" readonly="1" context="{'active_model':'hr.employee', 'relation_ref':False}"/>
                 </page>
             </xpath>
         </field>
     </record>
-
-</odoo>
