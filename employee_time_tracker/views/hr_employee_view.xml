@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <odoo>
 
-    <!--Add relation_track_ids to hr.employee-->
+    <!--Add model_track_ids to hr.employee-->
     <record id="hr.view_employee_form_tracker_inherit" model="ir.ui.view">
         <field name="name">hr.employee.tracker</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="model">hr.employee</field>
         <field type="xml" name="arch">
             <xpath expr="//page[last()]" position="after">
-                <page name="time_track" string="Time Data Tracker">
-                    <field name="relation_track_ids" readonly="1" context="{'active_model':'hr.employee', 'relation_ref':False}"/>
-                </page>
+                <div name="time_track" string="Time Data Tracker">
+                    <field name="model_track_ids" readonly="1" context="{'active_model':'hr.employee', 'relation_ref':False}"/>
+                </div>
             </xpath>
         </field>
     </record>
