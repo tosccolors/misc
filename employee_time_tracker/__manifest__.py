@@ -20,13 +20,14 @@
         'version': '0.1',
 
         # any module necessary for this one to work correctly
-        'depends': ['data_time_tracker', 'hr'],
+        'depends': ['data_time_tracker', 'hr', 'product'],
 
         # always loaded
         'data': [
             # 'security/ir.model.access.csv',
             'views/hr_department_view.xml',
             'views/hr_employee_view.xml',
+            'views/product_product_view.xml',
         ],
         # only loaded in demonstration mode
         'demo': [
