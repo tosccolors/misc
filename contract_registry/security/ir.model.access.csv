@@ -1,2 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_contract_registry,contract_registry,model_contract_registry,,1,0,0,0
+access_contract_registry_user,contract_registry_user,model_contract_registry,group_contract_user,1,0,0,0
+access_contract_registry_manager,contract_registry_manager,model_contract_registry,group_contract_manager,1,1,1,1
+access_contract_period_user,contract_period_user,model_contract_period,group_contract_user,1,0,0,0
+access_contract_period_manager,contract_period_manager,model_contract_period,group_contract_manager,1,1,1,1
+access_contract_category_user,contract_category_user,model_contract_category,group_contract_user,1,0,0,0
+access_contract_category_manager,contract_category_manager,model_contract_category,group_contract_manager,1,1,1,1
