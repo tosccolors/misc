@@ -34,8 +34,8 @@ class AccountInvoiceImport(models.TransientModel):
     user_id = fields.Many2one(related='task_id.user_id',)
 
     @api.multi
-    def parse_invoice(self):
-        parsed_inv = super(AccountInvoiceImport, self).parse_invoice()
+    def parse_invoice(self,invoice_file_b64, invoice_filename):
+        parsed_inv = super(AccountInvoiceImport, self).parse_invoice(invoice_file_b64, invoice_filename)
         if self.paired_id:
             parsed_inv['attachments'][self.paired_id.name] = self.paired_id.datas
         return parsed_inv
@@ -98,10 +98,10 @@ class AccountInvoiceImport(models.TransientModel):
                     "PDF Invoice parsing failed. Error message: %s") % e)
             if not invoice2data_res:
                 raise UserError(_(
-                    "This PDF invoice doesn't match "
-                    "a known template of the invoice2data lib."
-                    "Parsed invoice data:"
-                    "%s") % log_contents)
+                    "This PDF invoice either doesn't match "
+                    "a known template of the invoice2data lib (no key match) "
+                    "or field(s) couldn't be matched."
+                    "\nParsed invoice data (space replaced by tilde):\n") + log_contents.replace(" ","\x7E"))
             logger.info(
                 'Result of invoice2data PDF extraction: %s', invoice2data_res)
         else:
@@ -121,7 +121,7 @@ class AccountInvoiceImport(models.TransientModel):
                 file_data_2 = self.paired_id.datas.decode('base64')
                 invoice2data_res = self.with_context(second=True).invoice2data_parse_invoice(file_data_2)
         self.env['ir.attachment.metadata'].search([('id','=', self.paired_id.id)]).write({'parsed_invoice_text': log_contents})
-        return self.invoice2data_to_parsed_inv(invoice2data_res)
+        return self.invoice2data_to_parsed_inv(invoice2data_res)    
 
     '''@api.model
     def invoice2data_parse_invoice(self, file_data):

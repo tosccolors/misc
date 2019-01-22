@@ -19,16 +19,16 @@
 ##############################################################################
 
 {
-    'name': 'NSM Nginx Key Portal Signup Mod',
-    'version': '1.0',
+    'name': 'Nginx Key Portal Signup Mod',
+    'version': '10.0.0.1.0',
     'category': 'Authorization',
-    'summary': 'NSM Nginx Key Portal Signup Mod',
+    'summary': 'Nginx Key Portal Signup Mod',
     'description': """
-    New Skool Media Leveranciers Portaal.
+    Keyportal adaptation 
     """,
-    'author': 'Eurogroup Consulting',
-    'website': 'http://www.eurogroupconsulting.nl',
-    'depends': ['base',  'auth_signup', 'portal'],
+    'author': 'Magnus',
+    'website': 'http://www.magnus.nl',
+    'depends': ['auth_signup'],
     'data': [],
     'demo': [],
     'test': [
