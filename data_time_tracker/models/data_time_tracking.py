@@ -17,7 +17,6 @@ class DataTrackThread(models.AbstractModel):
 
     @api.model
     def _track_data(self, track_config, values, method='write'):
-        print ">>>>self>_track_data>>>>\n\n", self, self.env.context
         for config in track_config:
             if config.field_id.name in values:
                 for obj in self:
@@ -160,4 +159,19 @@ class DataTimeTracker(models.Model):
                 'res_id': res_id,
                 'type': 'ir.actions.act_window'
             }
+        return True
+
+    @api.multi
+    def remove(self):
+        self.ensure_one()
+        ctx = self.env.context.copy()
+        relation_ref = ctx.get('relation_ref', False)
+        search_domain = [('id', '!=', self.id), ('model', '=', self.model), ('relation_model', '=', self.relation_model)]
+        if relation_ref:
+            search_domain += [('model_ref', '=', self.model_ref)]
+        else:
+            search_domain += [('relation_ref', '=', self.relation_ref)]
+        sec_latest = self.search(search_domain, order='id Desc', limit=1)
+        sec_latest.date_to = '9999-12-31 00:00:00'
+        self.unlink()
         return True
