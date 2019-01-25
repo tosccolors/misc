@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
 
         <template id="operating_unit_report_layout.report_assets_common" name="operating_unit_report_layout report assets common" inherit_id="report.assets_common">
@@ -25,4 +25,4 @@
         </record>
 
     </data>
-</openerp>
+</odoo>
