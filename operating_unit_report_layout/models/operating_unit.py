@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright 2014 Eurogroup Consulting
+#    Copyright 2015 Magnus 
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,24 +18,19 @@
 #
 ##############################################################################
 
-{
-    'name': 'Nginx Key Portal Signup Mod',
-    'version': '10.0.0.1.0',
-    'category': 'Authorization',
-    'summary': 'Nginx Key Portal Signup Mod',
-    'description': """
-    Keyportal adaptation 
-    """,
-    'author': 'Magnus',
-    'website': 'http://www.magnus.nl',
-    'depends': ['auth_signup'],
-    'data': [],
-    'demo': [],
-    'test': [
-    ],
-    'qweb': [],
-    'installable': True,
-    'auto_install': False,
-    'application': False,
-}
+import os
+from odoo import api, fields, models, tools, _
+
+
+class OperatingUnit(models.Model):
+    _inherit = 'operating.unit'
+
+
+    def _get_logo(self):
+        return open(os.path.join(tools.config['root_path'], 'addons', 'base', 'res', 'res_company_logo.png'), 'rb') .read().encode('base64')
+
+    logo = fields.Binary(related='partner_id.image', default=_get_logo)
+    report_background_image1 = fields.Binary('Background Image for Report Frontpage',
+            help='Set Background Image for Report Frontpage')
+
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

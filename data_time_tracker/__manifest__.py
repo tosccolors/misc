@@ -21,11 +21,12 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','fleet'],
+    'depends': ['base'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
+        'wizard/tracker_wizard_view.xml',
         'views/data_time_tracking_view.xml',
     ],
     # only loaded in demonstration mode

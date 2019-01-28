@@ -31,18 +31,20 @@
                             <field name="name"/>
                             <field name="attach_meta_id" readonly="1"/>
                             <field name="regexr_iframe" invisible="0"/>
-                            <field name="partner_ids">
-                                <tree string="Partners for this Template" editable="top">
-                                    <field name="partner_id" required="1"/>
-                                    <field name="partner_vat" invisible="0"/>
-                                    <field name="invoice_import_id" invisible="0"/>
-                                    <field name="company_id" invisible="0"/>
-                                </tree>
-                            </field>
+
                         </group>
                         <group>
                             <field name="yml_content" />
                         </group>
+                        <field name="partner_ids">
+                            <tree string="Partners for this Template" editable="top">
+                                <field name="partner_id" required="1"/>
+                                <field name="partner_vat" invisible="0"/>
+                                <field name="invoice_import_ids"
+                                       invisible="0"/>
+                                <field name="company_id" invisible="0"/>
+                            </tree>
+                        </field>
                     </group>
                     <iframe marginheight="0" marginwidth="0" frameborder = "0"
                             src="https://regexr.com/" width="100%" height="1000"
