@@ -55,7 +55,7 @@ class I2dYmlTemplate(models.Model):
     def action_export_filesystem(self):
         self.ensure_one()
         vals = {
-            'task_id': self.env.ref('i2d_yml_template.i2d_yml_template_task').id,
+            'task_id': self.env.ref('i2d_yml_template_new.i2d_yml_template_task').id,
             'file_type': 'export_external_location',
             'datas_fname': self.name +'.yml',
             'datas': b64encode(self.yml_content.encode('utf8')),

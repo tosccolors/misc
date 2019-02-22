@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="attachment_base_synchronize.view_external_attachment_search" />
         <field name="arch" type="xml">
                 <filter name="import_invoices" position="after">
-                    <filter name="export_yml_templates" string="Export YML Templates" domain="[('location_id', '=', %(i2d_yml_template.i2d_yml_template)d)]"/>
+                    <filter name="export_yml_templates" string="Export YML Templates" domain="[('location_id', '=', %(i2d_yml_template_new.i2d_yml_template)d)]"/>
                 </filter>
         </field>
     </record>
