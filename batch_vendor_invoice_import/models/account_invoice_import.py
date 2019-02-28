@@ -18,8 +18,11 @@ try:
     from invoice2data.main import logger as loggeri2data
 
     # Transfer log level of Odoo to invoice2data
-    loggeri2data.setLevel(logging.DEBUG)
-
+    loggeri2data.setLevel(logger.logging.DEBUG)
+    log_capture_string = io.StringIO()
+    ch = logging.StreamHandler(log_capture_string)
+    ch.setLevel(logging.DEBUG)
+    loggeri2data.addHandler(ch)
 except ImportError:
     logger.debug('Cannot import invoice2data')
 
@@ -64,10 +67,6 @@ class AccountInvoiceImport(models.TransientModel):
     @api.model
     def invoice2data_parse_invoice(self, file_data):
         logger.info('Trying to analyze PDF invoice with invoice2data lib')
-        log_capture_string = io.StringIO()
-        ch = logging.StreamHandler(log_capture_string)
-        ch.setLevel(logging.DEBUG)
-        loggeri2data.addHandler(ch)
         fd, file_name = mkstemp()
         try:
             os.write(fd, file_data)
@@ -84,7 +83,7 @@ class AccountInvoiceImport(models.TransientModel):
         exclude_built_in_templates = tools.config.get(
             'invoice2data_exclude_built_in_templates', False)
         if not exclude_built_in_templates:
-            templates += read_templates(pkg_resources.resource_filename('invoice2data', 'templates'))
+            templates += read_templates()
         logger.debug(
             'Calling invoice2data.extract_data with templates=%s',
             templates)
@@ -92,23 +91,21 @@ class AccountInvoiceImport(models.TransientModel):
             try:
                 invoice2data_res = extract_data(file_name, templates=templates)
                 log_contents = log_capture_string.getvalue()
-#                log_capture_string.close()
+                log_capture_string.close()
             except Exception, e:
                 raise UserError(_(
                     "PDF Invoice parsing failed. Error message: %s") % e)
             if not invoice2data_res:
                 raise UserError(_(
-                    "This PDF invoice doesn't match "
-                    "a known template of the invoice2data lib."
-                    "Parsed invoice data:"
-                    "%s") % log_contents)
+                    "This PDF invoice doesn't match a known template of "
+                    "the invoice2data lib."))
             logger.info(
                 'Result of invoice2data PDF extraction: %s', invoice2data_res)
         else:
             try:
                 invoice2data_res = extract_data(file_name, templates=templates)
                 log_contents = log_capture_string.getvalue()
-#                log_capture_string.close()
+                log_capture_string.close()
             except Exception:
                 invoice2data_res = {}
                 invoice2data_res['pdf_failed'] = 'PDF Invoice parsing failed.'
@@ -117,10 +114,10 @@ class AccountInvoiceImport(models.TransientModel):
                 invoice2data_res[
                     'pdf_failed'] = 'This PDF invoice doesn\'t match a known template of the invoice2data lib.'
             logger.info('Result of invoice2data batch PDF extraction: %s', invoice2data_res)
-            if invoice2data_res.get('pdf_failed', False) and self.paired_id and not self.env.context.get('second',False):
+            if invoice2data_res.get('pdf_failed', False) and self.paired_id and not self.context.get('second',False):
                 file_data_2 = self.paired_id.datas.decode('base64')
                 invoice2data_res = self.with_context(second=True).invoice2data_parse_invoice(file_data_2)
-        self.env['ir.attachment.metadata'].search([('id','=', self.paired_id.id)]).write({'parsed_invoice_text': log_contents})
+        self.env['ir.attachment.metadata'].search(['id','=', self.paired_id.id]).write({'parsed_invoice_text': log_contents})
         return self.invoice2data_to_parsed_inv(invoice2data_res)
 
     '''@api.model
