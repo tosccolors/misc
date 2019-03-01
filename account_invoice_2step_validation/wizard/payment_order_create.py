@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2009 EduSense BV (<http://www.edusense.nl>).
-#              (C) 2011 - 2013 Therp BV (<http://therp.nl>).
-#              (C) 2013 Eurogroup Consulting BV (http://www.eurogroupconsulting.nl)    
-#            
+#    Copyright (C) 2018 Magnus Red BV (http://www.magnus.nl)
+#
 #    All other contributions are (C) by their respective contributors
 #
 #    All Rights Reserved
@@ -34,7 +32,13 @@ class AccountPaymentLineCreate(models.TransientModel):
     @api.multi
     def _prepare_move_line_domain(self):
         domain = super(AccountPaymentLineCreate, self)._prepare_move_line_domain()
-        domain += ['&',
+        if not self.invoice:
+            domain += [
+                        '|',
+                       ('invoice_id', '=', False),
+                       ]
+        domain += [
+                   '&',
                    ('invoice_id', '!=', False),
                    '|',
                    '&',

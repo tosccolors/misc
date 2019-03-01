@@ -41,7 +41,6 @@ class AccountInvoiceImport(models.TransientModel):
             action = super(AccountInvoiceImport, self).import_invoice()
         else:
             self.ensure_one()
-            import pdb; pdb.set_trace()
             aio = self.env['account.invoice']
             aiico = self.env['account.invoice.import.config']
             bdio = self.env['business.document.import']
