@@ -19,7 +19,6 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def finalize_invoice_move_lines(self, move_lines):
-        import pdb; pdb.set_trace()
         inter_move_lines = super(AccountInvoice,
                            self).finalize_invoice_move_lines(move_lines)
         new_move_lines = []
