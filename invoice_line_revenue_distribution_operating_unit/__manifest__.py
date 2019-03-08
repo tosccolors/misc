@@ -17,7 +17,7 @@
     """,
 
     'author': "Magnus",
-    'website': "http://www.magnus.com",
+    'website': "http://www.magnus.nl",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
@@ -26,13 +26,11 @@
     'version': '10.0.1.1.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['account_operating_unit','sale_operating_unit','analytic_operating_unit'],
+    'depends': ['account_operating_unit','analytic_operating_unit'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
         'views/views.xml',
-#        'views/templates.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

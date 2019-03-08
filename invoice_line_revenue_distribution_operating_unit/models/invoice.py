@@ -19,13 +19,14 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def finalize_invoice_move_lines(self, move_lines):
-        inter_move_lines = super(AccountInvoice,
-                           self).finalize_invoice_move_lines(move_lines)
+#        import pdb; pdb.set_trace()
+#        old_move_lines = move_lines
+#        move_lines = super(AccountInvoice, self).finalize_invoice_move_lines(move_lines)
         new_move_lines = []
-        for line_tuple, original_tuple in zip(inter_move_lines, move_lines):
-            if original_tuple[2]['operating_unit_id']:
+        for line_tuple in move_lines:
+            if not line_tuple[2]['operating_unit_id']:
                 line_tuple[2]['operating_unit_id'] = \
-                    original_tuple[2]['operating_unit_id']
+                    self.operating_unit_id.id
             new_move_lines.append(line_tuple)
         return new_move_lines
 
