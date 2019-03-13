@@ -18,8 +18,11 @@ class AccountMoveLine(models.Model):
                 self.operating_unit_id = self.analytic_account_id.operating_unit_ids.id
 
 
-    operating_unit_id = fields.Many2one('operating.unit',
-                                        string='Operating Unit', store=True)
+    operating_unit_id = fields.Many2one(
+        'operating.unit',
+        string='Operating Unit',
+        store=True
+    )
 
 
     @api.multi

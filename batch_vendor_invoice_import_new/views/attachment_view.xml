@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_attachment_improved_form" model="ir.ui.view">
+        <field name="model">ir.attachment.metadata</field>
+        <field name="inherit_id" ref="base.view_attachment_form" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="operating_unit_id"/>
+                <field name="user_id"/>
+                <field name="task_id"/>
+                <field name="parsed_invoice_text"/>
+            </field>
+        </field>
+    </record>
+
+     <record id="view_external_attachment_tree" model="ir.ui.view">
+        <field name="model">ir.attachment.metadata</field>
+        <field name="inherit_id" ref="attachment_base_synchronize.view_external_attachment_tree" />
+        <field name="arch" type="xml">
+            <field name="create_date" position="after">
+                    <field name="company_id" />
+                    <field name="operating_unit_id"/>
+                    <field name="user_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_external_attachment_search" model="ir.ui.view">
+        <field name="model">ir.attachment.metadata</field>
+        <field name="inherit_id" ref="attachment_base_synchronize.view_external_attachment_search" />
+        <field name="arch" type="xml">
+                <filter name="my_documents_filter" position="after">
+                    <filter name="import_invoices" string="Import Invoices"
+                            domain="[('location_id', '=', %(batch_vendor_invoice_import_new.batch_invoice_import_location)d)]"/>
+                </filter>
+                <field name="type" position="after">
+                    <field name="task_id" />
+                    <field name="location_id" />
+                </field>
+                <filter name="creation_month" position="before">
+                    <filter name="operating_unit" string="Operating Unit" icon="terp-gtk-home" domain="[]"
+                            context="{'group_by':'operating_unit_id'}" groups="operating_unit.group_multi_operating_unit"/>
+                </filter>
+        </field>
+    </record>
+
+
+
+</odoo>
