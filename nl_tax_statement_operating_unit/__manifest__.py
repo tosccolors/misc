@@ -12,7 +12,8 @@ This module adds operating unit in Netherlands BTW Statement.
     'website' : 'http://www.eurogroupconsulting.nl',
     'depends' : ['l10n_nl_tax_statement','operating_unit',],
     'data' : ["views/l10n_nl_vat_statement_view.xml",
-              "report/report_tax_statement.xml"],
+              "report/report_tax_statement.xml",
+              "wizard/open_tax_balances_view.xml"],
     'demo' : [],
     'installable': True
 }
