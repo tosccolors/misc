@@ -1,3 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from . import models
+from . import contract_registry
+from . import contract_category
+from . import contract_period

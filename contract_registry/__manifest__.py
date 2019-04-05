@@ -25,13 +25,15 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base','operating_unit'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        'views/views.xml',
+        'security/contract_security.xml',
+        'security/ir.model.access.csv',
+        'views/contract_registry_view.xml',
         'views/templates.xml',
+        'views/contract_category_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

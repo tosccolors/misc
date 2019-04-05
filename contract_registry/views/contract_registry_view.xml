@@ -1,0 +1,133 @@
+<odoo>
+  <data>
+  
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="view_contract_registry_tree">
+      <field name="name">contract.registry list</field>
+      <field name="model">contract.registry</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="company_id"/>
+          <field name="operating_unit_id"/>
+          <field name="contract_category_id"/>
+          <field name="alert_date"/>
+          <field name="state"/>
+          <!-- <field name="value"/>
+          <field name="value2"/> -->
+        </tree>
+      </field>
+    </record>
+	
+	<!--Model: Form View-->
+    <record id="view_contract_registry_form" model="ir.ui.view">
+        <field name="name">contract.registry.form</field>
+        <field name="model">contract.registry</field>
+        <field name="arch" type="xml">
+            <form string="Tracker Config">
+            	<header>
+                <button name="renew_contract" string="Renew" type="object" states='done' class="btn-primary" groups="contract_registry.group_contract_manager" />
+                <button name="done_contract" string="Done" type="object" states='draft,renew' class="btn-primary" groups="contract_registry.group_contract_manager" />
+                <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+           	 </header>
+                <sheet>
+                	<div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h3>
+                                <field name="name" placeholder="Contract's Name" attrs="{'readonly':[('state','in',('done','renew'))]}"/>
+                            </h3>
+                     </div>
+                    <group>
+                    	<group>
+                    		<field name="one_time" attrs="{'readonly':[('state','in',('done','renew'))]}"/>
+                    	</group>
+                    	<group>
+                    		<field name="renewable" attrs="{'readonly':[('state','in',('done','renew'))]}"/>
+                    	</group>
+                    	<group>
+	                    	<field name="contract_category_id" attrs="{'readonly':[('state','in',('done','renew'))]}"/>
+                    	</group>
+                    	<group>
+                    		<field name="alert_date" attrs="{'readonly':[('state','=','done')]}"/>
+                    	</group>
+                    	<group>
+                    		<field name="operating_unit_id" attrs="{'readonly':[('state','in',('done','renew'))]}"/>
+                    	</group>
+                    	<group>
+                    		<field name="responsible_officer_id" attrs="{'readonly':[('state','in',('done','renew'))]}"/>
+                    		<field name="company_id" attrs="{'readonly':[('state','in',('done','renew'))]}"/>
+                    </group>
+                    </group>
+                    
+                    <group>
+                    	<field name="period_ids" attrs="{'readonly':[('state','=','done')]}" >
+                    		<tree editable="bottom">
+                    			<field name="date_start"></field>
+                    			<field name="date_end"></field>
+                    		</tree>
+                    	</field>
+                    </group>
+                    <group>
+                    	<field name="contract_partner_ids" attrs="{'readonly':[('state','in',('done','renew'))]}"/>
+                    </group>
+                    <field name="description" nolabel="1" placeholder="Description" attrs="{'readonly':[('state','=','done')]}"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+     <!--Model: Action-->
+    <record id="action_contract_registry" model="ir.actions.act_window">
+        <field name="name">Contract Registry</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">contract.registry</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create Data for Contract Registration.
+            </p>
+        </field>
+    </record>
+
+	<!-- Search view -->
+	<record id="contract_registry_filter" model="ir.ui.view">
+	    <field name="name">Contract Registry Filter</field>
+	    <field name="model">contract.registry</field>
+	    <field name="arch" type="xml">
+	        <search string="Search">
+	            <filter name="renewable" string="Renewable" domain="[('renewable', '=', 'True')]" />
+	            <filter name="one_time" string="One-time" domain="[('one_time', '=', 'True')]" />
+	            <field name='responsible_officer_id' filter_domain="[('responsible_officer_id', 'child_of', self)]"/>
+	            <group string="Group By">
+	            	<filter name="responsible_officer_id" string="Responsible officer" context="{'group_by':'responsible_officer_id'}"/>
+	            	<filter name="company_id" string="Company " context="{'group_by':'company_id'}"/>
+	            	<filter name="operating_unit_id" string="Operation unit" context="{'group_by':'operating_unit_id'}"/>
+	            	<filter name="contract_category_id" string="Contract category" context="{'group_by':'contract_category_id'}"/>
+	            	<filter name="alert_date" string="End-date" context="{'group_by':'alert_date'}"/>
+	            </group>
+	        </search>
+	    </field>
+	</record>
+
+
+    <!-- Top menu item -->
+   
+    <menuitem name="Contract Registry" id="contract_category_menu_root"/>
+    
+    <menuitem name="Contract Registry" id="contract_registry_sub_menu" parent="contract_category_menu_root"/>
+  	 <!-- menu categories -->
+     <menuitem name="Contract" id="contract_registry_contract" parent="contract_registry_sub_menu" action="action_contract_registry" sequence="1"/>
+
+<!--     <menuitem name="Contract Category" id="contract_registry.menu_2" parent="contract_registry.menu_root"/>
+ 
+    
+    <menuitem name="List" id="contract_registry.menu_1_list" parent="contract_registry.menu_1"
+              action="contract_registry.action_window"/>
+    <menuitem name="Server to list" id="contract_registry" parent="contract_registry.menu_2"
+              action="contract_registry.action_server"/> -->
+   
+  </data>
+</odoo>
