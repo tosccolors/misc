@@ -43,7 +43,7 @@
                         <button name="compose_yml_template" string="Compose yml template" attrs="{'invisible':[('hide_pdf','=',True)]}" type="object" class="oe_highlight ml16"/>
                     </div>
                     <group attrs="{'invisible': [('hide_pdf', '=', True)]}">
-                            <img src="/i2d_yml_template/static/src/img/cheatsheet.png" width="100%"/>
+                            <img src="/i2d_yml_template/static/src/img/cheatsheet.jpg" width="100%"/>
                     </group>
                     <group attrs="{'invisible': [('hide_pdf', '=', True)]}">
                         <group colspan="1" col="5">
