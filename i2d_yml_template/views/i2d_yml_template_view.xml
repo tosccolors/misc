@@ -20,30 +20,22 @@
         <field name="arch" type="xml">
             <form string="YML Template">
                 <header>
-                    <button name="action_export_filesystem" states="new,saved,deleted"
-                            string="Export to Filesystem" type="object" class="oe_highlight"/>
-                    <button name="action_delete" states="saved"
-                            string="Delete from Filesystem" type="object"/>
+                    <button name="action_export_filesystem" states="new,saved,deleted" string="Export to Filesystem" type="object" class="oe_highlight"/>
+                    <button name="action_delete" states="saved" string="Delete from Filesystem" type="object"/>
                     <field name="state" widget="statusbar" statusbar_visible="new,saved,deleted"/>
                 </header>
-                    <group colspan="4">
+                    
+                    <group>
                         <group>
                             <field name="name"/>
-                            <field name="attach_meta_id" readonly="1"/>
-                            <field name="regexr_iframe" invisible="0"/>
-                            <field name="partner_ids">
-                                <tree string="Partners for this Template" editable="top">
-                                    <field name="partner_id" required="1"/>
-                                    <field name="partner_vat" invisible="0"/>
-                                    <field name="invoice_import_id" invisible="0"/>
-                                    <field name="company_id" invisible="0"/>
-                                </tree>
-                            </field>
+                            <field name="example_pdf" widget="many2many_binary" class="oe_inline"/>
                         </group>
                         <group>
-                            <field name="yml_content" />
+                            <field name="attach_meta_id" readonly="1" string="Attachment ID"/>
+                            <field name="yml_content"/>
                         </group>
                     </group>
+
                     
                     <div colspan="2">
                         <button name="show_parsed_pdf" string="Show pdf" attrs="{'invisible':[('hide_pdf','=',False)]}" type="object" class="oe_highlight"/>
@@ -111,6 +103,8 @@
                                 style="background-color:#f2f2f2;"
                                 attrs="{'invisible': [('hide_pdf', '=', True)]}"/>
                     </div>
+
+                    
                     <div colspan="2" class="mt16">
                                 <button name="show_test_output" string="Show test output" attrs="{'invisible':[('hide_output','=',False)]}" type="object" class="oe_highlight"/>
                                 <button name="hide_test_output" string="Hide test output" attrs="{'invisible':[('hide_output','=',True)]}" type="object" class="oe_highlight"/>
