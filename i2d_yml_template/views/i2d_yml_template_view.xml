@@ -54,38 +54,62 @@
                             <img src="/i2d_yml_template/static/src/img/cheatsheet.jpg" width="100%"/>
                     </group>
                     <group attrs="{'invisible': [('hide_pdf', '=', True)]}">
-                        <group colspan="1" col="5">
+                        <group colspan="1" col="9">
                                     <label for="keyword" colspan="1"/>
-                                    <field name="keyword" nolabel="1" colspan="2"/>
-                                    <field name="keyword_result" nolabel="1" colspan="1" readonly="1"/>
+                                    <field name="keyword" nolabel="1" colspan="4"/>
+                                    <button type="object" string="(.*)" name="keyword2regex" 
+                                            help="Convert string to a regex"
+                                            class="mt4 mb8 oe_edit_only btn-xs" invisible="1"/>
+                                    <field name="keyword_result" nolabel="1" colspan="2" readonly="1" class="mt4"/>
                                     <div colspan="1"/>
+                                    
                                     <label for="amount" colspan="1"/>
-                                    <field name="amount" nolabel="1" colspan="2"/>
-                                    <field name="amount_result" nolabel="1" colspan="1" readonly="1"/>
+                                    <field name="amount" nolabel="1" colspan="4"/>
+                                    <button type="object" string="(.*)" name="amount2regex" 
+                                            help="Convert string to a regex"
+                                            class="mt4 mb8 oe_edit_only btn-xs"/>
+                                    <field name="amount_result" nolabel="1" colspan="2" readonly="1" class="mt4"/>
                                     <div colspan="1"/>
+                                    
                                     <label for="amount_untaxed" colspan="1"/>
-                                    <field name="amount_untaxed" nolabel="1" colspan="2"/>
-                                    <field name="amount_untaxed_result" nolabel="1" colspan="1" readonly="1"/>
+                                    <field name="amount_untaxed" nolabel="1" colspan="4"/>
+                                    <button type="object" string="(.*)" name="amount_untaxed2regex" 
+                                            help="Convert string to a regex"
+                                            class="mt4 mb8 oe_edit_only btn-xs"/>
+                                    <field name="amount_untaxed_result" nolabel="1" colspan="2" readonly="1" class="mt4"/>
                                     <div colspan="1"/>
                         </group>
-                        <group colspan="1" col="5">
+                        <group colspan="1" col="9">
                                     <label for="date" colspan="1"/>
-                                    <field name="date" nolabel="1" colspan="2"/>
-                                    <field name="date_result" nolabel="1" colspan="1" readonly="1"/>
+                                    <field name="date" nolabel="1" colspan="4"/>
+                                    <button type="object" string="(.*)" name="date2regex" 
+                                            help="Convert string to a regex"
+                                            class="mt4 mb8 oe_edit_only btn-xs"/>
+                                    <field name="date_result" nolabel="1" colspan="2" readonly="1" class="mt4"/>
                                     <div colspan="1"/>
+                                    
                                     <label for="invoice_number" colspan="1"/>
-                                    <field name="invoice_number" nolabel="1" colspan="2"/>
-                                    <field name="invoice_number_result" nolabel="1" colspan="1" readonly="1"/>
+                                    <field name="invoice_number" nolabel="1" colspan="4"/>
+                                    <button type="object" string="(.*)" name="invoice_number2regex" 
+                                            help="Convert string to a regex"
+                                            class="mt4 mb8 oe_edit_only btn-xs"/>
+                                    <field name="invoice_number_result" nolabel="1" colspan="2" readonly="1" class="mt4"/>
                                     <div colspan="1"/>
+                                    
                                     <label for="description" colspan="1"/>
-                                    <field name="description" nolabel="1" colspan="2"/>
-                                    <field name="description_result" nolabel="1" colspan="1" readonly="1"/>
+                                    <field name="description" nolabel="1" colspan="4"/>
+                                    <button type="object" string="(.*)" name="description2regex" 
+                                            help="Convert string to a regex"
+                                            class="mt4 mb8 oe_edit_only btn-xs"/>
+                                    <field name="description_result" nolabel="1" colspan="2" readonly="1" class="mt4"/>
                                     <div colspan="1"/>
                             </group>
                     </group>
                     <div colspan="2">
                                 <field name="hide_pdf" invisible="1"/>
-                                <field name="parsed_pdf" colspan="2" nolabel="1" readonly="1" attrs="{'invisible': [('hide_pdf', '=', True)]}"/>
+                                <field name="parsed_pdf" colspan="2" nolabel="1" readonly="1" 
+                                style="background-color:#f2f2f2;"
+                                attrs="{'invisible': [('hide_pdf', '=', True)]}"/>
                     </div>
                     <div colspan="2" class="mt16">
                                 <button name="show_test_output" string="Show test output" attrs="{'invisible':[('hide_output','=',False)]}" type="object" class="oe_highlight"/>
@@ -93,7 +117,9 @@
                                 <button name="test_yml_template" string="Run test" attrs="{'invisible':[('hide_output','=',True)]}" type="object" class="oe_highlight ml16"/>
                     </div>
                     <group>
-                            <field name="test_output" colspan="2" nolabel="1" readonly="1" attrs="{'invisible':[('hide_output','=',True)]}"/>
+                            <field name="test_output" colspan="2" nolabel="1" readonly="1"
+                                style="background-color:#f2f2f2;"
+                                attrs="{'invisible':[('hide_output','=',True)]}"/>
                             <field name="hide_output" invisible="1"/>
                     </group>
 
