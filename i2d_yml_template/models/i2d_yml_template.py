@@ -16,7 +16,28 @@ class I2dYmlTemplate(models.Model):
         required=True,
         translate=False,
         readonly=False,
+<<<<<<< HEAD
         default="# -*- coding: utf-8 -*-"
+=======
+        default="# -*- coding: utf-8 -*-\n\
+issuer: MySupplier \n\
+fields: \n\
+  amount: Totaalbedrag\x3A\s+(\d{0,3}\.{0,1}\d{1,3},\d{2}) EUR\n\
+  amount_untaxed: Netto\x3A\s+(\d{0,3}\.{0,1}\d{1,3},\d{2}) EUR\n\
+  date: Factuurdatum\x3A\s+{1,8}\s+(\d{1,2}-\d{1,2}-\d{4})\n\
+  invoice_number: Factuurnummer\x3A\s+(\d{0,7})\n\
+  static_vat: NL123456\n\
+  description: Omschrijving (.*)\n\
+keywords:\n\
+    - 'KvK nummer 123456789'\n\
+options:\n\
+  currency: EUR\n\
+  date_formats:\n\
+    - '%d-%m-%Y'\n\
+  languages:\n\
+    - nl\n\
+  decimal_separator: ','"
+>>>>>>> 95e46b2... i2d_yml_template : tekst to regex parser added
     )
     name = fields.Char(
         string=_("Name"),
@@ -40,6 +61,65 @@ class I2dYmlTemplate(models.Model):
     regexr_iframe = fields.Boolean('iFrame with regexpr hulp')
     partner_ids = fields.One2many('yml.template.partner', 'template_id', string='Template Vendors', copy=True)
 
+
+    @api.multi
+    def convert2regex(self, string2convert):
+        #escape the special meaning characters (this is incomplete but sufficient to start with)
+        replacements =[ ('\\', '\\\\' ), 
+                        (r'*', r'\*'),
+                      ]
+        for replacement in replacements :
+                string2convert=string2convert.replace(replacement[0], replacement[1])
+        #find the substrings and replace by a regex
+        keys = [r'\s+',                             #first white space
+                r'\d{0,3}\.{0,1}\d{1,3},\d{2}',     #amounts have a comma
+                r'\d{1,2}-\d{1,2}-\d{4}',           #specific date type can be distinguished from long numbers
+                r'\d{1,2}\.\d{1,2}\.\d{4}',         #date with a point
+                r'\d{5,10}',                        #remaining long numbers
+                ]
+        for key in keys :
+            string2convert = re.sub(key, key, string2convert)
+        #remove all brackets and place on set on begin and end
+        string2convert.replace( '(', '')
+        string2convert.replace( ')', '')
+        string2convert = '('+ string2convert + ')'
+        return string2convert
+
+    @api.multi
+    def keyword2regex(self):
+        self.keyword = self.convert2regex(self.keyword)
+        self.onchange_keyword()
+        return
+
+    @api.multi
+    def amount2regex(self):
+        self.amount = self.convert2regex(self.amount)
+        self.onchange_amount()
+        return
+
+    @api.multi
+    def amount_untaxed2regex(self):
+        self.amount_untaxed = self.convert2regex(self.amount_untaxed)
+        self.onchange_amount_untaxed()
+        return
+
+    @api.multi
+    def date2regex(self):
+        self.date = self.convert2regex(self.date)
+        self.onchange_date()
+        return
+
+    @api.multi
+    def invoice_number2regex(self):
+        self.invoice_number = self.convert2regex(self.invoice_number)
+        self.onchange_invoice_number()
+        return
+
+    @api.multi
+    def description2regex(self):
+        self.description = self.convert2regex(self.description)
+        self.onchange_description()
+        return
 
     @api.multi
     @api.onchange('partner_id' )
