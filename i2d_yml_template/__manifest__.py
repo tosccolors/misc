@@ -5,7 +5,7 @@
 {
     'name': 'YML template module',
     'version': '10.0.1.0.0',
-    'author': 'Willem Hulshof, D. Prosee',
+    'author': 'Willem Hulshof',
     'maintainer': 'Willem Hulshof',
     'website': 'www.magnus.nl',
     'license': '',
@@ -30,39 +30,50 @@ Installation
 
 To install this module, you need to:
 
-* Nothing special
+#. Nothing special
 
 Configuration
 =============
 
 To configure this module, you need to:
 
-* provide a key in odoo config to indicate the template directory e.g. invoice2data_templates_dir=/odoo/i2d_yml_templates
-* configure the external locations given in the data directory of this module with proper file directories
+#. Go to ...
 
-
+.. figure:: path/to/local/image.png
+   :alt: alternative description
+   :width: 600 px
 
 Usage
 =====
 
 To use this module, you need to:
 
+<<<<<<< HEAD
+#. Go to accounting/.....
+
+.. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
+   :alt: Try me on Runbot
+   :target: https://runbot.odoo-community.org/runbot/{repo_id}/{branch}
+
+.. repo_id is available in https://github.com/OCA/maintainer-tools/blob/master/tools/repos_with_ids.txt
+.. branch is "8.0" for example
+=======
 * Go to accounting/...../yml templates
 * Give template a name
 * Load an example PDF; this will trigger text parsing. The result will be shown.
-* Use the output of the parsed pdf to create the regex expressions
-* Implement the regex expressions in the yml template
+* Use the parsed pdf to create the regex expressions by copying it to key fields, using the regex button and shifting the left and right parenthesis
+* If all info is available you then compose the yml template by the associatted button
 * Don't forget to connect to an existing partner, identified with its vat number
 * Save and export yml template
 * Possibly test the template using this module or accounting/.../import vendor bills
+* The test will warn you if you made a template on a PDF for which there is already another template
 * Enjoy
+>>>>>>> c6e89c0... i2d_yml_template : comment for module adapted to latest changes
 
 Known issues / Roadmap
 ======================
 
-* The regexr.com iframe could be filled by the parsed text using the query text=html.escape(self.parsed_pdf)
-  This requires javascript to update the src attribute of the iframe
-  The text should, of course, be html encoded to be shipped via the query
+* Add ...
 
 Bug Tracker
 ===========
@@ -83,8 +94,8 @@ Images
 Contributors
 ------------
 
-* W\. Hulshof
-* D\. Prosee
+* Firstname Lastname <email.address@example.org>
+* Second Person <second.person@example.org>
 
 Funders
 -------
@@ -111,8 +122,8 @@ To contribute to this module, please visit https://odoo-community.org.
 
 
 * Module exported by the Module Prototyper module for version 10.0.
-* If you have any questions, please contact Savoir-faire Linux (support@savoirfairelinux.com)
-
+* If you have any questions, please contact Savoir-faire Linux
+(support@savoirfairelinux.com)
 """,
 
     # any module necessary for this one to work correctly
