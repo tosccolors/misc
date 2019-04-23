@@ -16,9 +16,6 @@ class I2dYmlTemplate(models.Model):
         required=True,
         translate=False,
         readonly=False,
-<<<<<<< HEAD
-        default="# -*- coding: utf-8 -*-"
-=======
         default="# -*- coding: utf-8 -*-\n\
 issuer: MySupplier \n\
 fields: \n\
@@ -37,7 +34,6 @@ options:\n\
   languages:\n\
     - nl\n\
   decimal_separator: ','"
->>>>>>> 95e46b2... i2d_yml_template : tekst to regex parser added
     )
     name = fields.Char(
         string=_("Name"),

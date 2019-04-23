@@ -48,16 +48,6 @@ Usage
 
 To use this module, you need to:
 
-<<<<<<< HEAD
-#. Go to accounting/.....
-
-.. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
-   :alt: Try me on Runbot
-   :target: https://runbot.odoo-community.org/runbot/{repo_id}/{branch}
-
-.. repo_id is available in https://github.com/OCA/maintainer-tools/blob/master/tools/repos_with_ids.txt
-.. branch is "8.0" for example
-=======
 * Go to accounting/...../yml templates
 * Give template a name
 * Load an example PDF; this will trigger text parsing. The result will be shown.
@@ -68,7 +58,6 @@ To use this module, you need to:
 * Possibly test the template using this module or accounting/.../import vendor bills
 * The test will warn you if you made a template on a PDF for which there is already another template
 * Enjoy
->>>>>>> c6e89c0... i2d_yml_template : comment for module adapted to latest changes
 
 Known issues / Roadmap
 ======================
