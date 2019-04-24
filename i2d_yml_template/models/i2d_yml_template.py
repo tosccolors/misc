@@ -146,7 +146,7 @@ options:\n\
         if local_templates_dir :
             process = Popen (['invoice2data', '--debug', '--template-folder', local_templates_dir, pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
         else :
-            rocess = Popen (['invoice2data', '--debug', pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
+            process = Popen (['invoice2data', '--debug', pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
         stdout, stderr = process.communicate()
         if not local_templates_dir :
             stderr += "Templates directory not found, check odoo.cfg and directories for correct \'invoice2data_templates_dir\'"
@@ -163,9 +163,6 @@ options:\n\
 
     @api.multi
     def compose_yml_template(self):
-        if not self.state == 'saved' :
-            raise UserError(_("Please save template in external system first")) 
-            return
         if not self.keyword and not self.amount and not self.amount_untaxed and not self.date and not self.invoice_number and not self.description :
             raise UserError(_("No regex formulas entered. Nothing to compose with."))
             return 
@@ -176,7 +173,7 @@ options:\n\
         name = self.partner_ids[0].partner_id.name
         self.yml_content="# -*- coding: utf-8 -*-\n\
 issuer: "+name+" \n\
-fields: \n"
+fields:\n"
         if self.amount :
             self.yml_content += "  amount: "+self.amount+"\n"
         if self.amount_untaxed : 
