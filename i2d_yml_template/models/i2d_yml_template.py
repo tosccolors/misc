@@ -144,7 +144,7 @@ options:\n\
         os.close(fd)
         local_templates_dir = config.get('invoice2data_templates_dir', False)
         if local_templates_dir :
-            process = Popen (['invoice2data', '--debug', '--template-folder', local_templates_dir, pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
+            process = Popen (['invoice2data', '--debug', '--exclude-built-in-templates', '--template-folder', local_templates_dir, pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
         else :
             process = Popen (['invoice2data', '--debug', pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
         stdout, stderr = process.communicate()
