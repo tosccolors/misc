@@ -144,9 +144,9 @@ options:\n\
         os.close(fd)
         local_templates_dir = config.get('invoice2data_templates_dir', False)
         if local_templates_dir :
-            process = Popen (['invoice2data', '--debug', '--template-folder', local_templates_dir, pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
+            process = Popen (['invoice2data', '--debug', '--exclude-built-in-templates', '--template-folder', local_templates_dir, pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
         else :
-            rocess = Popen (['invoice2data', '--debug', pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
+            process = Popen (['invoice2data', '--debug', pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
         stdout, stderr = process.communicate()
         if not local_templates_dir :
             stderr += "Templates directory not found, check odoo.cfg and directories for correct \'invoice2data_templates_dir\'"
@@ -163,9 +163,6 @@ options:\n\
 
     @api.multi
     def compose_yml_template(self):
-        if not self.state == 'saved' :
-            raise UserError(_("Please save template in external system first")) 
-            return
         if not self.keyword and not self.amount and not self.amount_untaxed and not self.date and not self.invoice_number and not self.description :
             raise UserError(_("No regex formulas entered. Nothing to compose with."))
             return 
@@ -176,7 +173,7 @@ options:\n\
         name = self.partner_ids[0].partner_id.name
         self.yml_content="# -*- coding: utf-8 -*-\n\
 issuer: "+name+" \n\
-fields: \n"
+fields:\n"
         if self.amount :
             self.yml_content += "  amount: "+self.amount+"\n"
         if self.amount_untaxed : 
@@ -316,32 +313,47 @@ options:\n\
 
     @api.multi
     def amount2regex(self):
-        self.amount = self.convert2regex(self.amount)
-        self.onchange_amount()
+        if self.amount : 
+            self.amount = self.convert2regex(self.amount)
+            self.onchange_amount()
+        else :
+            self.amount_result = ""
         return
 
     @api.multi
     def amount_untaxed2regex(self):
-        self.amount_untaxed = self.convert2regex(self.amount_untaxed)
-        self.onchange_amount_untaxed()
+        if self.amount_untaxed :
+            self.amount_untaxed = self.convert2regex(self.amount_untaxed)
+            self.onchange_amount_untaxed()
+        else :
+            self.amount_untaxed_result = ""
         return
 
     @api.multi
     def date2regex(self):
-        self.date = self.convert2regex(self.date)
-        self.onchange_date()
+        if self.date :
+            self.date = self.convert2regex(self.date)
+            self.onchange_date()
+        else :
+            self.date_result = ""
         return
 
     @api.multi
     def invoice_number2regex(self):
-        self.invoice_number = self.convert2regex(self.invoice_number)
-        self.onchange_invoice_number()
+        if self.invoice_number :
+            self.invoice_number = self.convert2regex(self.invoice_number)
+            self.onchange_invoice_number()
+        else :
+            self.invoice_number_result = ""
         return
 
     @api.multi
     def description2regex(self):
-        self.description = self.convert2regex(self.description)
-        self.onchange_description()
+        if self.description :
+            self.description = self.convert2regex(self.description)
+            self.onchange_description()
+        else :
+            self.description_result = ""
         return
 
     @api.multi
