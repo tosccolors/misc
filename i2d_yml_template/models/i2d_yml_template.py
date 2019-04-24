@@ -313,32 +313,47 @@ options:\n\
 
     @api.multi
     def amount2regex(self):
-        self.amount = self.convert2regex(self.amount)
-        self.onchange_amount()
+        if self.amount : 
+            self.amount = self.convert2regex(self.amount)
+            self.onchange_amount()
+        else :
+            self.amount_result = ""
         return
 
     @api.multi
     def amount_untaxed2regex(self):
-        self.amount_untaxed = self.convert2regex(self.amount_untaxed)
-        self.onchange_amount_untaxed()
+        if self.amount_untaxed :
+            self.amount_untaxed = self.convert2regex(self.amount_untaxed)
+            self.onchange_amount_untaxed()
+        else :
+            self.amount_untaxed_result = ""
         return
 
     @api.multi
     def date2regex(self):
-        self.date = self.convert2regex(self.date)
-        self.onchange_date()
+        if self.date :
+            self.date = self.convert2regex(self.date)
+            self.onchange_date()
+        else :
+            self.date_result = ""
         return
 
     @api.multi
     def invoice_number2regex(self):
-        self.invoice_number = self.convert2regex(self.invoice_number)
-        self.onchange_invoice_number()
+        if self.invoice_number :
+            self.invoice_number = self.convert2regex(self.invoice_number)
+            self.onchange_invoice_number()
+        else :
+            self.invoice_number_result = ""
         return
 
     @api.multi
     def description2regex(self):
-        self.description = self.convert2regex(self.description)
-        self.onchange_description()
+        if self.description :
+            self.description = self.convert2regex(self.description)
+            self.onchange_description()
+        else :
+            self.description_result = ""
         return
 
     @api.multi
