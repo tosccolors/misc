@@ -265,7 +265,7 @@ WHERE
         OR f.balance IS NOT NULL AND f.balance != 0
     )
         """
-        if self.hide_account_balance_at_0:
+        if self.hide_account_at_0:
             query_inject_account += """
 AND
     f.balance IS NOT NULL AND f.balance != 0
@@ -331,7 +331,7 @@ AND
                 tuple(self.filter_cost_center_ids.ids),
             )
         query_inject_account_params += (
-            self.id or 'NULL',
+            self.id,
             self.env.uid,
         )
         self.env.cr.execute(query_inject_account, query_inject_account_params)
@@ -625,7 +625,7 @@ WHERE
         OR f.balance IS NOT NULL AND f.balance != 0
     )
         """
-        if self.hide_account_balance_at_0:
+        if self.hide_account_at_0:
             query_inject_partner += """
 AND
     f.balance IS NOT NULL AND f.balance != 0
@@ -689,7 +689,6 @@ AND
             self.env.uid,
         )
         self.env.cr.execute(query_inject_partner, query_inject_partner_params)
-
 
     def _inject_line_not_centralized_values(
             self,
@@ -764,6 +763,7 @@ INSERT INTO
     create_uid,
     create_date,
     move_line_id,
+    matched_ml_id,
     date,
     entry,
     journal,
@@ -772,7 +772,6 @@ INSERT INTO
     partner,
     label,
     cost_center,
-    matching_number,
     debit,
     credit,
     cumul_balance,
@@ -793,6 +792,7 @@ SELECT
     %s AS create_uid,
     NOW() AS create_date,
     ml.id AS move_line_id,
+    fr.id AS matched_ml_id,
     ml.date,
     m.name AS entry,
     j.code AS journal,
@@ -836,7 +836,6 @@ SELECT
         query_inject_move_line += """
     CONCAT_WS(' - ', NULLIF(ml.ref, ''), NULLIF(ml.name, '')) AS label,
     aa.name AS cost_center,
-    fr.name AS matching_number,
     ml.debit,
     ml.credit,
         """
@@ -1202,114 +1201,3 @@ ORDER BY
             query_inject_move_line_centralized,
             query_inject_move_line_centralized_params
         )
-
-    def _get_unaffected_earnings_account_sub_subquery_sum_initial(
-            self
-    ):
-        """ Return subquery used to compute sum amounts on
-        unaffected earnings accounts """
-        sub_subquery_sum_amounts = """
-        SELECT
-            SUM(ml.balance) AS initial_balance,
-            0.0 AS final_balance
-        FROM
-            account_account a
-        INNER JOIN
-            account_account_type at ON a.user_type_id = at.id
-        INNER JOIN
-            account_move_line ml
-                ON a.id = ml.account_id
-                AND ml.date < %(date_from)s
-            """
-        if self.only_posted_moves:
-            sub_subquery_sum_amounts += """
-        INNER JOIN
-            account_move m ON ml.move_id = m.id AND m.state = 'posted'
-            """
-        if self.filter_cost_center_ids:
-            sub_subquery_sum_amounts += """
-        INNER JOIN
-            account_analytic_account aa
-                ON
-                    ml.analytic_account_id = aa.id
-                    AND aa.id IN %(cost_center_ids)s
-            """
-        if self.filter_analytic_tag_ids:
-            sub_subquery_sum_amounts += """
-            INNER JOIN
-                move_lines_on_tags ON ml.id = move_lines_on_tags.ml_id
-            """
-        sub_subquery_sum_amounts += """
-        WHERE
-            a.company_id = %(company_id)s
-        AND
-            a.id IN %(unaffected_earnings_account_ids)s
-        """
-        if self.filter_journal_ids:
-            sub_subquery_sum_amounts += """
-        AND
-            ml.journal_id in %(filter_journal_ids)s        """
-        #@sushma
-        if self.operating_unit_id:
-            sub_subquery_sum_amounts += """
-                    AND
-                        ml.operating_unit_id = %s 
-            """%self.operating_unit_id.id
-        return sub_subquery_sum_amounts
-
-    def _get_unaffected_earnings_account_sub_subquery_sum_final(self):
-        """ Return subquery used to compute sum amounts on
-                unaffected earnings accounts """
-
-        sub_subquery_sum_amounts = """
-            SELECT
-                0.0 AS initial_balance,
-                SUM(ml.balance) AS final_balance
-                """
-        sub_subquery_sum_amounts += """
-                FROM
-                    account_account a
-                INNER JOIN
-                    account_account_type at ON a.user_type_id = at.id
-                INNER JOIN
-                    account_move_line ml
-                        ON a.id = ml.account_id
-                        AND ml.date <= %(date_to)s
-                """
-        if self.only_posted_moves:
-            sub_subquery_sum_amounts += """
-                INNER JOIN
-                    account_move m ON ml.move_id = m.id AND m.state = 'posted'
-                    """
-        if self.filter_cost_center_ids:
-            sub_subquery_sum_amounts += """
-                INNER JOIN
-                    account_analytic_account aa
-                        ON
-                            ml.analytic_account_id = aa.id
-                            AND aa.id IN %(cost_center_ids)s
-                    """
-        if self.filter_analytic_tag_ids:
-            sub_subquery_sum_amounts += """
-            INNER JOIN
-                move_lines_on_tags ON ml.id = move_lines_on_tags.ml_id
-            """
-        sub_subquery_sum_amounts += """
-        WHERE
-            a.company_id = %(company_id)s
-        AND
-            a.id IN %(unaffected_earnings_account_ids)s
-        """
-        if self.filter_journal_ids:
-            sub_subquery_sum_amounts += """
-        AND
-            ml.journal_id in %(filter_journal_ids)s
-        """
-        # @sushma
-        if self.operating_unit_id:
-            sub_subquery_sum_amounts += """
-                        AND
-                            ml.operating_unit_id = %s 
-                """ % self.operating_unit_id.id
-        return sub_subquery_sum_amounts
-
