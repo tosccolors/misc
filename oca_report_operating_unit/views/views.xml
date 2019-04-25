@@ -1,0 +1,59 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <!--
+    <record model="ir.ui.view" id="oca_report_operating_unit.list">
+      <field name="name">oca_report_operating_unit list</field>
+      <field name="model">oca_report_operating_unit.oca_report_operating_unit</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+    -->
+
+    <!-- actions opening views on models -->
+    <!--
+    <record model="ir.actions.act_window" id="oca_report_operating_unit.action_window">
+      <field name="name">oca_report_operating_unit window</field>
+      <field name="res_model">oca_report_operating_unit.oca_report_operating_unit</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    -->
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="oca_report_operating_unit.action_server">
+      <field name="name">oca_report_operating_unit server</field>
+      <field name="model_id" ref="model_oca_report_operating_unit_oca_report_operating_unit"/>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": self._name,
+        }
+      </field>
+    </record>
+    -->
+
+    <!-- Top menu item -->
+    <!--
+    <menuitem name="oca_report_operating_unit" id="oca_report_operating_unit.menu_root"/>
+    -->
+    <!-- menu categories -->
+    <!--
+    <menuitem name="Menu 1" id="oca_report_operating_unit.menu_1" parent="oca_report_operating_unit.menu_root"/>
+    <menuitem name="Menu 2" id="oca_report_operating_unit.menu_2" parent="oca_report_operating_unit.menu_root"/>
+    -->
+    <!-- actions -->
+    <!--
+    <menuitem name="List" id="oca_report_operating_unit.menu_1_list" parent="oca_report_operating_unit.menu_1"
+              action="oca_report_operating_unit.action_window"/>
+    <menuitem name="Server to list" id="oca_report_operating_unit" parent="oca_report_operating_unit.menu_2"
+              action="oca_report_operating_unit.action_server"/>
+    -->
+  </data>
+</odoo>
