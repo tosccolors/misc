@@ -3,19 +3,20 @@
     'name': "oca_report_operating_unit",
 
     'summary': """
+        Additional filter on oca reporting module.
         """,
 
     'description': """
-        
+        Additional filter on oca reporting module.
     """,
 
-    'author': "My Company",
+    'author'  : 'Eurogroup Consulting - Willem Hulshof',
     'website': "http://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
     # for the full list
-    'category': 'Uncategorized',
+    'category': 'Reporting',
     'version': '0.1',
 
     # any module necessary for this one to work correctly
