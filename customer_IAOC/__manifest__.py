@@ -15,8 +15,7 @@
 
     'category': 'Others',
     'version': '0.1',
-
-    'depends': ['account_invoice_transmit_method'],
+    'depends': ['base_vat','account_invoice_transmit_method'],
 
     'data': [
         'views/res_partner_view.xml',
