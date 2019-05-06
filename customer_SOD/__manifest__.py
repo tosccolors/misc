@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Customer IAOC",
+    'name': "Customer Segregation of Duties",
 
     'summary': """
         This module makes sure that sales users can modify customer fields that are relevant for sales, but are normally positioned at the finance tab  
