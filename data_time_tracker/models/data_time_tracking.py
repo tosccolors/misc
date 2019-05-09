@@ -19,24 +19,61 @@ class DataTrackThread(models.AbstractModel):
     def _track_data(self, track_config, values, method='write'):
         for config in track_config:
             if config.field_id.name in values:
-                for obj in self:
-                    dic = {}
-                    data_tracker = self.env['data.time.tracker']
-                    current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    if config.model_id.model == self._name:
-                        fieldval = obj[config.field_id.name]
-                        sdomain = [('model', '=', self._name), ('relation_model', '=', config.relation_model), ('model_ref', '=', obj.id), ('date_to', '=', '9999-12-31 00:00:00')]
-                        trackObj = data_tracker.search(sdomain, limit=1)
-                        trackObj.write({'date_to': current_date})
-                        if fieldval and fieldval.id:
-                            dic['model'] = config.model_id.model
-                            dic['relation_model'] = config.relation_model
-                            dic['model_ref'] = obj.id
-                            dic['relation_ref'] = obj[config.field_id.name].id if method == 'create' else values[config.field_id.name]
-                            dic['date_from'] = current_date
-                            dic['date_to'] = '9999-12-31 00:00:00'
-                            if dic['relation_ref']:
-                                data_tracker.create(dic)
+                data_tracker = self.env['data.time.tracker']
+                current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                if config.field_id.ttype == 'many2many':
+                    for obj in self:
+                        dic = {}
+                        if config.model_id.model == self._name:
+                            sdomain = [('model', '=', self._name), ('relation_model', '=', config.relation_model),
+                                       ('model_ref', '=', obj.id), ('date_to', '=', '9999-12-31 00:00:00'),
+                                       ('type_many2many', '=', True)]
+                            #update date, if all values removed from many2many
+                            if values[config.field_id.name] and not values[config.field_id.name][0][2] and obj[config.field_id.name].ids:
+                                sdomain += [('relation_ref', 'in', obj[config.field_id.name].ids)]
+                                trackObj = data_tracker.search(sdomain, limit=1)
+                                trackObj.write({'date_to': current_date})
+                            else:
+                                #get new many2many ids
+                                newRefIds = list(
+                                    set(values[config.field_id.name][0][2]) - set(obj[config.field_id.name].ids)) if values[
+                                    config.field_id.name] else []
+
+                                # get removed many2many ids
+                                unlinkRefIds = list(
+                                    set(obj[config.field_id.name].ids)- set(values[config.field_id.name][0][2])) if values[config.field_id.name] else []
+                                if unlinkRefIds:
+                                    sdomain += [('relation_ref', 'in', unlinkRefIds)]
+                                    trackObj = data_tracker.search(sdomain, limit=1)
+                                    trackObj.write({'date_to': current_date})
+
+                                dic['model'] = config.model_id.model
+                                dic['relation_model'] = config.relation_model
+                                dic['model_ref'] = obj.id
+                                dic['type_many2many'] = True
+                                dic['date_from'] = current_date
+                                dic['date_to'] = '9999-12-31 00:00:00'
+                                for refId in newRefIds:
+                                    dic['relation_ref'] = refId
+                                    data_tracker.create(dic)
+
+                if config.field_id.ttype == 'many2one':
+                    for obj in self:
+                        dic = {}
+                        if config.model_id.model == self._name:
+                            fieldval = obj[config.field_id.name]
+                            sdomain = [('model', '=', self._name), ('relation_model', '=', config.relation_model), ('model_ref', '=', obj.id), ('date_to', '=', '9999-12-31 00:00:00'), ('type_many2many', '=', False)]
+                            trackObj = data_tracker.search(sdomain, limit=1)
+                            trackObj.write({'date_to': current_date})
+                            if fieldval and fieldval.id:
+                                dic['model'] = config.model_id.model
+                                dic['relation_model'] = config.relation_model
+                                dic['model_ref'] = obj.id
+                                dic['relation_ref'] = obj[config.field_id.name].id if method == 'create' else values[config.field_id.name]
+                                dic['date_from'] = current_date
+                                dic['date_to'] = '9999-12-31 00:00:00'
+                                if dic['relation_ref']:
+                                    data_tracker.create(dic)
                     return True
 
     @api.model
@@ -137,6 +174,7 @@ class DataTimeTracker(models.Model):
     date_to = fields.Datetime('Valid To')
     model_name = fields.Char(compute ='_get_reference', string="Model Ref#")
     relation_model_name = fields.Char(compute ='_get_reference', string="Co-model Ref#")
+    type_many2many = fields.Boolean()
 
     @api.multi
     def action_open_view(self):
