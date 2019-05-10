@@ -36,12 +36,50 @@ Configuration
 =============
 
 To configure this module, you need to:
-
-#. Go to ...
-
-.. figure:: path/to/local/image.png
-   :alt: alternative description
-   :width: 600 px
+# Configure the folder structure on a location accessible by the finance department, where *.pdf and *.PDF invoice documents are placed before import and moved after successful import, like "invoices_in" and "invoices_done". 
+# Configure an FTP connection with which Odoo can access one or more folders to retrieve supplier invoice documents. 
+# Create the YML template file export location "invoice2data_local_templates" under data/ or .filestore/ (depends on production or test database) to get the path "home/odoo/data/invoice2data_local_templates".
+# Include this directory in the "odoo.cfg"-file and restart the server. 
+## invoice2data_templates_dir = /opt/invoice2data_local_templates. 
+## invoice2data_exclude_built_in_templates = True). 
+# Install the following modules: 
+## i2d_yml_template_new (should install the following modules). 
+## batch_vendor_invoice_import_new. 
+## account_invoice_import_invoice2data. 
+## external_file_location. 
+## account_operating_unit. 
+# Configure in Settings > Automation > File locations the following: 
+## Import vendor invoices: 
+### Protocol = FTP. 
+### Port = 21 (often). 
+### Task configuration (for each file type in each folder a separate task is required, so per operating unit folder 2 tasks): 
+#### Method Type = "Import". 
+#### Filename = *.pdf or *.PDF. 
+#### Filepath = [name of specific folder accessible by Odoo via FTP to retrieve the document]. 
+#### Location = "Import Vendor Invoices". 
+#### Operating Unit which is needed. 
+#### After import = "Move". 
+#### Move path = [name of specific folder accessible by Odoo via FTP to move the document]. 
+## Default export location for i2d yml templates: 
+### Protocol = File Store. 
+### File Store Root Path = write exactly "data/", or that what has been configured in the filesystem for storing YML templates. 
+### Task configuration (1 task): 
+#### Method Type = "Export". 
+#### Filepath = "invoice2data_local_templates". 
+#### Location = "Default export location for i2d yml templates". 
+#### Operating Unit can be left empty. 
+# Configure a default supplier by creating a new (empty) partner with the boolean "default supplier" = True in the tab "Sales". 
+# Configure the scheduled actions "Run file exchange tasks" and "Run Attachments Metadata": 
+## Set to Active = True. 
+## Set the interval (in minutes). 
+## Make sure the res.user in the tasks has an e-mail address filled.
+# Go to Finance > Configuration > Import Vendor Bills > Import Bills and create an import configuration for the Default (Dummy) Supplier. 
+## Set the partner to the created Default Supplier. 
+## Set the Method for Invoice Line to "Single Line, No Product"
+## Set the Expense Account to anything you like.
+# Go to Finance > Configuration > YML Templates to configure company-specific invoice import templates using regex. 
+## Fill all required fields such as Name, Template Vendors (here you add the Vendor name, VAT number, 'Import Vendor Bill') and the YML content. 
+## The YML content consists of regular expressions, which need to match with the text as parsed by Odoo (see the database log to extract the correct parsed text).
 
 Usage
 =====
