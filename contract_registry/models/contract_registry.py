@@ -53,11 +53,6 @@ class ContractRegistry(models.Model):
      period_ids = fields.One2many('contract.period', 'period_id', string='Period', copy=True
      )
 
-     
-     
-     @api.depends('value')
-     def _value_pc(self):
-         self.value2 = float(self.value) / 100
          
      @api.multi
      def done_contract(self):
