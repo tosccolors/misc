@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_segment_four,access_segment_four,model_segment_four,,1,0,0,0
+access_segment_one,access_segment_one,model_segment_one,,1,0,0,0
+access_segment_two,access_segment_two,model_segment_two,,1,0,0,0
+access_segment_three,access_segment_three,model_segment_three,,1,0,0,0
