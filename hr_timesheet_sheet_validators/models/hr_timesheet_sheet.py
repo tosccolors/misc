@@ -18,6 +18,15 @@ class HrTimesheetSheet(models.Model):
             return emp.department_id and emp.department_id.id or False
         return False
 
+
+    @api.one
+    def _check_validator(self):
+        validator = False
+        grpOfficer = self.env.user.has_group('hr.group_hr_user')
+        if self.env.uid in self.validator_user_ids.ids and grpOfficer and self.state == 'confirm':
+            validator = True
+        self.is_validator = validator
+
     validator_user_ids = fields.Many2many(
         'res.users',
         string='Validators'
@@ -28,6 +37,8 @@ class HrTimesheetSheet(models.Model):
         string='Department',
         default=_default_department,
     )
+    is_validator = fields.Boolean(string="Is validator", compute='_check_validator')
+
 
     @api.multi
     def _get_validator_user_ids(self):
