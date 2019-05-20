@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<!-- for segment one -->
+	
+	<menuitem id="main_menu_id"
+    parent="sales_team.menu_sale_config"
+    sequence="4" name="Segments"/>
+    
    	<record id="view_segment_one_form" model="ir.ui.view">
      <field name="name">segment.one</field>
      <field name="model">segment.one</field>
@@ -39,7 +44,7 @@
     </record>
     
     <menuitem id="menu_segment_one"
-    parent="sales_team.menu_sale_config"
+    parent="main_menu_id"
     action="action_segment_one"
     sequence="4"/>
     
@@ -82,7 +87,7 @@
     </record>
     
     <menuitem id="menu_segment_two"
-    parent="sales_team.menu_sale_config"
+    parent="main_menu_id"
     action="action_segment_two"
     sequence="4"/>
     
@@ -126,7 +131,7 @@
     </record>
     
     <menuitem id="menu_segment_three"
-    parent="sales_team.menu_sale_config"
+    parent="main_menu_id"
     action="action_segment_three"
     sequence="4"/>
     
@@ -169,8 +174,9 @@
     </record>
     
     <menuitem id="menu_segment_four"
-    parent="sales_team.menu_sale_config"
+    parent="main_menu_id"
     action="action_segment_four"
     sequence="4"/>
+    
 	
 </odoo>
