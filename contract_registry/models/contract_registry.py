@@ -31,22 +31,16 @@ class ContractRegistry(models.Model):
          'partner_id',
          'Concerned Business Partners'
      )
-     value = fields.Integer(
-
-     )
-     value2 = fields.Float(
-         compute="_value_pc",
-         store=True
-     )
      description = fields.Text(
-
      )
-
-     renewable = fields.Boolean('is Renewable?'
+     renewable = fields.Boolean(
+         'is Renewable?'
      )
-     one_time = fields.Boolean('One Time'
+     one_time = fields.Boolean(
+         'One Time'
      )
-     alert_date = fields.Date("Date"
+     alert_date = fields.Date(
+         "Date"
      )
      responsible_officer_id = fields.Many2one(
          'res.users',
@@ -59,11 +53,6 @@ class ContractRegistry(models.Model):
      period_ids = fields.One2many('contract.period', 'period_id', string='Period', copy=True
      )
 
-     
-     
-     @api.depends('value')
-     def _value_pc(self):
-         self.value2 = float(self.value) / 100
          
      @api.multi
      def done_contract(self):
