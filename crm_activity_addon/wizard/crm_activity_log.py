@@ -1,6 +1,5 @@
 
 from odoo import models, fields, api, tools, _
-# from odoo.tools import html2text, ustr
 from bs4 import BeautifulSoup
 
 

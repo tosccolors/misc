@@ -32,6 +32,6 @@
         # 'demo/demo.xml',
     ],
     'external_dependencies': {
-        'python': ['BeautifulSoup'],
+        'python': ['bs4'],
     },
 }
