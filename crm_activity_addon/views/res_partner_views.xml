@@ -1,0 +1,21 @@
+<odoo>
+  <data>
+
+    <record id="res_partner_view_buttons" model="ir.ui.view">
+            <field name="name">res.partner.view.crm</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="priority" eval="20"/>
+            <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="arch" type="xml">
+                <page name="internal_notes" position="inside">
+                  <button class="oe_stat_button" type="object" name="create_activity" string="Create Activity"/>
+                    <!--<button name="%(crm.crm_activity_log_action)d" string="Log Activity" type="action" class="btn-link"-->
+                            <!--attrs="{'invisible': [('active', '=', False)]}"/>-->
+
+                </page>
+            </field>
+        </record>
+
+  </data>
+</odoo>
