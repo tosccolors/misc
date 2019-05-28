@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<template id="assets_backend" name="sales_team assets" inherit_id="web.assets_backend">
+		<xpath expr="." position="inside">
+		<link rel="stylesheet" href="/deactivate_crm_lead_dashboard_count/static/src/css/sales.css"/>
+		<script type="text/javascript" src="/deactivate_crm_lead_dashboard_count/static/src/js/sales_team_dashboard.js"></script>
+		</xpath>
+	</template> 
+</odoo>
