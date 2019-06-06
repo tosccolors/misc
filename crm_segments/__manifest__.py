@@ -15,7 +15,7 @@
 
     'category': 'Others',
     'version': '0.1',
-    'depends': ['sale','crm','sales_team'],
+    'depends': ['sale','crm','sales_team','base'],
 
     'data': [
         'security/ir.model.access.csv',
