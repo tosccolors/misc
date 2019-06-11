@@ -3,17 +3,15 @@
    	<record id="view_partner_form_inherit" model="ir.ui.view">
      <field name="name">res.partner.inherit</field>
      <field name="model">res.partner</field>
-     <field name="inherit_id" ref="base_vat.view_partner_form"/>
+     <field name="inherit_id" ref="base.view_partner_form"/>
      <field name="arch" type="xml">
      <xpath expr="//page[@name='sales_purchases']" position="inside">
-     	<group name="container_row_2">
      		<group string="Sales Segments" name="sale_segment">
 		         <field name='segment_one'/>
 		         <field name='segment_two'/>
 		         <field name='segment_three'/>
 		         <field name='segment_four'/>
 	         </group>
-         </group>
      </xpath>
      </field>
      </record>
