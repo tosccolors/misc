@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_mail_followers_config_form" model="ir.ui.view">
+        <field name="name">mail.followers.config.form</field>
+        <field name="model">mail.followers.config</field>
+        <field name="arch" type="xml">
+            <form string="Configuration">
+                <sheet>
+                    <group>
+                        <group>
+                            <label string="Notify following customers by e-mail?"/>
+                            <field name="value" nolabel="1" attrs="{'readonly':[('complete_stop', '=', True)]}"/>
+                        </group>
+                         <group>
+                            <field name="model_id"/>
+                            <field name="company_id" required="1"/>
+                        </group>
+                        <group>
+                            <label string="Disable all emails notifications?"/>
+                            <field name="complete_stop"  nolabel="1"/>
+                        </group>
+                        <group>
+                            <label string="Disable emails including tracking visibiltiy?"/>
+                            <field name="stop_track_visibility" nolabel="1"/>
+                        </group>
+                    </group>
+                    <div>
+                        <strong> Note:</strong>
+                    </div>
+                    <div>
+                        <strong>1. </strong>By setting "Notify following customers by e-mail?" to FALSE, only [('customer',=,FALSE)] will receive follower mail messages. [('customer',=,TRUE)] will be excluded from receiving follower mail messages, <strong>but</strong> when [('customer',=,TRUE)] forcely tagged or added as recipients will also be notify.
+                    </div>
+                    <br/>
+                    <div>
+                        <strong>2. </strong>By setting "Notify following customers by e-mail?" to True, only [('customer',=,True)] will receive follower mail messages. [('customer',=,False)] will be excluded from receiving follower mail messages, <strong>but</strong> when [('customer',=,False)] forcely tagged or added as recipients will also be notify.
+                    </div>
+                    <br/>
+                    <div>
+                        <strong>3. </strong>In case both [('customer',=,TRUE)] and [('customer',=,FALSE)] should receive follower mail messages when tagged or added as recipients, please do not create any configuration.
+                    </div>
+                    <br/>
+                    <div>
+                        <strong>4. </strong>Disable all emails notifications: If True, both [('customer',=,TRUE)] and [('customer',=,FALSE)]
+                        won't be getting any mails.
+                    </div>
+                    <br/>
+                    <div>
+                        <strong>5. </strong>Disable emails including tracking visibility: If True, disables all emails to followers of an object and disables emails generated via the 'Track Visibility' functionality.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_mail_followers_config_tree" model="ir.ui.view">
+        <field name="name">mail.followers.config.tree</field>
+        <field name="model">mail.followers.config</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="company_id"/>
+                <field name="model_id"/>
+                <field name="value"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_mail_followers_config" model="ir.actions.act_window">
+        <field name="name">Mail Followers Config</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mail.followers.config</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Mail follower Configuration
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_action_mail_followers_config" parent="base.menu_email" action="action_mail_followers_config" sequence="21" groups="base.group_no_one"/>
+    <!--<menuitem action="action_mail_followers_config" id="menu_action_mail_followers_config" parent="base.menu_users" groups="base.group_no_one" sequence="21"/>-->
+</odoo>
