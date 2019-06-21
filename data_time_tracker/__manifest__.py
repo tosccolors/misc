@@ -25,7 +25,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'wizard/tracker_wizard_view.xml',
         'views/data_time_tracking_view.xml',
     ],
