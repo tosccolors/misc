@@ -12,7 +12,8 @@ class ActivityLog(models.TransientModel):
     phone = fields.Char(string='Phone')
     mobile = fields.Char(string='Mobile')
     user_id = fields.Many2one('res.users', string='Salesperson')
-
+    date_action = fields.Datetime('Next Activity Date', index=True)
+    
     @api.multi
     def action_log_and_schedule(self):
         self.ensure_one()
