@@ -10,14 +10,14 @@ class Partner(models.Model):
     @api.multi
     def create_activity(self):
         self.ensure_one()
-        if not self.comment:
-            raise UserError(_("Please fill internal notes!"))
+#         if not self.comment:
+#             raise UserError(_("Please fill internal notes!"))
         crm = self.env['crm.lead']
 
         def _create_lead(self):
             dic = {
-                'subject': self.comment,
-                'name': self.comment,
+                'subject': "Internal Note",
+                'name': "Internal Note",
                 'type': 'opportunity',
                 # 'partner_id':self.parent_id and self.parent_id.id or self.id,
                 # 'partner_contact_id':not self.parent_id and self.id,
