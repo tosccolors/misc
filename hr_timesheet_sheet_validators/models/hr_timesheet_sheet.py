@@ -23,7 +23,7 @@ class HrTimesheetSheet(models.Model):
     def _check_validator(self):
         validator = False
         grpOfficer = self.env.user.has_group('hr.group_hr_user')
-        if self.env.uid in self.validator_user_ids.ids and grpOfficer and self.state == 'confirm':
+        if self.user_id.id != self.env.uid and self.env.uid in self.validator_user_ids.ids and grpOfficer and self.state == 'confirm':
             validator = True
         self.is_validator = validator
 
