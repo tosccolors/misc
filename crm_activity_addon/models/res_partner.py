@@ -19,12 +19,12 @@ class Partner(models.Model):
                 'subject': "Internal Note",
                 'name': "Internal Note",
                 'type': 'opportunity',
-                # 'partner_id':self.parent_id and self.parent_id.id or self.id,
-                # 'partner_contact_id':not self.parent_id and self.id,
-                # 'email':self.email,
-                # 'phone':self.phone,
-                # 'mobile':self.mobile,
-                # 'user_id':self.user_id and self.user_id.id or False,
+                'partner_id':self.parent_id and self.parent_id.id or self.id,
+                'partner_contact_id':not self.parent_id and self.id,
+                'email':self.email,
+                'phone':self.phone,
+                'mobile':self.mobile,
+                'user_id':self.user_id and self.user_id.id or False,
             }
             return crm.create(dic).id
 
