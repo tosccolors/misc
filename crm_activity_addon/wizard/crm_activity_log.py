@@ -66,5 +66,3 @@ class ActivityLog(models.TransientModel):
             self.lead_id.write({'stage_id': stage_id.id})
         return res
 
-
-
