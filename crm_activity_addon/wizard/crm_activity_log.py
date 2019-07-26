@@ -60,7 +60,7 @@ class ActivityLog(models.TransientModel):
             if not context.get('ctx_scheduled_log',False):
                 dic.update({'stage_id': stage_id.id})
             if self.title_action:
-                dic['name'] = self.title_action
+                dic['name'] = "Internal Note"
             self.lead_id.write(dic)
         if not context.get('ctx_scheduled_log',False):
             self.lead_id.write({'stage_id': stage_id.id})
