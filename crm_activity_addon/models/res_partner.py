@@ -24,7 +24,7 @@ class Partner(models.Model):
                 'email':self.email,
                 'phone':self.phone,
                 'mobile':self.mobile,
-                'user_id':self.user_id and self.user_id.id or False,
+                'user_id':self.env.uid or False,
             }
             return crm.create(dic).id
 
@@ -36,7 +36,7 @@ class Partner(models.Model):
             default_email=self.email,
             default_phone=self.phone,
             default_mobile=self.mobile,
-            default_user_id=self.user_id and self.user_id.id or False,
+            default_user_id=self.env.uid or False,
             default_lead_id=_create_lead(self)
         )
 
