@@ -8,9 +8,9 @@ import logging
 import odoo 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-import PyPDF2 
-import json
-import tabula
+# import PyPDF2 
+# import json
+# import tabula
 _logger = logging.getLogger(__name__)
 
 
