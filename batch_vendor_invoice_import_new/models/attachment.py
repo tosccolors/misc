@@ -73,7 +73,7 @@ class IrAttachmentMetadata(models.Model):
     @api.multi
     def _run(self):
         super(IrAttachmentMetadata, self)._run()
-        if self.location_id == self.env.ref('batch_vendor_invoice_import_new.batch_invoice_import_location'):
+#        if self.location_id == self.env.ref('batch_vendor_invoice_import_new.batch_invoice_import_location'):
             vals = {
                 'invoice_file': self.datas,
                 'invoice_filename': self.name,
