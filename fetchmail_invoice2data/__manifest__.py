@@ -3,7 +3,12 @@
     'name': "Fetch mail and create invoice",
 
     'summary': """
-            This modules will help to create invoice from mail.
+            This modules is used to create vendor invoices via e-mail. It depends on two other modules:
+            
+            - batch vendor import invoice new
+            - yml template module
+            
+            
     """,
     'description': """
     """,
