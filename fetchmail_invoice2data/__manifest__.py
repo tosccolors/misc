@@ -3,9 +3,13 @@
     'name': "Fetch Mail Invoice2data",
 
     'summary': """
-            This Module establish relationship between mail.message and metadata attachment.
-            It will also fill operation unit from server to attachment.
-            Create Metadata attachment when attachment create.
+
+            This modules is used to create vendor invoices via e-mail. It depends on two other modules:
+            
+            - batch vendor import invoice new
+            - yml template module
+            
+            
     """,
     'description': """
     """,
