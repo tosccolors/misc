@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Fetch mail and create invoice",
+    'name': "Fetch Mail Invoice2data",
 
     'summary': """
-            This modules will help to create invoice from mail.
+            This Module establish relationship between mail.message and metadata attachment.
+            It will also fill operation unit from server to attachment.
+            Create Metadata attachment when attachment create.
     """,
     'description': """
     """,
@@ -11,7 +13,7 @@
         'website': "http://www.yourcompany.com",
         'category': 'Others',
         'version': '0.1',
-        'depends': ['mail'],
-        'data': [],
+        'depends': ['mail','attachment_base_synchronize','fetchmail','operating_unit'],
+        'data': ['views/fetchmail_server_view.xml'],
         'demo': [],
     }
