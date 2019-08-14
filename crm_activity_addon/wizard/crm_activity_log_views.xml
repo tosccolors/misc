@@ -34,6 +34,20 @@
                 </form>
             </field>
         </record>
+        
+        <record id="view_crm_case_opportunities_filter_inherit" model="ir.ui.view">
+            <field name="model">crm.activity.report</field>
+            <field name="inherit_id" ref="crm.crm_activity_report_view_search"></field>
+            <field name="arch" type="xml">
+            	<xpath expr="//search" position="inside">
+            	<filter string="My Activities Log" name="my_author_id" domain="[('author_id.user_ids', '=', uid)]" help="Activities that are assigned to me"/>
+            	</xpath>
+            </field>
+        </record>
+        
+        <record id="sale_advertising_order.crm_activity_report_action_tree" model="ir.actions.act_window">
+        	<field name="context">{"search_default_my_author_id":1}</field>
+        </record>
 
         <!--<record id="crm_activity_log_action_misc" model="ir.actions.act_window">
             <field name="name">Log an Activity</field>

@@ -13,6 +13,10 @@
                 </page>
             </field>
         </record>
-
+		
+        <record model="ir.actions.act_window" id="sale_advertising_order.act_res_partner_2_opportunities_advertising">
+            <field name="domain">[('type','=','opportunity'), ('partner_id','child_of',active_id), ('is_activity', '=', False),('stage_id.name','not in',('Won','Logged','Lost'))]</field>
+        </record>
+        
   </data>
 </odoo>
