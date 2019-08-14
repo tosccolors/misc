@@ -23,6 +23,8 @@ class TrackerWizard(models.TransientModel):
     @api.one
     def action_update(self):
         # self.ensure_one()
+        if not self:
+            return True
         ctx = self.env.context.copy()
         relation_ref = ctx.get('relation_ref', False)
         if 'active_model' in ctx and 'active_id' in ctx:
