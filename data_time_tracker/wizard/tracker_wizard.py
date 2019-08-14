@@ -20,9 +20,9 @@ class TrackerWizard(models.TransientModel):
             result['date_to'] = obj.date_to
         return result
 
-    @api.one
+    @api.multi
     def action_update(self):
-        # self.ensure_one()
+        self.ensure_one()
         ctx = self.env.context.copy()
         relation_ref = ctx.get('relation_ref', False)
         if 'active_model' in ctx and 'active_id' in ctx:
@@ -51,8 +51,9 @@ class TrackerWizard(models.TransientModel):
                         _('Date must be in between %s and %s.') % (sec_latest.date_from, sec_latest.date_to))
 
             else:
-                sec_latest.date_from = self.date_from
-                sec_latest.date_to = self.date_from
+                if sec_latest:
+                    sec_latest.date_from = self.date_from
+                    sec_latest.date_to = self.date_from
                 obj.date_from = self.date_from
 
         return True
