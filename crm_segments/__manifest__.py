@@ -3,8 +3,8 @@
     'name': "crm_segments",
 
     'summary': """
-        This module adds 4 segments to the res.partner object, to be configured in the Sales > Configuration menu. These segments can be used for various purposes, for example defining customer segments in order to do sales reporting based on these segments. Segment fields will be copied to sale orders.
-    """,
+        This module adds 4 segments to the res.partner object, to be configured in the Sales > Configuration menu. 
+            """,
 
     'description': """
         This module adds 4 segments to the res.partner object, to be configured in the Sales > Configuration menu. These segments can be used for various purposes, for example defining customer segments in order to do sales reporting based on these segments. Segment fields will be copied to sale orders.
