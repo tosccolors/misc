@@ -74,6 +74,15 @@ class DataTrackThread(models.AbstractModel):
                                 dic['date_to'] = '9999-12-31 00:00:00'
                                 if dic['relation_ref']:
                                     data_tracker.create(dic)
+                            elif not trackObj and not (fieldval and fieldval.id) and method == 'write' and values[config.field_id.name]:
+                                dic['model'] = config.model_id.model
+                                dic['relation_model'] = config.relation_model
+                                dic['model_ref'] = obj.id
+                                dic['relation_ref'] = values[config.field_id.name]
+                                dic['date_from'] = current_date
+                                dic['date_to'] = '9999-12-31 00:00:00'
+                                if dic['relation_ref']:
+                                    data_tracker.create(dic)
                     return True
 
     @api.model
