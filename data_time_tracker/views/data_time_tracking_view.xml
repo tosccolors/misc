@@ -69,8 +69,8 @@
         <field name="arch" type="xml">
             <form string="Data Tracker">
                 <header>
-                    <button name="%(action_tracker_wizard_config)d" type="action" string="Update" class="oe_highlight" attrs="{'invisible':[('date_to', '&lt;', '9999-12-30 59:59:59')]}"/>
-                    <button name="remove" type="object" string="Remove" class="oe_highlight" attrs="{'invisible':[('date_to', '&lt;', '9999-12-30 59:59:59')]}"/>
+                    <button name="%(action_tracker_wizard_config)d" type="action" string="Update" class="oe_highlight" />
+                    <button name="remove" type="object" string="Remove" class="oe_highlight" />
                 </header>
                 <sheet>
                     <div>
