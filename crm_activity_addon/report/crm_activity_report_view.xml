@@ -1,0 +1,15 @@
+<!-- <?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	tree view of crm.activity.report inherited
+        <record id="crm_activity_report_view_inherit_tree" model="ir.ui.view">
+            <field name="name">crm.activity.report.tree</field>
+            <field name="inherit_id" ref="sale_advertising_order.crm_activity_report_view_tree"></field>
+            <field name="model">crm.activity.report</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="note"/>
+                </xpath>
+            </field>
+        </record>
+</odoo>
+ -->

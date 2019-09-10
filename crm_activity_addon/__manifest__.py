@@ -26,6 +26,7 @@
         # 'security/ir.model.access.csv',
         'wizard/crm_activity_log_views.xml',
         'views/res_partner_views.xml',
+#         'report/crm_activity_report_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
