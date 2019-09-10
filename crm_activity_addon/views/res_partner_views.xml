@@ -19,7 +19,7 @@
         </record>
         
         <!-- tree view of crm.activity.report -->
-        <record id="crm_activity_report_view_tree_inheirt" model="ir.ui.view">
+        <record id="crm_activity_report_view_tree_inherit" model="ir.ui.view">
             <field name="name">crm.activity.report.tree</field>
             <field name="model">crm.activity.report</field>
             <field name="inherit_id" ref="crm.crm_activity_report_view_tree" />
