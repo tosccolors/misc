@@ -18,5 +18,17 @@
             <field name="domain">[('type','=','opportunity'), ('partner_id','child_of',active_id), ('is_activity', '=', False),('stage_id.name','not in',('Won','Logged','Lost'))]</field>
         </record>
         
+        <!-- tree view of crm.activity.report -->
+        <record id="crm_activity_report_view_tree_inherit" model="ir.ui.view">
+            <field name="name">crm.activity.report.tree</field>
+            <field name="model">crm.activity.report</field>
+            <field name="inherit_id" ref="crm.crm_activity_report_view_tree" />
+            <field name="arch" type="xml">
+             <field name="date" position="before">	
+             	<field name="description"></field>
+             </field>
+            </field>
+        </record>
+        
   </data>
 </odoo>

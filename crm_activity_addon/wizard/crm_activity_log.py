@@ -77,6 +77,7 @@ class ActivityLog(models.TransientModel):
                 'date_deadline': log.date_deadline,
                 'planned_revenue': log.planned_revenue,
                 'title_action': False,
+                'description':log.note,
             })
             if log.lead_id.is_activity: log.lead_id.write({'stage_id': stage_logged.id})
         return True
