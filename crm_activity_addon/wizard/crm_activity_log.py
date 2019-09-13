@@ -77,7 +77,28 @@ class ActivityLog(models.TransientModel):
                 'date_deadline': log.date_deadline,
                 'planned_revenue': log.planned_revenue,
                 'title_action': False,
-                'description':log.note,
+                # 'description':note,
             })
             if log.lead_id.is_activity: log.lead_id.write({'stage_id': stage_logged.id})
+        return True
+
+    @api.multi
+    def action_save(self):
+        note = ''
+        if self.note and self.note != '<p><br></p>':
+            note = (BeautifulSoup(self.note, 'lxml')).get_text()
+        dic = {
+            'name': "Internal Note",
+            'partner_id': self.partner_id and self.partner_id.id,
+            'partner_contact_id': self.partner_contact_id and self.partner_contact_id.id,
+            'email': self.email,
+            'phone': self.phone,
+            'mobile': self.mobile,
+            'user_id': self.user_id and self.user_id.id,
+            'description': note,
+            'next_activity_id':self.next_activity_id.id,
+            'date_action':self.date_deadline,
+            'is_activity':True,
+        }
+        self.lead_id.write(dic)
         return True

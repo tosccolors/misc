@@ -27,6 +27,7 @@
                     </group>
                     <field name="note" placeholder="Log a note..."/>
                     <footer>
+                        <button name="action_save" string="Save" type="object" class="btn btn-primary"/>
                         <button name="action_log_and_schedule" string="Log &amp; Schedule Next" type="object" class="btn btn-primary"/>
                         <button name="action_log" string="Log Only" type="object" class="btn btn-primary"/>
                         <button string="Cancel" class="btn btn-default" special="cancel"/>

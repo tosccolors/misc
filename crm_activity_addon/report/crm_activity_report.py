@@ -9,7 +9,7 @@ class ActivityReport(models.Model):
 
     _inherit = "crm.activity.report"
     
-    description = fields.Char('Note',readonly=True)
+    description = fields.Char('Note', readonly=True)
 
     def init(self):
         tools.drop_view_if_exists(self._cr, 'crm_activity_report')
@@ -31,7 +31,7 @@ class ActivityReport(models.Model):
                     l.type as lead_type,
                     l.active,
                     l.probability,
-                    l.description
+                    regexp_replace(SPLIT_PART(m.body,'</em></p>',2), E'<[^>]+>', '', 'gi') as description
                 from
                     "mail_message" m
                 join
