@@ -47,7 +47,7 @@
         </record>
         
         <record id="sale_advertising_order.crm_activity_report_action_tree" model="ir.actions.act_window">
-        	<field name="context">{"search_default_my_author_id":1}</field>
+        	<field name="context">{"search_default_my_author_id":1, "search_default_activities":1}</field>
         </record>
 
         <!--<record id="crm_activity_log_action_misc" model="ir.actions.act_window">
