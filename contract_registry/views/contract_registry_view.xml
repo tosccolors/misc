@@ -14,8 +14,6 @@
           <field name="contract_category_id"/>
           <field name="alert_date"/>
           <field name="state"/>
-          <!-- <field name="value"/>
-          <field name="value2"/> -->
         </tree>
       </field>
     </record>

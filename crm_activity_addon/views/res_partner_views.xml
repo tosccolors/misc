@@ -1,0 +1,34 @@
+<odoo>
+  <data>
+
+    <record id="res_partner_view_buttons" model="ir.ui.view">
+            <field name="name">res.partner.view.crm</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="priority" eval="20"/>
+            <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="arch" type="xml">
+                <page name="internal_notes" position="inside">
+                  <button class="oe_highlight" type="object" name="create_activity" string="Create Activity"/>
+                </page>
+            </field>
+        </record>
+		
+        <record model="ir.actions.act_window" id="sale_advertising_order.act_res_partner_2_opportunities_advertising">
+            <field name="domain">[('type','=','opportunity'), ('partner_id','child_of',active_id), ('is_activity', '=', False),('stage_id.name','not in',('Won','Logged','Lost'))]</field>
+        </record>
+        
+        <!-- tree view of crm.activity.report -->
+        <record id="crm_activity_report_view_tree_inherit" model="ir.ui.view">
+            <field name="name">crm.activity.report.tree</field>
+            <field name="model">crm.activity.report</field>
+            <field name="inherit_id" ref="crm.crm_activity_report_view_tree" />
+            <field name="arch" type="xml">
+             <field name="date" position="before">	
+             	<field name="description"></field>
+             </field>
+            </field>
+        </record>
+        
+  </data>
+</odoo>

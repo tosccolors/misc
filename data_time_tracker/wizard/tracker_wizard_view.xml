@@ -10,7 +10,7 @@
                 <sheet>
                     <group>
                         <field name="date_from" />
-                        <field name="date_to" readonly="1"/>
+                        <field name="date_to" readonly="0"/>
                     </group>
                     <footer>
                         <button name="action_update" type="object" string="Update" class="oe_highlight"/>

@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_intrastat_operating_unit_intrastat_operating_unit,intrastat_operating_unit.intrastat_operating_unit,model_intrastat_operating_unit_intrastat_operating_unit,,1,0,0,0

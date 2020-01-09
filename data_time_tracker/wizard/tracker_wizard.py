@@ -46,13 +46,16 @@ class TrackerWizard(models.TransientModel):
                 if sec_latest.date_from <= self.date_from and self.date_from < obj.date_to:
                     sec_latest.date_to = self.date_from
                     obj.date_from = self.date_from
+                    obj.date_to = self.date_to
                 else:
                     raise UserError(
                         _('Date must be in between %s and %s.') % (sec_latest.date_from, sec_latest.date_to))
 
             else:
-                sec_latest.date_from = self.date_from
-                sec_latest.date_to = self.date_from
+                if sec_latest:
+                    sec_latest.date_from = self.date_from
+                    sec_latest.date_to = self.date_from
                 obj.date_from = self.date_from
+                obj.date_to = self.date_to
 
         return True

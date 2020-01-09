@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_segment_four,access_segment_four,model_segment_four,sales_team.group_sale_salesman,1,1,1,1
+access_segment_one,access_segment_one,model_segment_one,sales_team.group_sale_salesman,1,1,1,1
+access_segment_two,access_segment_two,model_segment_two,sales_team.group_sale_salesman,1,1,1,1
+access_segment_three,access_segment_three,model_segment_three,sales_team.group_sale_salesman,1,1,1,1
+

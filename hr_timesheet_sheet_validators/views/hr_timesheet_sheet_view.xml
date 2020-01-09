@@ -10,19 +10,22 @@
                 <attribute name="invisible">False</attribute>
                 <attribute name="readonly">True</attribute>
             </field>
-            <xpath expr='//button[@name="action_timesheet_done"]' position="attributes">
-                <attribute name="invisible">True</attribute>
+            <!--<xpath expr='//button[@name="action_timesheet_done"]' position="attributes">-->
+                <!--<attribute name="invisible">True</attribute>-->
+            <!--</xpath>-->
+            <xpath expr='//button[@name="action_timesheet_done"]' position="replace">
+                <field name="is_validator" invisible="1"/>
+                <button name="action_timesheet_done" string="Approve" type="object"
+                        class="oe_highlight" groups="base.group_user,hr.group_hr_user"
+                attrs="{'invisible':[('is_validator', '=', False)]}"/>
             </xpath>
-            <xpath expr='//button[@name="action_timesheet_done"]' position="after">
-                <button name="action_timesheet_done" states="confirm" string="Approve" type="object"
-                        groups="base.group_user,hr.group_hr_user" class="oe_highlight"/>
-            </xpath>
-            <xpath expr='//button[@name="action_timesheet_draft"][2]' position="attributes">
-                <attribute name="invisible">True</attribute>
-            </xpath>
-            <xpath expr='//button[@name="action_timesheet_draft"][2]' position="after">
-                <button name="action_timesheet_draft" states="confirm" string="Refuse" type="object"
-                        groups="base.group_user,hr.group_hr_user" class="oe_highlight"/>
+            <!--<xpath expr='//button[@name="action_timesheet_draft"][2]' position="attributes">-->
+                <!--<attribute name="invisible">True</attribute>-->
+            <!--</xpath>-->
+            <xpath expr='//button[@name="action_timesheet_draft"][2]' position="replace">
+                <button name="action_timesheet_draft" string="Refuse" type="object"
+                        groups="base.group_user,hr.group_hr_user" class="oe_highlight"
+                attrs="{'invisible':[('is_validator', '=', False)]}"/>
             </xpath>
             <xpath expr='//page[2]' position="after">
                 <page string="Validators" groups="hr.group_hr_user">
