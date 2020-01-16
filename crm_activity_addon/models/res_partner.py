@@ -32,7 +32,6 @@ class Partner(models.Model):
         ctx = dict(
             activity_from_partner=True,
             default_partner_id=self.parent_id and self.parent_id.id or self.id,
-            default_partner_contact_id=not self.parent_id and self.id,
             default_email=self.email,
             default_phone=self.phone,
             default_mobile=self.mobile,
