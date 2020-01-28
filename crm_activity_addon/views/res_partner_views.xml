@@ -14,8 +14,14 @@
             </field>
         </record>
 		
+        <!--My Pipeline action overridden to update domain-->
         <record model="ir.actions.act_window" id="sale_advertising_order.act_res_partner_2_opportunities_advertising">
-            <field name="domain">[('type','=','opportunity'), ('partner_id','child_of',active_id), ('is_activity', '=', False),('stage_id.name','not in',('Won','Logged','Lost'))]</field>
+            <field name="domain">[('type','=','opportunity'), ('partner_id','child_of',active_id), ('is_activity', '=', False),('stage_id.name','not in',('Won','Logged','Lost')), ('internal_note', '=', False)]</field>
+        </record>
+
+        <!--My Pipeline action overridden to update domain-->
+        <record id="crm.crm_lead_opportunities_tree_view" model="ir.actions.act_window">
+            <field name="domain">[('type','=','opportunity'), ('internal_note', '=', False)]</field>
         </record>
         
         <!-- tree view of crm.activity.report -->

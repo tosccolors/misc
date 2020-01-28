@@ -13,7 +13,28 @@ class ActivityLog(models.TransientModel):
     mobile = fields.Char(string='Mobile')
     user_id = fields.Many2one('res.users', string='Salesperson')
     date_action = fields.Datetime('Next Activity Date', index=True)
-    
+    date_deadline = fields.Datetime('Expected Closing')
+
+    @api.onchange('partner_id')
+    def onchange_partner_id(self):
+        if not self.partner_id:
+            return {}
+
+        part = self.partner_id
+        addr = self.partner_id.address_get(['delivery', 'invoice', 'contact'])
+
+        if part.type == 'contact':
+            contact = self.env['res.partner'].search([('is_company','=', False),('type','=', 'contact'),('parent_id','=', part.id)])
+            if len(contact) >=1:
+                contact_id = contact[0]
+            else:
+                contact_id = False
+        elif addr['contact'] == addr['default']:
+            contact_id = False
+        else: contact_id = addr['contact']
+
+        return {'value' : {'partner_contact_id': contact_id}}
+
     @api.multi
     def action_log_and_schedule(self):
         self.ensure_one()
@@ -97,6 +118,7 @@ class ActivityLog(models.TransientModel):
             'user_id': self.user_id and self.user_id.id,
             'description': note,
             'next_activity_id':self.next_activity_id.id,
+            'title_action': self.title_action,
             'date_action':self.date_deadline,
             'is_activity':True,
         }

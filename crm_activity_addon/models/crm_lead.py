@@ -11,4 +11,4 @@ class Lead(models.Model):
     _inherit = "crm.lead"
 
     date_action = fields.Datetime('Next Activity Date', index=True)
-    
+    internal_note = fields.Boolean('Internal Note')
