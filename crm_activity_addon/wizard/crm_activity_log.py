@@ -13,7 +13,6 @@ class ActivityLog(models.TransientModel):
     mobile = fields.Char(string='Mobile')
     user_id = fields.Many2one('res.users', string='Salesperson')
     date_action = fields.Datetime('Next Activity Date', index=True)
-    date_deadline = fields.Datetime('Expected Closing')
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):
@@ -119,7 +118,7 @@ class ActivityLog(models.TransientModel):
             'description': note,
             'next_activity_id':self.next_activity_id.id,
             'title_action': self.title_action,
-            'date_action':self.date_deadline,
+            'date_action':self.date_action,
             'is_activity':True,
         }
         self.lead_id.write(dic)
