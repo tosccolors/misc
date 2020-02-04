@@ -16,6 +16,14 @@ class ResPartnerBank(models.Model):
             if len(standard_accs) > 1:
                 raise UserError(_('Configuration error!\nThere must be only one standard account belongs to each account holder and company.'))
 
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        if self._origin.id and self._origin.standard and self.standard and self._origin.partner_id:
+            self.partner_id = self._origin.partner_id.id
+            warning = {'title': _('Warning'),
+                       'message': _('You can\'t change the default account partner.')}
+            return {'warning': warning}
+
 
     @api.multi
     def update_supplier_bill_bank_account(self):
@@ -23,6 +31,8 @@ class ResPartnerBank(models.Model):
         Update unpaid vendor bills with standard bank account
         :return:
         """
+        if not self.partner_id:
+            return
         self._cr.execute("""
                  UPDATE account_invoice
                  SET partner_bank_id = %s
@@ -39,6 +49,8 @@ class ResPartnerBank(models.Model):
         Update draft payment order with standard bank account
         :return:
         """
+        if not self.partner_id:
+            return
         self._cr.execute("""
                  UPDATE account_payment_line
                  SET partner_bank_id = %s
