@@ -9,7 +9,7 @@ from odoo.exceptions import UserError, ValidationError
 class AccountCutoff(models.Model):
     _inherit = 'account.cutoff'
 
-    def get_prepaid_lines(self):
+    def get_lines(self):
         self.ensure_one()
 #        import pdb; pdb.set_trace()
         if not self.source_journal_ids:
