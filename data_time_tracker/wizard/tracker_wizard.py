@@ -24,6 +24,8 @@ class TrackerWizard(models.TransientModel):
     def action_update(self):
         self.ensure_one()
         ctx = self.env.context.copy()
+        if self.date_from > self.date_to:
+            raise UserError(_("'Valid From' date can't be greater than 'Valid To' date"))
         relation_ref = ctx.get('relation_ref', False)
         if 'active_model' in ctx and 'active_id' in ctx:
             curr_obj = self.env[ctx.get('active_model')]
@@ -53,8 +55,12 @@ class TrackerWizard(models.TransientModel):
 
             else:
                 if sec_latest:
-                    sec_latest.date_from = self.date_from
-                    sec_latest.date_to = self.date_from
+                    if sec_latest.date_from <= self.date_from and self.date_from < obj.date_to:
+                        sec_latest.date_to = self.date_from
+                    else:
+                        sec_latest.date_from = self.date_to
+                        if sec_latest.date_to < self.date_to:
+                            sec_latest.date_to = self.date_to
                 obj.date_from = self.date_from
                 obj.date_to = self.date_to
 
