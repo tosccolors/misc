@@ -9,6 +9,46 @@ from odoo.exceptions import UserError, ValidationError
 class AccountCutoff(models.Model):
     _inherit = 'account.cutoff'
 
+    def _merge_provision_lines(self, provision_lines):
+        return provision_lines
+
+    def _prepare_move(self, to_provision):
+        self.ensure_one()
+        movelines_to_create = []
+        move_label = self.move_label
+        for dict in to_provision:
+            amount = dict['amount']
+            analytic_account_id = dict['analytic_account_id']
+            account_id = dict['account_id']
+            amount = self.company_currency_id.round(amount)
+
+            movelines_to_create.append((0, 0, {
+                'account_id': account_id,
+                'name': move_label,
+                'debit': amount < 0 and amount * -1 or 0,
+                'credit': amount >= 0 and amount or 0,
+                'analytic_account_id': analytic_account_id,
+            }))
+
+            # add counter-part
+            counterpart_amount = self.company_currency_id.round(
+                amount * -1)
+            movelines_to_create.append((0, 0, {
+                'account_id': self.cutoff_account_id.id,
+                'name': move_label,
+                'debit': counterpart_amount < 0 and counterpart_amount * -1 or 0,
+                'credit': counterpart_amount >= 0 and counterpart_amount or 0,
+                'analytic_account_id': False,
+            }))
+
+        res = {
+            'journal_id': self.cutoff_journal_id.id,
+            'date': self.cutoff_date,
+            'ref': move_label,
+            'line_ids': movelines_to_create,
+            }
+        return res
+
     def get_lines(self):
         self.ensure_one()
 #        import pdb; pdb.set_trace()
