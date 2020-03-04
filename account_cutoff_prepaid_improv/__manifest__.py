@@ -15,6 +15,7 @@
         'account_cutoff_prepaid',
         ],
     'data': [
+        'views/account_config_settings.xml'
     ],
     'images': [
         ],
