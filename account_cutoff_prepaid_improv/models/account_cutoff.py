@@ -113,7 +113,10 @@ class AccountCutoff(models.Model):
                                                     debit_cash_basis,
                                                     credit_cash_basis,
                                                     balance_cash_basis,
-                                                    blocked
+                                                    blocked,
+                                                    company_id,
+                                                    date,
+                                                    user_type_id
                                                     )
                     SELECT
                             cl.account_id AS account_id,
@@ -148,12 +151,16 @@ class AccountCutoff(models.Model):
                               ELSE 0.0
                             END AS credit_cash_basis,
                             ROUND(cl.cutoff_amount * -1, 2) AS balance_cash_basis,
-                            FALSE AS blocked
+                            FALSE AS blocked,
+                            {7} AS company_id,
+                            {1} AS date,
+                            aa.user_type_id AS user_type_id
 
                     FROM account_cutoff_line cl
+                    LEFT JOIN account_account aa ON (cl.account_id = aa.id)
                     LEFT JOIN account_move_line ml ON (ml.id = cl.move_line_id)
                     LEFT JOIN account_move m ON (m.id = ml.move_id)
-                    WHERE parent_id = {7};
+                    WHERE parent_id = {8};
         """.format(move_id,
                    "'%s'" % str(account_move.date),
                    self._uid,
@@ -161,6 +168,7 @@ class AccountCutoff(models.Model):
                    journal_id,
                    "'%s '" % self.move_label,
                    self.company_currency_id.id,
+                   self.env.user.company_id.id,
                    self.id,
                    ))
         cr.execute(sql_query)
@@ -219,7 +227,7 @@ class AccountCutoff(models.Model):
                             journal_id,
                             currency_id,
                             date_maturity,
-                            user_type_id,
+                            {2} AS user_type_id,
                             partner_id,
                             blocked,
                             NULL AS analytic_account_id,
@@ -263,7 +271,8 @@ class AccountCutoff(models.Model):
                     WHERE move_id = {1};
         """.format(
                    self.cutoff_account_id.id,
-                   move_id
+                   move_id,
+                   self.cutoff_account_id.user_type_id.id,
                    ))
         cr.execute(sql_query)
         return  move_id
