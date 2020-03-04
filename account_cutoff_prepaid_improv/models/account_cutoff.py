@@ -4,10 +4,16 @@
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
+from datetime import datetime
 
 
 class AccountCutoff(models.Model):
     _inherit = 'account.cutoff'
+
+    def _prepare_provision_line(self, cutoff_line):
+        result = super(AccountCutoff, self)._prepare_provision_line(cutoff_line)
+        result['account_move_ref'] = cutoff_line.move_line_id.display_name
+        return result
 
     def _merge_provision_lines(self, provision_lines):
         return provision_lines
@@ -20,6 +26,7 @@ class AccountCutoff(models.Model):
             amount = dict['amount']
             analytic_account_id = dict['analytic_account_id']
             account_id = dict['account_id']
+            move_label = self.move_label+" "+dict['account_move_ref']
             amount = self.company_currency_id.round(amount)
 
             movelines_to_create.append((0, 0, {
@@ -48,6 +55,258 @@ class AccountCutoff(models.Model):
             'line_ids': movelines_to_create,
             }
         return res
+
+    def _create_move_and_line_with_query(self, vals):
+        # Create move
+        type = self._context.get('default_type')
+        move_type = False
+        if type == 'prepaid_revenue':
+            move_type = "receivable_refund"
+        if type == 'prepaid_expense':
+            move_type = "payable"
+
+        vals.update({'name': "/",
+         'state': "draft",
+         'create_date': datetime.now(),
+         'create_uid': self._uid,
+         'write_date': datetime.now(),
+         'write_uid': self._uid,
+         'company_id': self.env.user.company_id.id,
+         'currency_id': self.env.user.company_id.currency_id and self.env.user.company_id.currency_id.id,
+         'matched_percentage': 0.0,
+         'to_be_reversed': False,
+         'move_type': move_type
+         })
+
+        cr = self._cr
+        sql = "INSERT INTO account_move (ref, date, journal_id, name, state, create_date, create_uid, write_date, write_uid," \
+              " company_id, currency_id, matched_percentage, to_be_reversed, move_type) " \
+              "VALUES ('%(ref)s', '%(date)s'::date, %(journal_id)s, '%(name)s', '%(state)s', '%(create_date)s', %(create_uid)s, '%(write_date)s', %(write_uid)s," \
+              " %(company_id)s, %(currency_id)s, %(matched_percentage)s, %(to_be_reversed)s, '%(move_type)s');" % vals
+        cr.execute(sql)
+        sql = 'select id from account_move order by id desc limit 1'
+        cr.execute(sql)
+        move_id = cr.fetchone()[0]
+        account_move = self.env['account.move'].browse([move_id])[0]
+        journal_id = account_move.journal_id.id
+
+        # Create move line
+        sql_query = ("""
+                    INSERT INTO account_move_line (
+                                                    account_id,
+                                                    move_id,
+                                                    date_maturity,
+                                                    name,
+                                                    debit,
+                                                    credit,
+                                                    journal_id,
+                                                    create_uid,
+                                                    create_date,
+                                                    write_uid,
+                                                    write_date,
+                                                    ref,
+                                                    company_currency_id,
+                                                    amount_currency,
+                                                    amount_residual,
+                                                    analytic_account_id,
+                                                    balance,
+                                                    debit_cash_basis,
+                                                    credit_cash_basis,
+                                                    balance_cash_basis,
+                                                    blocked
+                                                    )
+                    SELECT
+                            cl.account_id AS account_id,
+                            {0} AS move_id,
+                            {1} AS date_maturity,
+                            CONCAT({5}, m.name) AS name,
+                            CASE
+                              WHEN cl.cutoff_amount < 0 THEN ROUND(cl.cutoff_amount * -1, 2)
+                              ELSE 0.0
+                            END AS debit,
+                            CASE
+                              WHEN cl.cutoff_amount > 0 THEN ROUND(cl.cutoff_amount, 2)
+                              ELSE 0.0
+                            END AS credit,
+                            {4} AS journal_id,
+                            {2} as create_uid,
+                            {3} as create_date,
+                            {2} as write_uid,
+                            {3} as write_date,
+                            CONCAT({5}, m.name) AS ref,
+                            {6} AS company_currency_id,
+                            0.0 AS amount_currency,
+                            ROUND(cl.cutoff_amount * -1, 2) AS amount_residual,
+                            cl.analytic_account_id AS analytic_account_id,
+                            ROUND(cl.cutoff_amount * -1, 2) AS balance,
+                            CASE
+                              WHEN cl.cutoff_amount < 0 THEN ROUND(cl.cutoff_amount * -1, 2)
+                              ELSE 0.0
+                            END AS debit_cash_basis,
+                            CASE
+                              WHEN cl.cutoff_amount > 0 THEN ROUND(cl.cutoff_amount, 2)
+                              ELSE 0.0
+                            END AS credit_cash_basis,
+                            ROUND(cl.cutoff_amount * -1, 2) AS balance_cash_basis,
+                            FALSE AS blocked
+
+                    FROM account_cutoff_line cl
+                    LEFT JOIN account_move_line ml ON (ml.id = cl.move_line_id)
+                    LEFT JOIN account_move m ON (m.id = ml.move_id)
+                    WHERE parent_id = {7};
+        """.format(move_id,
+                   "'%s'" % str(account_move.date),
+                   self._uid,
+                   "'%s'" % str(fields.Datetime.to_string(fields.datetime.now())),
+                   journal_id,
+                   "'%s '" % self.move_label,
+                   self.company_currency_id.id,
+                   self.id,
+                   ))
+        cr.execute(sql_query)
+
+        # Add counter-part
+        sql_query = ("""
+                    INSERT INTO account_move_line (
+                            create_date,
+                            statement_id,
+                            journal_id,
+                            currency_id,
+                            date_maturity,
+                            user_type_id,
+                            partner_id,
+                            blocked,
+                            analytic_account_id,
+                            create_uid,
+                            amount_residual,
+                            company_id,
+                            credit_cash_basis,
+                            amount_residual_currency,
+                            debit,
+                            ref,
+                            account_id,
+                            debit_cash_basis,
+                            reconciled,
+                            tax_exigible,
+                            balance_cash_basis,
+                            write_date,
+                            date,
+                            write_uid,
+                            move_id,
+                            product_id,
+                            payment_id,
+                            company_currency_id,
+                            name,
+                            invoice_id,
+                            full_reconcile_id,
+                            tax_line_id,
+                            credit,
+                            product_uom_id,
+                            amount_currency,
+                            balance,
+                            quantity,
+                            payment_mode_id,
+                            partner_bank_id,
+                            bank_payment_line_id,
+                            start_date,
+                            end_date,
+                            asset_profile_id,
+                            asset_id
+                            )
+                    SELECT
+                            create_date,
+                            statement_id,
+                            journal_id,
+                            currency_id,
+                            date_maturity,
+                            user_type_id,
+                            partner_id,
+                            blocked,
+                            NULL AS analytic_account_id,
+                            create_uid,
+                            amount_residual * -1 AS amount_residual,
+                            company_id,
+                            debit_cash_basis AS credit_cash_basis,
+                            amount_residual_currency,
+                            credit AS debit,
+                            ref,
+                            {0} AS account_id,
+                            credit_cash_basis AS debit_cash_basis,
+                            reconciled,
+                            tax_exigible,
+                            balance_cash_basis * -1 AS balance_cash_basis,
+                            write_date,
+                            date,
+                            write_uid,
+                            move_id,
+                            product_id,
+                            payment_id,
+                            company_currency_id,
+                            name,
+                            invoice_id,
+                            full_reconcile_id,
+                            tax_line_id,
+                            debit AS credit,
+                            product_uom_id,
+                            amount_currency,
+                            balance * -1 AS balance,
+                            quantity,
+                            payment_mode_id,
+                            partner_bank_id,
+                            bank_payment_line_id,
+                            start_date,
+                            end_date,
+                            asset_profile_id,
+                            asset_id
+
+                    FROM account_move_line
+                    WHERE move_id = {1};
+        """.format(
+                   self.cutoff_account_id.id,
+                   move_id
+                   ))
+        cr.execute(sql_query)
+        return  move_id
+
+    def create_move(self):
+        self.ensure_one()
+        move_obj = self.env['account.move']
+        if self.move_id:
+            raise UserError(_(
+                "The Cut-off Journal Entry already exists. You should "
+                "delete it before running this function."))
+        if not self.line_ids:
+            raise UserError(_(
+                "There are no lines on this Cut-off, so we can't create "
+                "a Journal Entry."))
+        provision_lines = []
+        for line in self.line_ids:
+            provision_lines.append(
+                self._prepare_provision_line(line))
+            for tax_line in line.tax_line_ids:
+                provision_lines.append(
+                    self._prepare_provision_tax_line(tax_line))
+        to_provision = self._merge_provision_lines(provision_lines)
+        vals = self._prepare_move(to_provision)
+
+        if self.env.user.company_id.perform_posting_by_line:
+            # Create account move and lines using query
+            move_id = self._create_move_and_line_with_query(vals)
+        else:
+            # Create account move and lines using ORM
+            move_id = move_obj.create(vals).id
+
+        self.write({'move_id': move_id, 'state': 'done'})
+
+        action = self.env['ir.actions.act_window'].for_xml_id(
+            'account', 'action_move_journal_line')
+        action.update({
+            'view_mode': 'form,tree',
+            'res_id': move_id,
+            'view_id': False,
+            'views': False,
+            })
+        return action
 
     def get_lines(self):
         self.ensure_one()
