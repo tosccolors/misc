@@ -194,32 +194,18 @@ class AccountCutoff(models.Model):
                             ref,
                             account_id,
                             debit_cash_basis,
-                            reconciled,
                             tax_exigible,
                             balance_cash_basis,
                             write_date,
                             date,
                             write_uid,
                             move_id,
-                            product_id,
-                            payment_id,
                             company_currency_id,
                             name,
-                            invoice_id,
-                            full_reconcile_id,
-                            tax_line_id,
                             credit,
-                            product_uom_id,
                             amount_currency,
                             balance,
-                            quantity,
-                            payment_mode_id,
-                            partner_bank_id,
-                            bank_payment_line_id,
-                            start_date,
-                            end_date,
-                            asset_profile_id,
-                            asset_id
+                            quantity
                             )
                     SELECT
                             create_date,
@@ -240,32 +226,18 @@ class AccountCutoff(models.Model):
                             ref,
                             {0} AS account_id,
                             credit_cash_basis AS debit_cash_basis,
-                            reconciled,
                             tax_exigible,
                             balance_cash_basis * -1 AS balance_cash_basis,
                             write_date,
                             date,
                             write_uid,
                             move_id,
-                            product_id,
-                            payment_id,
                             company_currency_id,
                             name,
-                            invoice_id,
-                            full_reconcile_id,
-                            tax_line_id,
                             debit AS credit,
-                            product_uom_id,
                             amount_currency,
                             balance * -1 AS balance,
-                            quantity,
-                            payment_mode_id,
-                            partner_bank_id,
-                            bank_payment_line_id,
-                            start_date,
-                            end_date,
-                            asset_profile_id,
-                            asset_id
+                            quantity
 
                     FROM account_move_line
                     WHERE move_id = {1};
@@ -362,6 +334,7 @@ class AccountCutoff(models.Model):
                                                     account_id, 
                                                     cutoff_account_id, 
                                                     analytic_account_id,
+                                                    operating_unit_id,
                                                     total_days, 
                                                     prepaid_days, 
                                                     amount, 
@@ -383,7 +356,8 @@ class AccountCutoff(models.Model):
                               WHEN a.cutoff_account_id IS NULL THEN l.account_id
                               ELSE a.cutoff_account_id
                             END AS cutoff_account_id,
-                            l.analytic_account_id AS analytic_account_id, 
+                            l.analytic_account_id AS analytic_account_id,
+                            l.operating_unit_id AS operating_unit_id,
                             l.end_date - l.start_date + 1 AS total_days,
                             CASE
                               {1}
