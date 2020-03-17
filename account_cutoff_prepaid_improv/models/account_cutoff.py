@@ -25,6 +25,7 @@ class AccountCutoff(models.Model):
         for dict in to_provision:
             amount = dict['amount']
             analytic_account_id = dict['analytic_account_id']
+            operating_unit_id = dict['operating_unit_id']
             account_id = dict['account_id']
             move_label = self.move_label+" "+dict['account_move_ref']
             amount = self.company_currency_id.round(amount)
@@ -35,6 +36,7 @@ class AccountCutoff(models.Model):
                 'debit': amount < 0 and amount * -1 or 0,
                 'credit': amount >= 0 and amount or 0,
                 'analytic_account_id': analytic_account_id,
+                'operating_unit_id': operating_unit_id
             }))
 
             # add counter-part
@@ -46,6 +48,7 @@ class AccountCutoff(models.Model):
                 'debit': counterpart_amount < 0 and counterpart_amount * -1 or 0,
                 'credit': counterpart_amount >= 0 and counterpart_amount or 0,
                 'analytic_account_id': False,
+                'operating_unit_id': operating_unit_id
             }))
 
         res = {
@@ -109,6 +112,7 @@ class AccountCutoff(models.Model):
                                                     amount_currency,
                                                     amount_residual,
                                                     analytic_account_id,
+                                                    operating_unit_id,
                                                     balance,
                                                     debit_cash_basis,
                                                     credit_cash_basis,
@@ -141,6 +145,7 @@ class AccountCutoff(models.Model):
                             0.0 AS amount_currency,
                             ROUND(cl.cutoff_amount * -1, 2) AS amount_residual,
                             cl.analytic_account_id AS analytic_account_id,
+                            cl.operating_unit_id AS operating_unit_id,
                             ROUND(cl.cutoff_amount * -1, 2) AS balance,
                             CASE
                               WHEN cl.cutoff_amount < 0 THEN ROUND(cl.cutoff_amount * -1, 2)
@@ -185,6 +190,7 @@ class AccountCutoff(models.Model):
                             partner_id,
                             blocked,
                             analytic_account_id,
+                            operating_unit_id,
                             create_uid,
                             amount_residual,
                             company_id,
@@ -217,6 +223,7 @@ class AccountCutoff(models.Model):
                             partner_id,
                             blocked,
                             NULL AS analytic_account_id,
+                            operating_unit_id,
                             create_uid,
                             amount_residual * -1 AS amount_residual,
                             company_id,
