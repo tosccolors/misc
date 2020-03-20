@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2018 Akretion (Alexis de Lattre <alexis.delattre@akretion.com>)
+  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+
+<odoo>
+
+
+<record id="view_account_config_settings_improv" model="ir.ui.view">
+    <field name="name">account.prepaid.cutoff.config.improv.form</field>
+    <field name="model">account.config.settings</field>
+    <field name="inherit_id" ref="account_cutoff_prepaid.view_account_config_settings" />
+    <field name="arch" type="xml">
+        <field name="default_prepaid_expense_account_id" position="after">
+            <field name="perform_posting_by_line" />
+        </field>
+    </field>
+</record>
+
+
+</odoo>
