@@ -126,7 +126,10 @@ class AccountCutoff(models.Model):
                             cl.account_id AS account_id,
                             {0} AS move_id,
                             {1} AS date_maturity,
-                            CONCAT({5}, m.name) AS name,
+                            CASE
+                                WHEN {9} THEN cl.name
+                                ELSE CONCAT({5}, m.name)
+                            END AS name,
                             CASE
                               WHEN cl.cutoff_amount < 0 THEN ROUND(cl.cutoff_amount * -1, 2)
                               ELSE 0.0
@@ -175,6 +178,7 @@ class AccountCutoff(models.Model):
                    self.company_currency_id.id,
                    self.env.user.company_id.id,
                    self.id,
+                   self.env.user.company_id.use_description_as_reference
                    ))
         cr.execute(sql_query)
 
