@@ -18,6 +18,7 @@
     'depends': ['sale','crm','sales_team','base'],
 
     'data': [
+        'security/crm_segment_security.xml',
         'security/ir.model.access.csv',
         'views/crm_segments_view.xml',
         'views/res_partner_view.xml',
