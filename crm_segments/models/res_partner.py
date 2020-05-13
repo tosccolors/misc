@@ -9,13 +9,13 @@ class ResPartner(models.Model):
     segment_two = fields.Many2one("segment.two","Segment 2")
     segment_three = fields.Many2one("segment.three","Segment 3")
     segment_four = fields.Many2one("segment.four","Segment 4")
-    check_group = fields.Boolean(string="Check Group", compute='_check_user_group')
+    has_segments_group = fields.Boolean(string="Check Group", compute='_check_user_group', default=lambda self: self.env.user.has_group('crm_segments.group_sale_segments'))
 
     @api.one
     def _check_user_group(self):
         current_uid = self.env.uid
         res_users = self.env['res.users'].browse(current_uid)
         if res_users.has_group('crm_segments.group_sale_segments'):
-            self.check_group = True
+            self.has_segments_group = True
         else:
-            self.check_group = False
+            self.has_segments_group = False
