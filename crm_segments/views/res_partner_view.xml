@@ -11,7 +11,7 @@
 		         <field name='segment_two' attrs="{'readonly': [('has_segments_group', '=', False)]}"/>
 		         <field name='segment_three' attrs="{'readonly': [('has_segments_group', '=', False)]}"/>
 		         <field name='segment_four' attrs="{'readonly': [('has_segments_group', '=', False)]}"/>
-                 <field name="has_segments_group" invisible="0"/>
+                 <field name="has_segments_group" invisible="1"/>
 	         </group>
      </xpath>
      </field>
