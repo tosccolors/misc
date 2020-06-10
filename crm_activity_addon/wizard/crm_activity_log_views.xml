@@ -23,7 +23,7 @@
                                 options="{'no_create': True, 'no_open': True}" class="oe_inline" colspan="2" nolabel="1"/>
                             on <field name="date_action" class="oe_inline" colspan="2" nolabel="1" required="1"/>
                         </div>
-                        <field name="title_action" placeholder="e.g. Discuss proposal"/>
+                        <field name="title_action" string="Subject" placeholder="e.g. Discuss proposal" required="1"/>
                     </group>
                     <field name="note" placeholder="Log a note..."/>
                     <footer>
