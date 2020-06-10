@@ -8,6 +8,7 @@ class ActivityReport(models.Model):
     """ CRM Lead Analysis """
 
     _inherit = "crm.activity.report"
+    _order = "date desc"
     
     description = fields.Char('Note', readonly=True)
 
