@@ -6,6 +6,7 @@
         <field name="arch" type="xml">
                <field name='date' position="after">
                		<field name="operating_unit_id"/>
+                   <field name="metadata_attachment"/>
                </field>
         </field>
     </record>

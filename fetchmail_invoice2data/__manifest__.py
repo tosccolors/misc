@@ -18,6 +18,6 @@
         'category': 'Others',
         'version': '0.1',
         'depends': ['mail','attachment_base_synchronize','fetchmail','operating_unit'],
-        'data': ['views/fetchmail_server_view.xml'],
+        'data': ['views/fetchmail_server_view.xml', 'views/attachment_view.xml'],
         'demo': [],
     }
