@@ -5,9 +5,21 @@
         <field name="inherit_id" ref="fetchmail.view_email_server_form" />
         <field name="arch" type="xml">
                <field name='date' position="after">
-               		<field name="operating_unit_id"/>
-                   <field name="metadata_attachment"/>
+               		<field name="operating_unit_id" attrs="{'invisible': [('folders_only', '=', True)]}"/>
+                   <field name="metadata_attachment" attrs="{'invisible': [('folders_only', '=', True)]}"/>
                </field>
         </field>
     </record>
+
+    <record model="ir.ui.view" id="view_email_server_form_inherited">
+        <field name="name">fetchmail.server.form</field>
+        <field name="model">fetchmail.server</field>
+        <field name="inherit_id" ref="fetchmail_attach_from_folder.view_email_server_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='domain']" position="after">
+                <field name="operating_unit_id"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
