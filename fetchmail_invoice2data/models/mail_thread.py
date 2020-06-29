@@ -30,33 +30,6 @@ class MailThread(models.AbstractModel):
     _inherit = 'mail.thread'
 
     @api.model
-    def _get_operating_unit(self):
-        '''Get company, if any, set on fetchmail server configuration.'''
-
-        context = self._context
-
-        if context is None:
-            return False
-
-        # Find company for fetchmail configuration, if present
-        fetchmail_server_id = (
-            ('fetchmail_server_id' in context
-             and context['fetchmail_server_id'])
-            or False)
-        if not fetchmail_server_id:
-            return False
-        fs_model = self.env['fetchmail.server']
-
-        OperationUnit = False
-
-        fs_record = fs_model.browse(fetchmail_server_id)
-        assert fs_record, (
-            _('Fetchmail server record with id %d not found.') %
-            fetchmail_server_id)
-        OperationUnit = fs_record.operating_unit_id.id or False
-        return OperationUnit
-
-    @api.model
     def _get_metadata_creation_rule(self):
         '''Get metadata creation rule, if any, set on fetchmail server configuration.'''
 

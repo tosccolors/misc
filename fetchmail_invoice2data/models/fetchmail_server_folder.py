@@ -10,6 +10,9 @@ class FetchmailServerFolder(models.Model):
     _inherit = 'fetchmail.server.folder'
 
     operating_unit_id = fields.Many2one('operating.unit',string='Operating Unit',)
+    metadata_attachment = fields.Selection([('single_metadata', 'All attachments into one Metadata attachment'),
+                                            ('multiple_metadata', 'Each attachment into one Metadata attachment')],
+                                           string="Create Metadata")
 
     # Overridden
     @api.multi
@@ -19,6 +22,7 @@ class FetchmailServerFolder(models.Model):
         partner = False
         model_name = self.model_id.model
         operating_unit_id = self.operating_unit_id and self.operating_unit_id.id
+        metadata_attachment = self.metadata_attachment or False
         if model_name == 'res.partner':
             partner = match_object
         elif 'partner_id' in self.env[model_name]._fields:
@@ -45,7 +49,12 @@ class FetchmailServerFolder(models.Model):
                 attachments.append(attachment)
 
                 ir_attachment_metadata = self.env['ir.attachment.metadata']
-                ir_attachment_metadata.create({'attachment_id': attachment.id, 'operating_unit_id': operating_unit_id})
+                if metadata_attachment == 'multiple_metadata':
+                    ir_attachment_metadata.create({'attachment_id': attachment.id, 'operating_unit_id': operating_unit_id, 'metadata_attachment': metadata_attachment})
+
+            if metadata_attachment == 'single_metadata':
+                ir_attachment_metadata.create({'attachment_ids': [(6, 0, [a.id for a in attachments])], 'attachment_id': attachments[0].id, 'operating_unit_id': operating_unit_id,
+                                               'metadata_attachment': metadata_attachment})
 
         self.env['mail.message'].create({
             'author_id': partner and partner.id or False,
