@@ -2,6 +2,4 @@
 
 # from . import controllers
 from . import attachment
-from . import fetchmail_server
-from . import mail_thread
 from . import fetchmail_server_folder
