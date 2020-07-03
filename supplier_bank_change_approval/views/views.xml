@@ -1,0 +1,38 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="supplier_bank_change_approval.list">
+      <field name="name">supplier_bank_change_approval list</field>
+      <field name="model">res.partner.bank</field>
+      <field name="inherit_id" ref="base.view_partner_bank_form"/>
+      <field name="groups_id" eval="[(6, 0, [ref('supplier_bank_change_approval.bank_account_manager') ])]"/>
+      <field name="arch" type="xml">
+        <xpath expr="//form" position="inside">
+
+          <header>
+            <button name="action_confirm" type="object" string="Confirm" states="draft" class="oe_highlight"/>
+            <field name="state" widget="statusbar"/>
+          </header>
+        </xpath>
+      </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="supplier_bank_change_approval.action_window">
+      <field name="name">Sensitive Fields Approval</field>
+      <field name="res_model">res.partner.bank</field>
+      <field name="view_mode">tree,form</field>
+      <field name="groups_id" eval="[(6, 0, [ref('supplier_bank_change_approval.bank_account_manager') ])]"/>
+      <field name="domain">['&amp;',('partner_id.supplier', '=', 'True'),('state', '=', 'draft')]</field>
+    </record>
+
+
+    <menuitem name="Sensitive Fields Approval" id="sensitive_fields_approval"/>
+
+    <menuitem id="sensitive_fields_approval_1" name="Bank Account Approval" parent="sensitive_fields_approval" action="supplier_bank_change_approval.action_window" sequence="3" groups='supplier_bank_change_approval.bank_account_manager'/>
+
+
+  </data>
+</odoo>
