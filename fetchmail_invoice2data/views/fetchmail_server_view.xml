@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="view_email_server_form_inherit" model="ir.ui.view">
+
+    <record model="ir.ui.view" id="view_email_server_form_inherited">
+        <field name="name">fetchmail.server.form</field>
         <field name="model">fetchmail.server</field>
-        <field name="inherit_id" ref="fetchmail.view_email_server_form" />
+        <field name="inherit_id" ref="fetchmail_attach_from_folder.view_email_server_form" />
         <field name="arch" type="xml">
-               <field name='date' position="after">
-               		<field name="operating_unit_id"/>
-               </field>
+            <xpath expr="//field[@name='domain']" position="after">
+                <field name="operating_unit_id"/>
+                <field name="metadata_attachment"/>
+            </xpath>
+            <xpath expr="//field[@name='folders_only']" position="attributes">
+                <attribute name="string">Enable Email Invoice Import</attribute>
+            </xpath>
+            <xpath expr="//page[3]" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', ('type','!=','imap'), ('folders_only','=',False)]}</attribute>
+            </xpath>
         </field>
     </record>
+
 </odoo>
