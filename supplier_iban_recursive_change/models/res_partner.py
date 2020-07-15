@@ -6,7 +6,7 @@ from odoo.exceptions import UserError
 class ResPartnerBank(models.Model):
     _inherit = "res.partner.bank"
 
-    standard = fields.Boolean('Is Stanadrad Account?')
+    standard = fields.Boolean('Standard account')
 
     @api.multi
     @api.constrains('standard', 'partner_id', 'company_id')
