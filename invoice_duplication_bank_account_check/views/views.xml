@@ -1,0 +1,20 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="invoice_duplication_bank_account_check_list">
+      <field name="name">invoice_duplication_bank_account_check</field>
+      <field name="model">account.invoice</field>
+      <field name="inherit_id" ref="account.invoice_supplier_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//header" position="after">
+          <field name="copy_record" attrs="{'invisible':True}"/>
+          <div class="alert alert-warning" role="alert" style="margin-bottom:0px;" attrs="{'invisible': [('copy_record','=',False)]}">
+                    The partner <bold>
+            <a class="alert-link" href="#bank details" role="button">bank details </a>
+          </bold> have changed. Check the bank details
+        </div>
+      </xpath>
+    </field>
+  </record>
+
+</data>
+</odoo>
