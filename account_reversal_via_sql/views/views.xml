@@ -1,0 +1,14 @@
+<odoo>
+  <data>
+   <record id="view_account_config_settings_reversal" model="ir.ui.view">
+    <field name="name">account.reversal.config.improv.form</field>
+    <field name="model">account.config.settings</field>
+    <field name="inherit_id" ref="account_cutoff_prepaid.view_account_config_settings" />
+    <field name="arch" type="xml">
+    <xpath expr="//field[@name='default_prepaid_expense_account_id']" position="after">
+      <field name="reversal_via_sql"/>
+    </xpath>
+    </field>
+</record>
+  </data>
+</odoo>
