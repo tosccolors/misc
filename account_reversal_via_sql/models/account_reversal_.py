@@ -15,14 +15,11 @@ class AccountMove(models.Model):
         
         #  Create move
         
-        if self.fyc_id.id==False:
-            fyc_id = 'NULL'
-        else:
-            fyc_id=self.fyc_id.id 
         if self.operating_unit_id.id==False:
             operating_unit_id='NULL'
         else:
             operating_unit_id=self.operating_unit_id.id
+        
         if self.reversal_id.id==False:
             reversal_id='NULL'
         else:
@@ -38,17 +35,16 @@ class AccountMove(models.Model):
          'currency_id': self.env.user.company_id.currency_id and self.env.user.company_id.currency_id.id,
          'matched_percentage': 0.0,
          'to_be_reversed': False,
-         'fyc_id':fyc_id,
          'operating_unit_id':operating_unit_id,
          'reversal_id':reversal_id,
-         'move_type':'other',        
-         
-        })
+         'move_type':'other'       
+         })
+
         cr = self._cr
-        sql = "INSERT INTO account_move (ref,fyc_id,narration,closing_type,operating_unit_id," \
+        sql = "INSERT INTO account_move (ref,narration,closing_type,operating_unit_id," \
               "reversal_id, date,journal_id, name, state, create_date, create_uid, write_date, write_uid," \
               " company_id, currency_id,move_type,matched_percentage, to_be_reversed) " \
-              "VALUES ('%(ref)s',%(fyc_id)s,'%(narration)s','%(closing_type)s',%(operating_unit_id)s,%(reversal_id)s,'%(date)s'::date," \
+              "VALUES ('%(ref)s','%(narration)s','%(closing_type)s',%(operating_unit_id)s,%(reversal_id)s,'%(date)s'::date," \
               "%(journal_id)s,'%(name)s', '%(state)s', '%(create_date)s', %(create_uid)s, '%(write_date)s', %(write_uid)s," \
               " %(company_id)s, %(currency_id)s,'%(move_type)s',%(matched_percentage)s, %(to_be_reversed)s);" % data
         cr.execute(sql)
