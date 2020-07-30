@@ -41,10 +41,10 @@ class AccountMove(models.Model):
          })
 
         cr = self._cr
-        sql = "INSERT INTO account_move (ref,narration,closing_type,operating_unit_id," \
+        sql = "INSERT INTO account_move (ref,narration,operating_unit_id," \
               "reversal_id, date,journal_id, name, state, create_date, create_uid, write_date, write_uid," \
               " company_id, currency_id,move_type,matched_percentage, to_be_reversed) " \
-              "VALUES ('%(ref)s','%(narration)s','%(closing_type)s',%(operating_unit_id)s,%(reversal_id)s,'%(date)s'::date," \
+              "VALUES ('%(ref)s','%(narration)s',%(operating_unit_id)s,%(reversal_id)s,'%(date)s'::date," \
               "%(journal_id)s,'%(name)s', '%(state)s', '%(create_date)s', %(create_uid)s, '%(write_date)s', %(write_uid)s," \
               " %(company_id)s, %(currency_id)s,'%(move_type)s',%(matched_percentage)s, %(to_be_reversed)s);" % data
         cr.execute(sql)
