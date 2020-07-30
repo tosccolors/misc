@@ -59,8 +59,6 @@ class AccountMove(models.Model):
         sql_query = ("""
                     INSERT INTO account_move_line (
                             create_date,
-                            statement_id,
-                            mandate_id,
                             partner_bank_id,
                             ref,
                             user_type_id,
@@ -69,7 +67,6 @@ class AccountMove(models.Model):
                             date_maturity,
                             blocked,
                             analytic_account_id,
-                            analytic_distribution_id,
                             payment_mode_id,
                             l10n_nl_date_invoice,
                             start_date,
@@ -101,8 +98,6 @@ class AccountMove(models.Model):
                             )
                     SELECT
                             create_date,
-                            statement_id,
-                            mandate_id,
                             partner_bank_id,
                             ref,
                             user_type_id,
@@ -111,7 +106,6 @@ class AccountMove(models.Model):
                             date_maturity,
                             blocked,
                             analytic_account_id,
-                            analytic_distribution_id,
                             payment_mode_id,
                             l10n_nl_date_invoice,
                             start_date,
