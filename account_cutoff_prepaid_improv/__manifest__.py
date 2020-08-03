@@ -13,6 +13,7 @@
     'website': 'http://www.magnus.nl',
     'depends': [
         'account_cutoff_prepaid',
+        'account',
         'account_cutoff_base_operating_unit'
         ],
     'data': [

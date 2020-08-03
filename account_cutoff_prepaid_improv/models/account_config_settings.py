@@ -10,3 +10,4 @@ class AccountConfigSettings(models.TransientModel):
 
     perform_posting_by_line = fields.Boolean(string="Perform Posting by Line", related='company_id.perform_posting_by_line')
     use_description_as_reference = fields.Boolean(string="Use description as reference", related='company_id.use_description_as_reference')
+    reversal_via_sql = fields.Boolean(string="Reversal Via Sql", related='company_id.reversal_via_sql')   
