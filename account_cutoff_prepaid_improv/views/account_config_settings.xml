@@ -15,6 +15,7 @@
         <field name="default_prepaid_expense_account_id" position="after">
             <field name="perform_posting_by_line" />
             <field name="use_description_as_reference" attrs="{'invisible': [('perform_posting_by_line', '=', False)]}"/>
+             <field name="reversal_via_sql"/>       
         </field>
     </field>
 </record>

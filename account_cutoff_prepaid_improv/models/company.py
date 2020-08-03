@@ -10,3 +10,4 @@ class ResCompany(models.Model):
 
     perform_posting_by_line = fields.Boolean(string="Perform Posting by Line", default=False)
     use_description_as_reference = fields.Boolean(string="Use description as reference")
+    reversal_via_sql = fields.Boolean(string="Reversal Via Sql", default=False)

@@ -77,7 +77,7 @@ class AccountCutoff(models.Model):
          'company_id': self.env.user.company_id.id,
          'currency_id': self.env.user.company_id.currency_id and self.env.user.company_id.currency_id.id,
          'matched_percentage': 0.0,
-         'to_be_reversed': False,
+         'to_be_reversed': True,
          'move_type': move_type
          })
 
