@@ -5,10 +5,16 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from datetime import datetime
+from odoo.addons.queue_job.job import job, related_action
+from odoo.addons.queue_job.exception import FailedJobError
 
 
 class AccountCutoff(models.Model):
     _inherit = 'account.cutoff'
+
+    job_queue = fields.Many2one(
+        'queue.job', string='Job Queue', readonly=True,
+        copy=False)
 
     def _prepare_provision_line(self, cutoff_line):
         result = super(AccountCutoff, self)._prepare_provision_line(cutoff_line)
@@ -27,7 +33,7 @@ class AccountCutoff(models.Model):
             analytic_account_id = dict['analytic_account_id']
             operating_unit_id = dict['operating_unit_id']
             account_id = dict['account_id']
-            move_label = self.move_label+" "+dict['account_move_ref']
+            move_label = self.move_label + " " + dict['account_move_ref']
             amount = self.company_currency_id.round(amount)
 
             movelines_to_create.append((0, 0, {
@@ -54,9 +60,10 @@ class AccountCutoff(models.Model):
         res = {
             'journal_id': self.cutoff_journal_id.id,
             'date': self.cutoff_date,
+            'to_be_reversed': True,
             'ref': move_label,
             'line_ids': movelines_to_create,
-            }
+        }
         return res
 
     def _create_move_and_line_with_query(self, vals):
@@ -69,17 +76,17 @@ class AccountCutoff(models.Model):
             move_type = "payable"
 
         vals.update({'name': "/",
-         'state': "draft",
-         'create_date': datetime.now(),
-         'create_uid': self._uid,
-         'write_date': datetime.now(),
-         'write_uid': self._uid,
-         'company_id': self.env.user.company_id.id,
-         'currency_id': self.env.user.company_id.currency_id and self.env.user.company_id.currency_id.id,
-         'matched_percentage': 0.0,
-         'to_be_reversed': True,
-         'move_type': move_type
-         })
+                     'state': "draft",
+                     'create_date': datetime.now(),
+                     'create_uid': self._uid,
+                     'write_date': datetime.now(),
+                     'write_uid': self._uid,
+                     'company_id': self.env.user.company_id.id,
+                     'currency_id': self.env.user.company_id.currency_id and self.env.user.company_id.currency_id.id,
+                     'matched_percentage': 0.0,
+                     'to_be_reversed': True,
+                     'move_type': move_type
+                     })
 
         cr = self._cr
         sql = "INSERT INTO account_move (ref, date, journal_id, name, state, create_date, create_uid, write_date, write_uid," \
@@ -253,12 +260,12 @@ class AccountCutoff(models.Model):
                     FROM account_move_line
                     WHERE move_id = {1};
         """.format(
-                   self.cutoff_account_id.id,
-                   move_id,
-                   self.cutoff_account_id.user_type_id.id,
-                   ))
+            self.cutoff_account_id.id,
+            move_id,
+            self.cutoff_account_id.user_type_id.id,
+        ))
         cr.execute(sql_query)
-        return  move_id
+        return move_id
 
     def create_move(self):
         self.ensure_one()
@@ -282,27 +289,58 @@ class AccountCutoff(models.Model):
         vals = self._prepare_move(to_provision)
 
         if self.env.user.company_id.perform_posting_by_line:
-            # Create account move and lines using query
+            # Create account move and lines using sql query
             move_id = self._create_move_and_line_with_query(vals)
+            self.write({'move_id': move_id, 'state': 'done'})
+
+            action = self.env['ir.actions.act_window'].for_xml_id(
+                'account', 'action_move_journal_line')
+            action.update({
+                'view_mode': 'form,tree',
+                'res_id': move_id,
+                'view_id': False,
+                'views': False,
+            })
+            return action
+
+        elif self.env.user.company_id.perform_posting_by_line_jq:
+            # Create account move and lines using job queue
+            jq = self.with_delay(eta=datetime.now(), priority=1,
+                                 description="Create Move By Job Queues", ).create_move_job_queue(vals)
+            job_id = self.env['queue.job'].search([('uuid', '=', jq.uuid)])
+            self.job_queue = job_id.id
         else:
             # Create account move and lines using ORM
-            move_id = move_obj.create(vals).id
-
-        self.write({'move_id': move_id, 'state': 'done'})
-
-        action = self.env['ir.actions.act_window'].for_xml_id(
-            'account', 'action_move_journal_line')
-        action.update({
-            'view_mode': 'form,tree',
-            'res_id': move_id,
-            'view_id': False,
-            'views': False,
+            acc_move = move_obj.create(vals)
+            move_id = acc_move.id
+            acc_move.post()
+            self.write({'move_id': move_id, 'state': 'done'})
+            action = self.env['ir.actions.act_window'].for_xml_id(
+                'account', 'action_move_journal_line')
+            action.update({
+                'view_mode': 'form,tree',
+                'res_id': move_id,
+                'view_id': False,
+                'views': False,
             })
-        return action
+            return action
+
+    # Create account move and lines using job queue
+    @job
+    def create_move_job_queue(self, vals):
+        move_obj = self.env['account.move']
+        try:
+            acc_move = move_obj.create(vals)
+            move_id=acc_move.id
+            acc_move.post()
+            self.write({'move_id': move_id, 'state': 'done'})
+        except Exception, e:
+            raise FailedJobError(
+                _("The details of the error:'%s'") % (unicode(e)))
 
     def get_lines(self):
         self.ensure_one()
-#        import pdb; pdb.set_trace()
+        #        import pdb; pdb.set_trace()
         if not self.source_journal_ids:
             raise UserError(
                 _("You should set at least one Source Journal!"))
@@ -310,7 +348,6 @@ class AccountCutoff(models.Model):
         sj_ids = self.source_journal_ids.ids
         str_lst = ','.join([str(item) for item in sj_ids])
         cutoff_id = self.id
-
         # Delete existing lines
         query = ("""DELETE FROM account_cutoff_line
                     WHERE parent_id = %s;""")
@@ -324,15 +361,18 @@ class AccountCutoff(models.Model):
                    "WHEN l.start_date > '%s' AND l.end_date > '%s' " \
                    "THEN l.end_date - l.start_date + 1 - (end_date - '%s') " \
                    "WHEN l.start_date > '%s' AND l.end_date < '%s' " \
-                   "THEN l.end_date - l.start_date + 1 " % (start_date_str, end_date_str, start_date_str, end_date_str, start_date_str, end_date_str, end_date_str,
-                                                            start_date_str, end_date_str)
-            varb = "l.start_date <= '%s' AND l.journal_id IN (%s) AND l.end_date >= '%s' " % (end_date_str, str_lst, start_date_str)
+                   "THEN l.end_date - l.start_date + 1 " % (
+                       start_date_str, end_date_str, start_date_str, end_date_str, start_date_str, end_date_str,
+                       end_date_str,
+                       start_date_str, end_date_str)
+            varb = "l.start_date <= '%s' AND l.journal_id IN (%s) AND l.end_date >= '%s' " % (
+                end_date_str, str_lst, start_date_str)
 
         else:
             vara = "WHEN l.start_date > '%s' " \
                    "THEN l.end_date - l.start_date + 1 ELSE l.end_date - '%s'" % (cutoff_date_str, cutoff_date_str)
-            varb = "l.start_date IS NOT NULL AND l.journal_id IN (%s) AND l.end_date > '%s' AND l.date <= '%s' " % (str_lst, cutoff_date_str, cutoff_date_str)
-
+            varb = "l.start_date IS NOT NULL AND l.journal_id IN (%s) AND l.end_date > '%s' AND l.date <= '%s' " % (
+                str_lst, cutoff_date_str, cutoff_date_str)
 
         sql_query = ("""
                     INSERT INTO account_cutoff_line (
@@ -381,7 +421,7 @@ class AccountCutoff(models.Model):
                             {5} as write_uid,
                             {6} as write_date
 
-                            
+
                     FROM    account_move_line l LEFT JOIN account_cutoff_mapping a 
                     ON (l.account_id = a.account_id {4})
                     WHERE {3};                
@@ -395,4 +435,3 @@ class AccountCutoff(models.Model):
                    ))
         self.env.cr.execute(sql_query)
         return True
-
