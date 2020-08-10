@@ -14,7 +14,8 @@
     'depends': [
         'account_cutoff_prepaid',
         'account',
-        'account_cutoff_base_operating_unit'
+        'account_cutoff_base_operating_unit',
+        'queue_job'
         ],
     'data': [
         'views/account_config_settings.xml'
