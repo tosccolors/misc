@@ -17,7 +17,20 @@ class SupplierBankApproval(models.Model):
     @api.multi
     def action_confirm(self):
         self.state = 'confirmed'
+
+    @api.model
+    def create(self, vals):
+        # Update customer bank account then
+        # :return:state confirmed
+        partner = vals.get('partner_id')
+        res_partner = self.env['res.partner'].search([('id', '=', partner)])
+        if res_partner.supplier == True:
+            vals['state'] = 'draft'
+        else:
+            vals['state'] = 'confirmed'
+        return super(SupplierBankApproval, self).create(vals)
        
+
     @api.multi
     def write(self, vals):
         # Update vendor bank account then  
@@ -62,7 +75,21 @@ class PaymentSupplierBankCheck(models.Model):
             if 'confirmed' not in bank_payment_list:
                 raise UserError(_('The supplier has changed bank details which are not yet approved.'))
 
+class PaymentOrderBankCheck(models.Model):
 
+    # checking bank account of Partner in account payment order
+
+    _inherit = 'account.payment.order'
+
+    @api.multi
+    def draft2open(self):
+        partner_ids=self.payment_line_ids.mapped('partner_id')
+        for partner in partner_ids:
+            partner_bank = self.env['res.partner.bank'].search([('partner_id.id', '=', partner.id)])
+            bank_paymentorder_list = partner_bank.mapped('state')
+            if 'confirmed' not in bank_paymentorder_list:
+                raise UserError(_('The supplier  {0}  has changed bank details which are not yet approved.'.format(partner.name)))
+        return super(PaymentOrderBankCheck, self).draft2open()
           
 
 
