@@ -12,5 +12,7 @@
         "account_invoice_import",
     ],
     "data": [
+        "data/ir_config_parameter.xml",
+        "data/product_product.xml",
     ],
 }
