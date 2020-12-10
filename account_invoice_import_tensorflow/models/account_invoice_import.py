@@ -65,8 +65,8 @@ class AccountInvoiceImport(models.TransientModel):
         return self.env['res.partner'].search(
             [
                 '|',
-                ('name', '=', response.get('vendor_name')),
-                ('ref', '=', response.get('vendor_id')),
+                ('name', '=ilike', response.get('vendor_name')),
+                ('ref', '=ilike', response.get('vendor_id')),
             ], limit=1,
         )
 
