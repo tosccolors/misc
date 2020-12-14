@@ -5,10 +5,10 @@ from odoo import api, models, fields,_
 class ResPartner(models.Model):
     _inherit = 'res.partner'
     
-    segment_one = fields.Many2one("segment.one","Segment 1")
-    segment_two = fields.Many2one("segment.two","Segment 2")
-    segment_three = fields.Many2one("segment.three","Segment 3")
-    segment_four = fields.Many2one("segment.four","Segment 4")
+    segment_one = fields.Many2one("segment.one","Segment 1",track_visibility='always')
+    segment_two = fields.Many2one("segment.two","Segment 2",track_visibility='always')
+    segment_three = fields.Many2one("segment.three","Segment 3",track_visibility='always')
+    segment_four = fields.Many2one("segment.four","Segment 4",track_visibility='always')
     has_segments_group = fields.Boolean(string="Check Group", compute='_check_user_group', default=lambda self: self.env.user.has_group('crm_segments.group_sale_segments'))
 
     @api.one
