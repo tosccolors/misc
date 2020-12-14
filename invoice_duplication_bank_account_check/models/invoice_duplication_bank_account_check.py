@@ -33,14 +33,24 @@ class InvoiceDuplicationBankCheck(models.Model):
             return super(InvoiceDuplicationBankCheck, self).copy(default)
     
                      
-    #  validating the partner_bank_id is link to res.partner           
-            
+    #  validating the partner_bank_id is link to res.partner
     def invoice_validate(self):
         if self.type=='in_invoice'  or self.type=='in_refund' :
             if self.partner_bank_id.id != False and self.partner_bank_id.partner_id.id==False:
                 raise UserError('The partner bank details have changed. Check the bank details')
             elif self.partner_bank_id.id != False and self.partner_bank_id.partner_id.id != self.partner_id.id:
-                raise UserError('The bank account partner for this invoice is not the same as the partner in the bank account',)
+                raise UserError('The bank account partner for this invoice is not the same as the partner in the bank account')
         return super(InvoiceDuplicationBankCheck, self).invoice_validate()
+
+    @api.constrains('partner_bank_id')
+    def check_partner_bank_id(self):
+        if self.type=='in_invoice'  or self.type=='in_refund' :
+            if self.partner_bank_id.id != False and self.partner_bank_id.partner_id.id == False:
+                raise ValidationError('The partner bank details have changed. Check the bank details')
+            elif self.partner_bank_id.id != False and self.partner_bank_id.partner_id.id != self.partner_id.id:
+                raise ValidationError('The bank account partner for this invoice is not the same as the partner in the bank account')
+        return True
+
+
 
     
