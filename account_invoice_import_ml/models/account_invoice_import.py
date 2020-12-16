@@ -62,12 +62,13 @@ class AccountInvoiceImport(models.TransientModel):
 
     def _account_invoice_import_ml_get_vendor(self, response):
         """Find a partner based on predictions"""
-        return self.env['res.partner'].search(
-            [
-                '|',
-                ('name', '=ilike', response.get('vendor_name')),
-                ('ref', '=ilike', response.get('vendor_id')),
-            ], limit=1,
+        partner_dict = {
+            'name': response.get('vendor_name'),
+            'ref': response.get('vendor_id'),
+        }
+
+        return self.env['business.document.import']._match_partner(
+            partner_dict, '',
         )
 
     def _account_invoice_import_ml_create_partner_config(self, partner):
