@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 class AccountInvoice(models.Model):
     _inherit = "account.invoice"
 
-    def _account_invoice_import_tensorflow_export(self):
+    def _account_invoice_import_ml_export(self):
         # TODO in which format do we need to export this?
         result = []
         for this in self:

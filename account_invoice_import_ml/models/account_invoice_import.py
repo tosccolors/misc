@@ -11,38 +11,38 @@ class AccountInvoiceImport(models.TransientModel):
     _inherit = "account.invoice.import"
 
     def fallback_parse_pdf_invoice(self, file_data):
-        parsed_data = self._account_invoice_import_tensorflow_parse(file_data)
+        parsed_data = self._account_invoice_import_ml_parse(file_data)
         if parsed_data.get('failed'):
             return super(AccountInvoiceImport, self).fallback_parse_pdf_invoice(file_data)
         return parsed_data
 
-    def _account_invoice_import_tensorflow_parse(self, file_data):
+    def _account_invoice_import_ml_parse(self, file_data):
         """Send file to serving container and return its data"""
         response_data = requests.post(
             self.env['ir.config_parameter'].get_param(
-                'account_invoice_import_tensorflow.predict_url'
+                'account_invoice_import_ml.predict_url'
             ),
-            json=self._account_invoice_import_tensorflow_predict_data(
+            json=self._account_invoice_import_ml_predict_data(
                 file_data
             ),
         ).json()
         if not response_data.get('vendor_name'):
             return dict(failed=True)
-        return self._account_invoice_import_tensorflow_parse_response(response_data)
+        return self._account_invoice_import_ml_parse_response(response_data)
 
-    def _account_invoice_import_tensorflow_predict_data(self, file_data):
+    def _account_invoice_import_ml_predict_data(self, file_data):
         """Return data passed to the serving predict endpoint"""
         return {
             "data": base64.b64encode(file_data),
         }
 
-    def _account_invoice_import_tensorflow_parse_response(self, response):
+    def _account_invoice_import_ml_parse_response(self, response):
         """Return data usable as result of account.invoice.import#parse_pdf_invoice"""
         data = response
         # TODO will the model ever recogize the currency?
         currency = self.env.user.company_id.currency_id
-        partner = self._account_invoice_import_tensorflow_get_vendor(response)
-        self._account_invoice_import_tensorflow_create_partner_config(partner)
+        partner = self._account_invoice_import_ml_get_vendor(response)
+        self._account_invoice_import_ml_create_partner_config(partner)
         return dict(
             type='in_invoice',
             currency=dict(
@@ -57,10 +57,10 @@ class AccountInvoiceImport(models.TransientModel):
                 name=response['vendor_name'],
             ),
             invoice_number=data['invoice_reference'],
-            lines=self._account_invoice_import_tensorflow_parse_response_lines(response),
+            lines=self._account_invoice_import_ml_parse_response_lines(response),
         )
 
-    def _account_invoice_import_tensorflow_get_vendor(self, response):
+    def _account_invoice_import_ml_get_vendor(self, response):
         """Find a partner based on predictions"""
         return self.env['res.partner'].search(
             [
@@ -70,7 +70,7 @@ class AccountInvoiceImport(models.TransientModel):
             ], limit=1,
         )
 
-    def _account_invoice_import_tensorflow_create_partner_config(self, partner):
+    def _account_invoice_import_ml_create_partner_config(self, partner):
         config_model = self.env['account.invoice.import.config']
         if not partner:
             return config_model
@@ -82,10 +82,10 @@ class AccountInvoiceImport(models.TransientModel):
             'partner_id': partner.id,
             'invoice_line_method': '1line_static_product',
             'static_product_id':
-            self.env.ref('account_invoice_import_tensorflow.unknown_product').id,
+            self.env.ref('account_invoice_import_ml.unknown_product').id,
         })
 
-    def _account_invoice_import_tensorflow_parse_response_lines(self, response):
+    def _account_invoice_import_ml_parse_response_lines(self, response):
         """Extract invoice lines usable as result of account.invoice.import#parse_pdf_invoice"""
         # TODO at the moment the prediction only has one invoice line
         data = response
