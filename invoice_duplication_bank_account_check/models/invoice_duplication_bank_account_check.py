@@ -44,9 +44,9 @@ class InvoiceDuplicationBankCheck(models.Model):
     @api.constrains('partner_bank_id')
     def check_partner_bank_id(self):
         if self.type=='in_invoice'  or self.type=='in_refund' :
-            if self.partner_bank_id.id != False and self.partner_bank_id.partner_id.id == False:
+            if self.partner_bank_id and not self.partner_bank_id.partner_id:
                 raise ValidationError('The partner bank details have changed. Check the bank details')
-            elif self.partner_bank_id.id != False and self.partner_bank_id.partner_id.id != self.partner_id.id:
+            elif self.partner_bank_id and self.partner_bank_id.partner_id and self.partner_bank_id.partner_id.id != self.partner_id.id:
                 raise ValidationError('The bank account partner for this invoice is not the same as the partner in the bank account')
         return True
 
