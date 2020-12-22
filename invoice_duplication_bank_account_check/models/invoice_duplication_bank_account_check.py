@@ -16,7 +16,7 @@ class InvoiceDuplicationBankCheck(models.Model):
     @api.onchange('copy_record','partner_bank_id')
     def _onchange_copy_record(self):
         if self.type=='in_invoice':
-            if self.partner_bank_id.id:
+            if self.partner_bank_id:
                 self.copy_record=False
         return
             
