@@ -49,6 +49,11 @@ class AccountInvoiceImport(models.TransientModel):
                 return dict(
                     type='in_invoice',
                     partner=dict(recordset=partner),
+                    date=False,
+                    amount_untaxed=0,
+                    amount_tax=0,
+                    amount_total=0,
+                    invoice_number='Failed',
                 )
             else:
                 response.raise_for_status()
