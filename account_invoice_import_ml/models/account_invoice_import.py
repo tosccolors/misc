@@ -41,7 +41,7 @@ class AccountInvoiceImport(models.TransientModel):
             ),
         )
         if response.status_code != 200:
-            if self.env.context(
+            if self.env.context.get(
                     'account_invoice_import_ml_ignore_failure'
             ):
                 _logger.info('Ignoring file data %s...', file_data[:10])
