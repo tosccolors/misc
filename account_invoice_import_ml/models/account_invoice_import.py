@@ -8,6 +8,9 @@ from odoo.exceptions import UserError
 from odoo.tools import float_round
 
 
+_logger = logging.getLogger(__name__)
+
+
 class AccountInvoiceImport(models.TransientModel):
     _inherit = "account.invoice.import"
 
@@ -28,14 +31,24 @@ class AccountInvoiceImport(models.TransientModel):
 
     def _account_invoice_import_ml_parse(self, file_data):
         """Send file to serving container and return its data"""
-        response_data = requests.post(
+        response = requests.post(
             self.env['ir.config_parameter'].get_param(
                 'account_invoice_import_ml.predict_url'
             ),
             json=self._account_invoice_import_ml_predict_data(
                 file_data
             ),
-        ).json()
+        )
+        if response.status_code != 200:
+            if self.env.context(
+                    'account_invoice_import_ml_ignore_failure'
+            ):
+                _logger.info('Ignoring file data %s...', file_data[:10])
+                return dict(failed=True)
+            else:
+                response.raise_for_status()
+
+        response_data = response.json()
         if not response_data.get('vendor_name') and not self.env.context.get(
                 'account_invoice_import_ml_ignore_failure'
         ):
