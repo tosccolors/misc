@@ -16,5 +16,6 @@
         "data/product_product.xml",
         "data/res_partner.xml",
         "views/account_invoice.xml",
+        "views/res_partner.xml",
     ],
 }
