@@ -3,7 +3,8 @@
 import base64
 import json
 import requests
-from odoo import _, models
+from odoo import _, api, models
+from odoo.exceptions import UserError
 from odoo.tools import float_round
 
 
@@ -16,6 +17,15 @@ class AccountInvoiceImport(models.TransientModel):
             return super(AccountInvoiceImport, self).fallback_parse_pdf_invoice(file_data)
         return parsed_data
 
+    @api.model
+    def message_new(self, msg_dict, custom_values=None):
+        return super(
+            AccountInvoiceImport,
+            self.with_context(account_invoice_import_ml_ignore_failure=True)
+        ).message_new(
+            msg_dict, custom_values=custom_values
+        )
+
     def _account_invoice_import_ml_parse(self, file_data):
         """Send file to serving container and return its data"""
         response_data = requests.post(
@@ -26,7 +36,9 @@ class AccountInvoiceImport(models.TransientModel):
                 file_data
             ),
         ).json()
-        if not response_data.get('vendor_name'):
+        if not response_data.get('vendor_name') and not self.env.context.get(
+                'account_invoice_import_ml_ignore_failure'
+        ):
             return dict(failed=True)
         return self._account_invoice_import_ml_parse_response(response_data)
 
@@ -41,7 +53,15 @@ class AccountInvoiceImport(models.TransientModel):
         data = response
         # TODO will the model ever recogize the currency?
         currency = self.env.user.company_id.currency_id
-        partner = self._account_invoice_import_ml_get_vendor(response)
+        try:
+            partner = self._account_invoice_import_ml_get_vendor(response)
+        except UserError:
+            if not self.env.context.get(
+                    'account_invoice_import_ml_ignore_failure'
+            ):
+                raise
+            partner = self.env.ref('account_invoice_import_ml.unknown_supplier')
+
         self._account_invoice_import_ml_create_partner_config(partner)
         return dict(
             type='in_invoice',
@@ -53,9 +73,7 @@ class AccountInvoiceImport(models.TransientModel):
             amount_untaxed=float(data['net_amount']),
             amount_tax=float(data['vat_amount']),
             amount_total=float(data['gross_amount']),
-            partner=dict(recordset=partner) if partner else dict(
-                name=response['vendor_name'],
-            ),
+            partner=dict(recordset=partner),
             invoice_number=data['invoice_reference'],
             lines=self._account_invoice_import_ml_parse_response_lines(response),
         )
