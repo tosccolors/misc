@@ -45,7 +45,11 @@ class AccountInvoiceImport(models.TransientModel):
                     'account_invoice_import_ml_ignore_failure'
             ):
                 _logger.info('Ignoring file data %s...', file_data[:10])
-                return dict(failed=True)
+                partner = self.env.ref('account_invoice_import_ml.unknown_supplier')
+                return dict(
+                    type='in_invoice',
+                    partner=dict(recordset=partner),
+                )
             else:
                 response.raise_for_status()
 
