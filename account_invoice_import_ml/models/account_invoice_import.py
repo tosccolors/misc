@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 import base64
 import json
+import logging
 import requests
 from odoo import _, api, models
 from odoo.exceptions import UserError
