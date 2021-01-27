@@ -72,7 +72,7 @@ class AccountInvoiceImport(models.TransientModel):
             "data": base64.b64encode(file_data),
             "vendor_names": suppliers.mapped('name') + suppliers.filtered(
                 'supplier_invoice_name'
-            ).mapped('name'),
+            ).mapped('supplier_invoice_name'),
         }
 
     def _account_invoice_import_ml_parse_response(self, response):
