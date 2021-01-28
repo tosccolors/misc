@@ -4,6 +4,7 @@ import base64
 import json
 import logging
 import requests
+from random import random
 from odoo import _, api, models
 from odoo.exceptions import UserError
 from odoo.tools import float_round
@@ -103,6 +104,7 @@ class AccountInvoiceImport(models.TransientModel):
             partner=dict(recordset=partner),
             invoice_number=data['invoice_reference'],
             lines=self._account_invoice_import_ml_parse_response_lines(response),
+            import_ml_result=data,
         )
 
     def _account_invoice_import_ml_get_vendor(self, response):
@@ -166,3 +168,31 @@ class AccountInvoiceImport(models.TransientModel):
                 ),
             ),
         ]
+
+    @api.model
+    def _prepare_create_invoice_vals(self, parsed_inv, import_config=False):
+        vals, config = super(AccountInvoiceImport, self)._prepare_create_invoice_vals(
+            parsed_inv, import_config=import_config,
+        )
+        if 'import_ml_result' in parsed_inv:
+            field_mappings = {
+                'vendor_name': 'partner_id',
+                'invoice_date': 'date_invoice',
+                'net_amount': 'amount_untaxed',
+                'vat_amount': 'amount_tax',
+                'gross_amount': 'amount_total',
+                'invoice_reference': 'invoice_number',
+            }
+            for key, value in field_mappings.items():
+                field_mappings['%s_confidence' % key] = '%s_confidence' % (
+                    value
+                )
+            vals['import_ml_result'] = {
+                field_mappings.get(key, key): value
+                for key, value in parsed_inv['import_ml_result'].items()
+            }
+            # TODO remove this when the container returns confidences
+            for key, value in vals['import_ml_result'].items():
+                if not key.endswith('_confidence') and '%s_confidence' % key not in vals['import_ml_result']:
+                    vals['import_ml_result']['%s_confidence' % key] = random()
+        return vals, config
