@@ -61,7 +61,6 @@ class ActivityLog(models.TransientModel):
     def action_log(self):
         context = dict(self._context or {})
         self = self.with_context(get_sizes=True)
-        stage_id = self.env['crm.stage'].search([('name','=','Logged')],limit=1)
         stage_logged = self.env.ref("sale_advertising_order.stage_logged")
         for log in self:
             body_html = "<div><b>%(title)s</b>: %(next_activity)s</div>%(description)s%(note)s" % {
@@ -85,13 +84,11 @@ class ActivityLog(models.TransientModel):
                         'description':note,
                         
                     }
-                    if not context.get('ctx_scheduled_log',False):
-                        dic.update({'stage_id': stage_id.id})
+
                     if self.title_action:
                         dic['name'] = "Internal Note"
                     log.lead_id.write(dic)
-            if not context.get('ctx_scheduled_log',False):
-                log.lead_id.write({'stage_id': stage_id.id})
+
             log.lead_id.message_post(body_html, subject=summary, subtype_id=log.next_activity_id.subtype_id.id)
             log.lead_id.write({
                 'date_deadline': log.date_deadline,
@@ -99,7 +96,8 @@ class ActivityLog(models.TransientModel):
                 'title_action': False,
                 # 'description':note,
             })
-            if log.lead_id.is_activity: log.lead_id.write({'stage_id': stage_logged.id})
+            if log.lead_id.is_activity and not context.get('ctx_scheduled_log',False):
+                log.lead_id.write({'stage_id': stage_logged.id})
         return True
 
     @api.multi
