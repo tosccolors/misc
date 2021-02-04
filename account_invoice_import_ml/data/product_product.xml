@@ -1,0 +1,8 @@
+<odoo>
+    <data noupdate="1">
+        <record id="unknown_product" model="product.product">
+            <field name="active" eval="False" />
+            <field name="name">Unknown product</field>
+        </record>
+    </data>
+</odoo>
