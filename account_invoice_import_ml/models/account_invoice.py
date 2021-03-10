@@ -13,6 +13,7 @@ class AccountInvoice(models.Model):
     _inherit = "account.invoice"
 
     import_ml_result = fields.Serialized('ML result')
+    import_ml_warnings = fields.Html('ML warnings')
 
     def _account_invoice_import_ml_export(self):
         # TODO in which format do we need to export this?

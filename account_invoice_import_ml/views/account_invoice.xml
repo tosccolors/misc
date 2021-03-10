@@ -19,6 +19,9 @@
             <field name="inherit_id" ref="account.invoice_supplier_form" />
             <field name="model">account.invoice</field>
             <field name="arch" type="xml">
+                <sheet position="before">
+                    <div class="alert-danger" attrs="{'invisible': [('import_ml_warnings', '=', False)]}"><field name="import_ml_warnings" /></div>
+                </sheet>
                 <notebook position="inside">
                     <page name="account_invoice_import_ml" string="ML results" attrs="{'invisible': ['|', ('import_ml_result', '=', False), ('import_ml_result', '=', {})]}">
                         <field name="import_ml_result" widget="import_ml_result" />

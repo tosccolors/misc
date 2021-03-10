@@ -8,6 +8,7 @@ from random import random
 from odoo import _, api, models
 from odoo.exceptions import UserError
 from odoo.tools import float_round
+from odoo.addons.base.res.res_bank import sanitize_account_number
 
 
 _logger = logging.getLogger(__name__)
@@ -26,7 +27,10 @@ class AccountInvoiceImport(models.TransientModel):
     def message_new(self, msg_dict, custom_values=None):
         return super(
             AccountInvoiceImport,
-            self.with_context(account_invoice_import_ml_ignore_failure=True)
+            self.with_context(
+                account_invoice_import_ml_ignore_failure=True,
+                account_invoice_import_ml_vendor_mail=msg_dict.get('email_from'),
+            )
         ).message_new(
             msg_dict, custom_values=custom_values
         )
@@ -79,6 +83,7 @@ class AccountInvoiceImport(models.TransientModel):
     def _account_invoice_import_ml_parse_response(self, response):
         """Return data usable as result of account.invoice.import#parse_pdf_invoice"""
         data = response
+        unknown_supplier = self.env.ref('account_invoice_import_ml.unknown_supplier')
         # TODO will the model ever recogize the currency?
         currency = self.env.user.company_id.currency_id
         try:
@@ -88,7 +93,35 @@ class AccountInvoiceImport(models.TransientModel):
                     'account_invoice_import_ml_ignore_failure'
             ):
                 raise
-            partner = self.env.ref('account_invoice_import_ml.unknown_supplier')
+            partner = unknown_supplier
+
+        from_email = self.env.context.get('account_invoice_import_ml_vendor_mail')
+        if partner != unknown_supplier and from_email and partner.email != from_email:
+            # add unknown mail address as new partner
+            partner = self.env['res.partner'].create({
+                'name': partner.name,
+                'email': from_email,
+                'parent_id': partner.commercial_partner_id.id,
+            })
+            data.setdefault('__import_ml_warnings', []).append(_(
+                'Added unknown email address %s to vendor'
+            ) % partner.email)
+
+        if data.get('vendor_bank_account'):
+            # warn for unknown account
+            sanitized_account = sanitize_account_number(data['vendor_bank_account'])
+            existing = self.env['res.partner.bank'].search([
+                ('sanitized_acc_number', '=', sanitized_account),
+            ])
+            if existing and partner != existing.partner_id:
+                data.setdefault('__import_ml_warnings', []).append(_(
+                    'Supplier coerced from %s to %s by IBAN'
+                ) % (partner.name, existing.partner_id.name))
+                partner = existing.partner_id
+            else:
+                data.setdefault('__import_ml_warnings', []).append(_(
+                    'Invoice has unknown IBAN %s'
+                ) % sanitized_account)
 
         self._account_invoice_import_ml_create_partner_config(partner)
         return dict(
@@ -105,14 +138,20 @@ class AccountInvoiceImport(models.TransientModel):
             invoice_number=data['invoice_reference'],
             lines=self._account_invoice_import_ml_parse_response_lines(response),
             import_ml_result=data,
+            import_ml_warnings=data.get('__import_ml_warnings') and
+            '<ul>' + ''.join(
+                '<li>%s</li>' % warning for warning
+                in data.get('__import_ml_warnings', [])
+            ) + '</ul>' or False
         )
 
     def _account_invoice_import_ml_get_vendor(self, response):
         """Find a partner based on predictions"""
         partner_dict = {
             'name': response.get('vendor_name'),
-            'ref': response.get('vendor_id'),
         }
+        if response.get('vendor_id'):
+            partner_dict['ref'] = response['vendor_id'],
 
         return self.env['business.document.import']._match_partner(
             partner_dict, '',
@@ -195,4 +234,6 @@ class AccountInvoiceImport(models.TransientModel):
             for key, value in vals['import_ml_result'].items():
                 if not key.endswith('_confidence') and '%s_confidence' % key not in vals['import_ml_result']:
                     vals['import_ml_result']['%s_confidence' % key] = random()
+        if 'import_ml_warnings':
+            vals['import_ml_warnings'] = parsed_inv['import_ml_warnings']
         return vals, config
