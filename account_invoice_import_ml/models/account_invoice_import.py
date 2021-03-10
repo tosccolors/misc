@@ -234,6 +234,6 @@ class AccountInvoiceImport(models.TransientModel):
             for key, value in vals['import_ml_result'].items():
                 if not key.endswith('_confidence') and '%s_confidence' % key not in vals['import_ml_result']:
                     vals['import_ml_result']['%s_confidence' % key] = random()
-        if 'import_ml_warnings':
+        if 'import_ml_warnings' in parsed_inv:
             vals['import_ml_warnings'] = parsed_inv['import_ml_warnings']
         return vals, config
