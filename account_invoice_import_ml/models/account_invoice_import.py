@@ -118,7 +118,7 @@ class AccountInvoiceImport(models.TransientModel):
                     'Supplier coerced from %s to %s by IBAN'
                 ) % (partner.name, existing.partner_id.name))
                 partner = existing.partner_id
-            else:
+            elif not existing:
                 data.setdefault('__import_ml_warnings', []).append(_(
                     'Invoice has unknown IBAN %s'
                 ) % sanitized_account)
