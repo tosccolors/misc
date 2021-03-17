@@ -96,9 +96,12 @@ class AccountInvoiceImport(models.TransientModel):
             partner = unknown_supplier
 
         from_email = self.env.context.get('account_invoice_import_ml_vendor_mail')
-        if partner != unknown_supplier and from_email and partner.email != from_email:
+        if from_email and partner != unknown_supplier and from_email not in (
+                partner + partner.child_ids
+        ).mapped('email'):
             # add unknown mail address as new partner
             partner = self.env['res.partner'].create({
+                'type': 'invoice',
                 'name': partner.name,
                 'email': from_email,
                 'parent_id': partner.commercial_partner_id.id,

@@ -2,4 +2,5 @@
 
 from . import account_invoice_import
 from . import account_invoice
+from . import business_document_import
 from . import res_partner
