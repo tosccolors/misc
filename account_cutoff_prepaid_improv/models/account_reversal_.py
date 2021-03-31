@@ -185,7 +185,7 @@ class AccountMove(models.Model):
             moves._post_validate()
             moves.post()
             if reconcile:
-                orig.move_reverse_reconcile()
+                self.move_reverse_reconcile()
         return moves
 
     # Create account move and lines using job queue
@@ -200,11 +200,11 @@ class AccountMove(models.Model):
                     'reversal_id': reversal_move.id,
                     'to_be_reversed': False,
                 })
-            if moves:
-                moves._post_validate()
-                moves.post()
-                if reconcile:
-                    orig.move_reverse_reconcile()
+            # if moves:
+            #     moves._post_validate()
+            #     moves.post()
+            #     if reconcile:
+            #         orig.move_reverse_reconcile()
             return moves
 
         except Exception, e:
