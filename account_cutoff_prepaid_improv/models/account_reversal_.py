@@ -194,7 +194,8 @@ class AccountMove(models.Model):
         moves = self.env['account.move']
         try:
             for orig in self:
-                reversal_move = self.create_reversal_moveline_with_query(data)
+                # reversal_move = self.create_reversal_moveline_with_query(data)
+                reversal_move = self.create(data)
                 moves |= reversal_move
                 orig.write({
                     'reversal_id': reversal_move.id,
