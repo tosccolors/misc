@@ -80,20 +80,20 @@ class AccountMove(models.Model):
                             tax_line_id,
                             product_uom_id,
                             create_uid,                            
-                            debit,
+                            credit,
                             account_id,
                             invoice_id,
                             bank_payment_line_id,                            
                             tax_exigible,
-                            credit_cash_basis,
                             debit_cash_basis,
+                            credit_cash_basis,
                             balance_cash_basis,
                             write_date,
                             date,
                             write_uid,
                             move_id,
                             name,
-                            credit,
+                            debit,
                             amount_currency,
                             quantity,
                             company_currency_id,
@@ -194,8 +194,7 @@ class AccountMove(models.Model):
         moves = self.env['account.move']
         try:
             for orig in self:
-                # reversal_move = self.create_reversal_moveline_with_query(data)
-                reversal_move = self.create(data)
+                reversal_move = self.create_reversal_moveline_with_query(data)
                 moves |= reversal_move
                 orig.write({
                     'reversal_id': reversal_move.id,
