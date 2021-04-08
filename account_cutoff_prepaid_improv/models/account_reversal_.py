@@ -64,6 +64,7 @@ class AccountMove(models.Model):
                     INSERT INTO account_move_line (
                             create_date,
                             partner_bank_id,
+                            partner_id,
                             ref,
                             user_type_id,
                             journal_id,
@@ -103,6 +104,7 @@ class AccountMove(models.Model):
                     SELECT
                             create_date,
                             partner_bank_id,
+                            partner_id,
                             ref,
                             user_type_id,
                             journal_id,
@@ -200,11 +202,11 @@ class AccountMove(models.Model):
                     'reversal_id': reversal_move.id,
                     'to_be_reversed': False,
                 })
-            # if moves:
-            #     moves._post_validate()
-            #     moves.post()
-            #     if reconcile:
-            #         orig.move_reverse_reconcile()
+            if moves:
+                moves._post_validate()
+                moves.post()
+                if reconcile:
+                    orig.move_reverse_reconcile()
             return moves
 
         except Exception, e:
