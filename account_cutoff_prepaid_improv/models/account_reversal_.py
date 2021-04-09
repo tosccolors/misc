@@ -141,7 +141,8 @@ class AccountMove(models.Model):
                             balance,
                             company_id
                     FROM account_move_line
-                    WHERE move_id={1};
+                    WHERE move_id={1}
+                    AND (credit > 0 OR debit > 0);
         """.format(                 
                    move_id,
                    self.id                 
