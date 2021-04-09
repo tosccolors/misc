@@ -13,7 +13,8 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    job_queue = fields.Many2one('queue.job', string='Job Queue', readonly=True,copy=False)
+    job_queue = fields.Many2one('queue.job', string='Job Queue', readonly=True, copy=False)
+
     def create_reversal_moveline_with_query(self, data):
 
         #  Create move
@@ -141,8 +142,7 @@ class AccountMove(models.Model):
                             balance,
                             company_id
                     FROM account_move_line
-                    WHERE move_id={1}
-                    AND (credit > 0 OR debit > 0);
+                    WHERE move_id={1} AND NOT (debit=0 AND credit=0);
         """.format(                 
                    move_id,
                    self.id                 
