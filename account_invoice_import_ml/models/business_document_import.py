@@ -16,3 +16,13 @@ class BusinessDocumentImport(models.AbstractModel):
         ) or super(BusinessDocumentImport, self)._hook_match_partner(
             partner_dict, chatter_msg, domain, partner_type_label,
         )
+
+    @api.model
+    def _match_tax(
+            self, tax_dict, chatter_msg, type_tax_use='purchase',
+            price_include=False
+    ):
+        # TODO: return least bad match
+        return self.env['account.tax'].search([
+            ('type_tax_use', '=', type_tax_use),
+        ], limit=1)

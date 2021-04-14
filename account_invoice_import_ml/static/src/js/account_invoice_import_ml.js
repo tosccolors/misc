@@ -3,6 +3,7 @@
 odoo.define('account_invoice_import_ml', function(require) {
     var common = require('web.form_common');
     var core = require('web.core');
+    var formats = require('web.formats');
 
     var FieldImportMlResult = common.AbstractField.extend(common.ReinitializeFieldMixin, {
         template: 'import_ml_result',
@@ -28,8 +29,8 @@ odoo.define('account_invoice_import_ml', function(require) {
                     var field = self.field_manager.fields[key],
                         confidence = value[key + '_confidence'],
                         $els = field.$el.add(field.$label);
-                    $els.toggleClass('confidence-high', confidence >= .8);
-                    $els.toggleClass('confidence-medium', confidence >= .4 && confidence < .8);
+                    $els.toggleClass('confidence-high', confidence >= 1);
+                    $els.toggleClass('confidence-medium', confidence >= .4 && confidence < 1);
                     $els.toggleClass('confidence-low', confidence < .4);
                 }
             );
@@ -39,7 +40,12 @@ odoo.define('account_invoice_import_ml', function(require) {
                 _.keys(this.get_value()),
                 function(key) { return !key.endsWith('_confidence') }
             );
-        }
+        },
+        _format_percentage: function(percentage) {
+            return formats.format_value(
+                percentage, {type: 'float'}, 0
+            )
+        },
     })
 
     core.form_widget_registry.add('import_ml_result', FieldImportMlResult);
