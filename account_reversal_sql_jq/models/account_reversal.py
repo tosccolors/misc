@@ -60,6 +60,7 @@ class AccountMove(models.Model):
                     INSERT INTO account_move_line (
                             create_date,
                             partner_bank_id,
+                            partner_id,
                             ref,
                             user_type_id,
                             journal_id,
@@ -76,7 +77,7 @@ class AccountMove(models.Model):
                             tax_line_id,
                             product_uom_id,
                             create_uid,                            
-                            debit,
+                            credit,
                             account_id,
                             invoice_id,
                             bank_payment_line_id,                            
@@ -89,7 +90,7 @@ class AccountMove(models.Model):
                             write_uid,
                             move_id,
                             name,
-                            credit,
+                            debit,
                             amount_currency,
                             quantity,
                             company_currency_id,
@@ -135,7 +136,7 @@ class AccountMove(models.Model):
                             balance,
                             company_id
                     FROM account_move_line
-                    WHERE move_id={1};
+                    WHERE move_id={1} AND NOT (debit=0 AND credit=0);
         """.format(                 
                    move_id,
                    self.id                 

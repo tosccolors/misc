@@ -70,9 +70,9 @@ class AccountCutoff(models.Model):
         # Create move
         type = self._context.get('default_type')
         move_type = False
-        if type == 'prepaid_revenue':
+        if type in ['prepaid_revenue', 'accrued_revenue']:
             move_type = "receivable_refund"
-        if type == 'prepaid_expense':
+        if type in ['prepaid_expense','accrued_expense']:
             move_type = "payable"
 
         vals.update({'name': "/",
@@ -175,7 +175,8 @@ class AccountCutoff(models.Model):
                     LEFT JOIN account_account aa ON (cl.account_id = aa.id)
                     LEFT JOIN account_move_line ml ON (ml.id = cl.move_line_id)
                     LEFT JOIN account_move m ON (m.id = ml.move_id)
-                    WHERE parent_id = {8};
+                    WHERE parent_id = {8}
+                    AND cl.cutoff_amount is not 0;
         """.format(move_id,
                    "'%s'" % str(account_move.date),
                    self._uid,
@@ -338,9 +339,8 @@ class AccountCutoff(models.Model):
             raise FailedJobError(
                 _("The details of the error:'%s'") % (unicode(e)))
 
-    def get_lines(self):
+    def get_lines_sql(self):
         self.ensure_one()
-        #        import pdb; pdb.set_trace()
         if not self.source_journal_ids:
             raise UserError(
                 _("You should set at least one Source Journal!"))
@@ -368,10 +368,16 @@ class AccountCutoff(models.Model):
             varb = "l.start_date <= '%s' AND l.journal_id IN (%s) AND l.end_date >= '%s' " % (
                 end_date_str, str_lst, start_date_str)
 
-        else:
+        elif self.type in ['prepaid_expense', 'prepaid_revenue']:
             vara = "WHEN l.start_date > '%s' " \
                    "THEN l.end_date - l.start_date + 1 ELSE l.end_date - '%s'" % (cutoff_date_str, cutoff_date_str)
             varb = "l.start_date IS NOT NULL AND l.journal_id IN (%s) AND l.end_date > '%s' AND l.date <= '%s' " % (
+                str_lst, cutoff_date_str, cutoff_date_str)
+
+        elif self.type in ['accrued_expense', 'accrued_revenue']:
+            vara = "WHEN l.end_date <= '%s' " \
+                   "THEN l.end_date - l.start_date + 1 ELSE '%s' - l.start_date" % (cutoff_date_str, cutoff_date_str)
+            varb = "l.start_date IS NOT NULL AND l.journal_id IN (%s) AND l.start_date <= '%s' AND l.date > '%s' " % (
                 str_lst, cutoff_date_str, cutoff_date_str)
 
         sql_query = ("""

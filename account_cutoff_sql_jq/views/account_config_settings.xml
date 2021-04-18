@@ -12,20 +12,20 @@
         <field name="inherit_id" ref="account_cutoff_prepaid.view_account_config_settings"/>
         <field name="arch" type="xml">
             <field name="default_prepaid_expense_account_id" position="after">
-                <field name="perform_posting_by_line"
-                       attrs="{'invisible': [('perform_posting_by_line_jq', '=', True)]}"/>
+                <!--field name="perform_posting_by_line"
+                       attrs="{'invisible': [('perform_posting_by_line_jq', '=', True)]}"/-->
                 <field name="use_description_as_reference"
                        attrs="{'invisible': [('perform_posting_by_line', '=', False)]}"/>
-                <field name="reversal_via_sql"
+                <!--field name="reversal_via_sql"
                        attrs="{'invisible': [('perform_reversal_by_line_jq', '=', True)]}"/>
                 <field name="perform_posting_by_line_jq"
                        attrs="{'invisible': [('perform_posting_by_line', '=', True)]}"/>
                 <field name="perform_reversal_by_line_jq"
-                       attrs="{'invisible': [('reversal_via_sql', '=', True)]}"/>
+                       attrs="{'invisible': [('reversal_via_sql', '=', True)]}"/-->
             </field>
         </field>
     </record>
-    <record id="account_cutoff_imporv_job_queue" model="ir.ui.view">
+    <record id="account_cutoff_import_job_queue" model="ir.ui.view">
         <field name="name">account.cutoff.job.queue.form</field>
         <field name="model">account.cutoff</field>
         <field name="inherit_id" ref="account_cutoff_base.account_cutoff_form"/>
@@ -35,14 +35,5 @@
             </field>
         </field>
     </record>
-    <record id="account_cutoff_reversal_imporv_job_queue" model="ir.ui.view">
-        <field name="name">account.cutoff.reversal.job.queue.form</field>
-        <field name="model">account.move</field>
-        <field name="inherit_id" ref="account.view_move_form"/>
-        <field name="arch" type="xml">
-            <field name="date" position="after">
-                <field name="job_queue"/>
-            </field>
-        </field>
-    </record>
+
 </odoo>
