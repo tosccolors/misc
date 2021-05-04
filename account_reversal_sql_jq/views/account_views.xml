@@ -6,7 +6,11 @@
         <field name="inherit_id" ref="account_cutoff_prepaid.view_account_config_settings" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='default_prepaid_expense_account_id']" position="after">
-              <field name="reversal_via_sql"/>
+                <!--<field name="reversal_via_sql"/>-->
+                <field name="reversal_via_sql"
+                       attrs="{'invisible': [('perform_reversal_by_line_jq', '=', True)]}"/>
+                <field name="perform_reversal_by_line_jq"
+                       attrs="{'invisible': [('reversal_via_sql', '=', True)]}"/>
             </xpath>
         </field>
     </record>
