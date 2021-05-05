@@ -21,8 +21,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','account','account_cutoff_prepaid',
-        'account_cutoff_base_operating_unit'],
+    'depends': ['account'],
 
     # always loaded
     'data': [
