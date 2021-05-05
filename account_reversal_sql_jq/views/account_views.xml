@@ -1,19 +1,22 @@
 <odoo>
   <data>
-   <record id="view_account_config_settings_reversal" model="ir.ui.view">
-        <field name="name">account.reversal.config.improv.form</field>
+
+    <record id="view_account_config_settings" model="ir.ui.view">
+        <field name="name">reversal.account.config.settings.form</field>
         <field name="model">account.config.settings</field>
-        <field name="inherit_id" ref="account_cutoff_prepaid.view_account_config_settings" />
+        <field name="inherit_id" ref="account.view_account_config_settings" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='default_prepaid_expense_account_id']" position="after">
-                <!--<field name="reversal_via_sql"/>-->
-                <field name="reversal_via_sql"
+            <group name="accounting" position="after">
+                <group name="reversal" string="Reversal-By-SQL/JQ">
+                    <field name="reversal_via_sql"
                        attrs="{'invisible': [('perform_reversal_by_line_jq', '=', True)]}"/>
-                <field name="perform_reversal_by_line_jq"
+                    <field name="perform_reversal_by_line_jq"
                        attrs="{'invisible': [('reversal_via_sql', '=', True)]}"/>
-            </xpath>
+                </group>
+            </group>
         </field>
     </record>
+
       <!--record id="account_cutoff_reversal_imporv_job_queue" model="ir.ui.view">
         <field name="name">account.cutoff.reversal.job.queue.form</field>
         <field name="model">account.move</field>
