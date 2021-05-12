@@ -221,16 +221,16 @@ class AccountInvoiceImport(models.TransientModel):
                     ) * 100,
                 )],
                 account=dict(
-                    code=data['account_number'],
-                    name=data['account_name'],
+                    code=data.get('account_number'),
+                    name=data.get('account_name'),
                 ),
                 analytic_account=dict(
-                    code=data['analytic_account_code'],
-                    name=data['analytic_account_name'],
+                    code=data.get('analytic_account_code'),
+                    name=data.get('analytic_account_name'),
                 ),
                 operating_unit=dict(
                     # TODO wouldn't an id or code be more in line with the above?
-                    name=data['operating_unit'],
+                    name=data.get('operating_unit'),
                 ),
             ),
         ]
@@ -270,11 +270,11 @@ class AccountInvoiceImport(models.TransientModel):
             if parsed_line.get('account', {}).get('code'):
                 line_vals['account_id'] = self.env['account.account'].search([
                     ('code', '=', parsed_line['account']['code']),
-                ]).id or line_vals.get('account_id')
+                ], limit=1).id or line_vals.get('account_id')
             if parsed_line.get('analytic_account', {}).get('code'):
                 line_vals['account_analytic_id'] = self.env['account.analytic.account'].search([
                     ('code', '=', parsed_line['analytic_account']['code']),
-                ]).id or line_vals.get('account_analytic_id')
+                ], limit=1).id or line_vals.get('account_analytic_id')
 
         return vals, config
 
