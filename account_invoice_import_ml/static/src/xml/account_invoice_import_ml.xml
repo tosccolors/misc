@@ -11,7 +11,7 @@
                 <tr t-foreach="widget._import_ml_result_get_fields()" t-as="field">
                     <td><span t-esc="field"></span></td>
                     <td><span t-esc="value[field]"></span></td>
-                    <td><span t-esc="value[field + '_confidence']"></span></td>
+                    <td><span t-esc="widget._format_percentage(value[field + '_confidence'] * 100)">%</span></td>
                 </tr>
             </table>
         </div>

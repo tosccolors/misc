@@ -3,6 +3,9 @@
 
 import base64
 import mock
+from email.mime.application import MIMEApplication
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from contextlib import contextmanager
 from odoo.tests.common import  TransactionCase
 
@@ -33,6 +36,12 @@ class TestAccountInvoiceImportMl(TransactionCase):
             ('partner_id', '=', self.env.ref('base.res_partner_12').id),
             ('state', '=', 'draft'),
         ]).unlink()
+        self.account = self.env['account.account'].create({
+            'name': SUCCESS_RESULT['account_name'],
+            'code': SUCCESS_RESULT['account_number'],
+            'user_type_id': self.env.ref('account.data_account_type_payable').id,
+            'reconcile': True,
+        })
 
     def test_wrong_iban(self):
         # test we find suppliers by name if the iban isn't known
@@ -57,6 +66,39 @@ class TestAccountInvoiceImportMl(TransactionCase):
             self.assertEqual(new_invoice.partner_id, new_partner)
             self.assertIn('coerced', new_invoice.import_ml_warnings)
         pass
+
+    def test_email_success(self):
+        mail = MIMEMultipart()
+        mail['from'] = 'invoices@test-supplier.com'
+        mail['to'] = 'invoices@yourcompany.com'
+        mail.attach(MIMEText('This is your invoice'))
+
+        def attach(cls, subtype, data, filename):
+            part = cls(data, subtype)
+            part.add_header('Content-Disposition', 'attachment', filename=filename)
+            mail.attach(part)
+
+        attach(MIMEApplication, 'pdf', 'PDF1', 'invoice1.pdf')
+        attach(MIMEApplication, 'pdf', 'PDF2', 'invoice2.pdf')
+        attach(MIMEApplication, 'vnd.ms-excel', 'XLS1', 'specs.xls')
+
+        existing_invoices = self.env['account.invoice'].search([])
+
+        with self._mock(SUCCESS_RESULT):
+            self.env['mail.thread'].message_process('account.invoice.import', mail.as_string())
+
+        invoices = self.env['account.invoice'].search([]) - existing_invoices
+        # given the way we mock the container above, all files will come back as valid
+        # the real container will error out on the xls file
+        self.assertEqual(len(invoices), 3, 'Each attachment generates an invoice')
+        self.assertEqual(invoices.mapped('invoice_line_ids.account_id'), self.account)
+        self.assertFalse(invoices.mapped('invoice_line_ids.product_id'))
+
+        attachments = self.env['ir.attachment'].search([
+            ('res_model', '=', 'account.invoice'),
+            ('res_id', 'in', invoices.ids),
+        ])
+        self.assertEqual(len(attachments), 9, 'Each attachment is attached to each invoice')
 
     @contextmanager
     def _mock(self, payload):
