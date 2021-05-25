@@ -13,7 +13,7 @@ class AccountInvoiceImport(models.TransientModel):
             msg_dict, custom_values=custom_values,
         )
         new_invoices = self.env['account.invoice'].search([('id', '>', last_invoice.id)])
-        for invoice in new_invoice:
+        for invoice in new_invoices:
             invoice.message_post(subtype='mail.mt_comment', **msg_dict)
         return result
 
