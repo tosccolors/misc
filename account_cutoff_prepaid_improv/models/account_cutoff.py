@@ -338,6 +338,11 @@ class AccountCutoff(models.Model):
             raise FailedJobError(
                 _("The details of the error:'%s'") % (unicode(e)))
 
+    def remove_zero_lines(self):
+        noamt_lines = self.line_ids.filtered(lambda l: not l.amount)
+        noamt_lines.unlink()
+        return
+
     def get_lines(self):
         self.ensure_one()
         #        import pdb; pdb.set_trace()
@@ -434,4 +439,5 @@ class AccountCutoff(models.Model):
                    "'%s'" % str(fields.Datetime.to_string(fields.datetime.now()))
                    ))
         self.env.cr.execute(sql_query)
+        self.remove_zero_lines()
         return True
