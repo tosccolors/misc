@@ -3,7 +3,7 @@
 import json
 import base64
 import logging
-from odoo import models
+from odoo import fields, models
 
 
 _logger = logging.getLogger(__name__)
@@ -11,6 +11,9 @@ _logger = logging.getLogger(__name__)
 
 class AccountInvoice(models.Model):
     _inherit = "account.invoice"
+
+    import_ml_result = fields.Serialized('ML result')
+    import_ml_warnings = fields.Html('ML warnings')
 
     def _account_invoice_import_ml_export(self):
         # TODO in which format do we need to export this?

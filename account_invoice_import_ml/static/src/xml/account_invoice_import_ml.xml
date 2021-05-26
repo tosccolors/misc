@@ -1,0 +1,19 @@
+<templates>
+    <div t-name="import_ml_result" class="o_view_manager_content">
+        <div class="table-responsive">
+            <table t-name="import_ml_result" class="o_list_view table table-condensed table-striped">
+                <thead>
+                    <th>Field</th>
+                    <th>Value</th>
+                    <th>Confidence</th>
+                </thead>
+                <t t-set="value" t-value="widget.get_value()" />
+                <tr t-foreach="widget._import_ml_result_get_fields()" t-as="field">
+                    <td><span t-esc="field"></span></td>
+                    <td><span t-esc="value[field]"></span></td>
+                    <td><span t-esc="widget._format_percentage(value[field + '_confidence'] * 100)">%</span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</templates>

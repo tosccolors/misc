@@ -4,9 +4,11 @@ import base64
 import json
 import logging
 import requests
+from random import random
 from odoo import _, api, models
 from odoo.exceptions import UserError
 from odoo.tools import float_round
+from odoo.addons.base.res.res_bank import sanitize_account_number
 
 
 _logger = logging.getLogger(__name__)
@@ -14,6 +16,31 @@ _logger = logging.getLogger(__name__)
 
 class AccountInvoiceImport(models.TransientModel):
     _inherit = "account.invoice.import"
+
+    @api.model
+    def parse_invoice(self, invoice_file_b64, invoice_filename):
+        """Attach all email attachments to created invoices"""
+        parsed_data = super(AccountInvoiceImport, self).parse_invoice(
+            invoice_file_b64, invoice_filename
+        )
+        for attachment in self.env.context.get(
+                'account_invoice_import_ml_msg_dict', {}
+        ).get('attachments', {}):
+            if attachment.fname == invoice_filename:
+                # super already added this one
+                continue
+            parsed_data['attachments'][attachment.fname] =\
+                attachment.content.encode('base64')
+        return parsed_data
+
+    @api.model
+    def invoice_already_exists(self, commercial_partner, parsed_inv):
+        if 'account_invoice_import_ml_msg_dict' in self.env.context:
+            # when we're processing mails, always create all invoices
+            return self.env['account.invoice']
+        return super(AccountInvoiceImport, self).invoice_already_exists(
+            commercial_partner, parsed_inv,
+        )
 
     def fallback_parse_pdf_invoice(self, file_data):
         parsed_data = self._account_invoice_import_ml_parse(file_data)
@@ -25,7 +52,11 @@ class AccountInvoiceImport(models.TransientModel):
     def message_new(self, msg_dict, custom_values=None):
         return super(
             AccountInvoiceImport,
-            self.with_context(account_invoice_import_ml_ignore_failure=True)
+            self.with_context(
+                account_invoice_import_ml_ignore_failure=True,
+                account_invoice_import_ml_vendor_mail=msg_dict.get('email_from'),
+                account_invoice_import_ml_msg_dict=msg_dict,
+            )
         ).message_new(
             msg_dict, custom_values=custom_values
         )
@@ -72,12 +103,13 @@ class AccountInvoiceImport(models.TransientModel):
             "data": base64.b64encode(file_data),
             "vendor_names": suppliers.mapped('name') + suppliers.filtered(
                 'supplier_invoice_name'
-            ).mapped('name'),
+            ).mapped('supplier_invoice_name'),
         }
 
     def _account_invoice_import_ml_parse_response(self, response):
         """Return data usable as result of account.invoice.import#parse_pdf_invoice"""
         data = response
+        unknown_supplier = self.env.ref('account_invoice_import_ml.unknown_supplier')
         # TODO will the model ever recogize the currency?
         currency = self.env.user.company_id.currency_id
         try:
@@ -87,7 +119,38 @@ class AccountInvoiceImport(models.TransientModel):
                     'account_invoice_import_ml_ignore_failure'
             ):
                 raise
-            partner = self.env.ref('account_invoice_import_ml.unknown_supplier')
+            partner = unknown_supplier
+
+        from_email = self.env.context.get('account_invoice_import_ml_vendor_mail')
+        if from_email and partner != unknown_supplier and from_email not in (
+                partner + partner.child_ids
+        ).mapped('email'):
+            # add unknown mail address as new partner
+            partner = self.env['res.partner'].create({
+                'type': 'invoice',
+                'name': partner.name,
+                'email': from_email,
+                'parent_id': partner.commercial_partner_id.id,
+            })
+            data.setdefault('__import_ml_warnings', []).append(_(
+                'Added unknown email address %s to vendor'
+            ) % partner.email)
+
+        if data.get('vendor_bank_account'):
+            # warn for unknown account
+            sanitized_account = sanitize_account_number(data['vendor_bank_account'])
+            existing = self.env['res.partner.bank'].search([
+                ('sanitized_acc_number', '=', sanitized_account),
+            ])
+            if existing and partner != existing.partner_id:
+                data.setdefault('__import_ml_warnings', []).append(_(
+                    'Supplier coerced from %s to %s by IBAN'
+                ) % (partner.name, existing.partner_id.name))
+                partner = existing.partner_id
+            elif not existing:
+                data.setdefault('__import_ml_warnings', []).append(_(
+                    'Invoice has unknown IBAN %s'
+                ) % sanitized_account)
 
         self._account_invoice_import_ml_create_partner_config(partner)
         return dict(
@@ -103,14 +166,21 @@ class AccountInvoiceImport(models.TransientModel):
             partner=dict(recordset=partner),
             invoice_number=data['invoice_reference'],
             lines=self._account_invoice_import_ml_parse_response_lines(response),
+            import_ml_result=data,
+            import_ml_warnings=data.get('__import_ml_warnings') and
+            '<ul>' + ''.join(
+                '<li>%s</li>' % warning for warning
+                in data.get('__import_ml_warnings', [])
+            ) + '</ul>' or False
         )
 
     def _account_invoice_import_ml_get_vendor(self, response):
         """Find a partner based on predictions"""
         partner_dict = {
             'name': response.get('vendor_name'),
-            'ref': response.get('vendor_id'),
         }
+        if response.get('vendor_id'):
+            partner_dict['ref'] = response['vendor_id'],
 
         return self.env['business.document.import']._match_partner(
             partner_dict, '',
@@ -126,9 +196,8 @@ class AccountInvoiceImport(models.TransientModel):
         return config_model.create({
             'name': _('Config for %s') % partner.id,
             'partner_id': partner.id,
-            'invoice_line_method': '1line_static_product',
-            'static_product_id':
-            self.env.ref('account_invoice_import_ml.unknown_product').id,
+            'invoice_line_method': 'nline_no_product',
+            'account_id': partner.property_account_payable_id.id,
         })
 
     def _account_invoice_import_ml_parse_response_lines(self, response):
@@ -151,18 +220,70 @@ class AccountInvoiceImport(models.TransientModel):
                         precision_digits=self.env['decimal.precision'].precision_get('Account'),
                     ) * 100,
                 )],
-                # TODO this needs a patch in account_invoice_import to have _prepare_create_invoice_vals pick up those values
                 account=dict(
-                    code=data['account_number'],
-                    name=data['account_name'],
+                    code=data.get('account_number'),
+                    name=data.get('account_name'),
                 ),
                 analytic_account=dict(
-                    code=data['analytic_account_code'],
-                    name=data['analytic_account_name'],
+                    code=data.get('analytic_account_code'),
+                    name=data.get('analytic_account_name'),
                 ),
                 operating_unit=dict(
                     # TODO wouldn't an id or code be more in line with the above?
-                    name=data['operating_unit'],
+                    name=data.get('operating_unit'),
                 ),
             ),
         ]
+
+    @api.model
+    def _prepare_create_invoice_vals(self, parsed_inv, import_config=False):
+        vals, config = super(AccountInvoiceImport, self)._prepare_create_invoice_vals(
+            parsed_inv, import_config=import_config,
+        )
+        if 'import_ml_result' in parsed_inv:
+            field_mappings = {
+                'vendor_name': 'partner_id',
+                'invoice_date': 'date_invoice',
+                'net_amount': 'amount_untaxed',
+                'vat_amount': 'amount_tax',
+                'gross_amount': 'amount_total',
+                'invoice_reference': 'invoice_number',
+            }
+            for key, value in field_mappings.items():
+                field_mappings['%s_confidence' % key] = '%s_confidence' % (
+                    value
+                )
+            vals['import_ml_result'] = {
+                field_mappings.get(key, key): value
+                for key, value in parsed_inv['import_ml_result'].items()
+            }
+            # TODO remove this when the container returns confidences
+            for key, value in vals['import_ml_result'].items():
+                if not key.endswith('_confidence') and '%s_confidence' % key not in vals['import_ml_result']:
+                    vals['import_ml_result']['%s_confidence' % key] = random()
+            # end TODO
+
+        if 'import_ml_warnings' in parsed_inv:
+            vals['import_ml_warnings'] = parsed_inv['import_ml_warnings']
+
+        for parsed_line, (_dummy, _dummy, line_vals) in zip(parsed_inv['lines'], vals['invoice_line_ids']):
+            if parsed_line.get('account', {}).get('code'):
+                line_vals['account_id'] = self.env['account.account'].search([
+                    ('code', '=', parsed_line['account']['code']),
+                ], limit=1).id or line_vals.get('account_id')
+            if parsed_line.get('analytic_account', {}).get('code'):
+                line_vals['account_analytic_id'] = self.env['account.analytic.account'].search([
+                    ('code', '=', parsed_line['analytic_account']['code']),
+                ], limit=1).id or line_vals.get('account_analytic_id')
+
+        return vals, config
+
+    @api.model
+    def _prepare_global_adjustment_line(self, diff_amount, invoice, import_config):
+        result = super(AccountInvoiceImport, self)._prepare_global_adjustment_line(
+            diff_amount, invoice, import_config,
+        )
+        # TODO this shouldn't be necessary
+        if not result.get('account_id'):
+            result['account_id'] = self.env.user.partner_id.property_account_payable_id.id
+        return result

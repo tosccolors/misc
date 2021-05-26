@@ -1,0 +1,26 @@
+<odoo>
+    <record id="view_account_config_settings" model="ir.ui.view">
+        <field name="model">account.config.settings</field>
+        <field name="inherit_id" ref="account_invoice_import.view_account_config_settings" />
+        <field name="arch" type="xml">
+            <div name="invoice_import">
+                <div name="ml_min_confidence_partner">
+                    <label for="ml_min_confidence_partner"/>
+                    <field name="ml_min_confidence_partner" class="oe_inline"/>
+                </div>
+                <div name="ml_fallback_partner_id">
+                    <label for="ml_fallback_partner_id"/>
+                    <field name="ml_fallback_partner_id" class="oe_inline"/>
+                </div>
+                <div name="ml_min_confidence_account">
+                    <label for="ml_min_confidence_account"/>
+                    <field name="ml_min_confidence_account" class="oe_inline"/>
+                </div>
+                <div name="ml_fallback_account_id">
+                    <label for="ml_fallback_account_id"/>
+                    <field name="ml_fallback_account_id" class="oe_inline"/>
+                </div>
+            </div>
+        </field>
+    </record>
+</odoo>
