@@ -1,6 +1,6 @@
 # Copyright 2021 Hunki Enterprises BV
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-from odoo import api, models
+from odoo import api, exceptions, models
 from odoo.tools.mail import email_split
 
 
@@ -21,6 +21,16 @@ class AccountInvoiceImport(models.TransientModel):
                     key: value for key, value in msg_dict.items()
                     if key != 'attachments'
                 }
+            )
+        if not new_invoices:
+            try:
+                partner = self.env['business.document.import']._match_partner(
+                    dict(email=msg_dict.get('email_from')), '',
+                )
+            except exceptions.UserError:
+                partner = self.env.ref('account_invoice_import_ml.unknown_supplier')
+            self.env['account.invoice'].message_new(
+                msg_dict, custom_values=dict(partner_id=partner.id),
             )
         return result
 

@@ -23,3 +23,17 @@ class TestAccountInvoiceImportMagnus(ml_test.TestAccountInvoiceImportMl):
 
         invoices = self.env['account.invoice'].search([]) - existing_invoices
         self.assertNotIn(mail['from'], invoices.partner_id.mapped('child_ids.email'))
+
+    def test_no_attachment(self):
+        mail = MIMEMultipart()
+        mail['from'] = 'invoices@magnus.com'
+        mail['to'] = 'invoices@yourcompany.com'
+        mail.attach(MIMEText('This is your invoice'))
+
+        existing_invoices = self.env['account.invoice'].search([])
+
+        with self._mock(ml_test.SUCCESS_RESULT):
+            self.env['mail.thread'].message_process('account.invoice.import', mail.as_string())
+
+        invoices = self.env['account.invoice'].search([]) - existing_invoices
+        self.assertTrue(invoices)
