@@ -77,6 +77,8 @@ class AccountInvoiceImport(models.TransientModel):
             ):
                 _logger.info('Ignoring file data %s...', file_data[:10])
                 partner = self.env.ref('account_invoice_import_ml.unknown_supplier')
+                self._account_invoice_import_ml_create_partner_config(partner)
+
                 return dict(
                     type='in_invoice',
                     partner=dict(recordset=partner),
@@ -85,6 +87,7 @@ class AccountInvoiceImport(models.TransientModel):
                     amount_tax=0,
                     amount_total=0,
                     invoice_number='Failed',
+                    lines=[dict(name='Failed', qty=0, price_unit=0, taxes=[])],
                 )
             else:
                 response.raise_for_status()

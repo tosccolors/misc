@@ -11,7 +11,7 @@ class BusinessDocumentImport(models.AbstractModel):
             self, partner_dict, chatter_msg, domain, partner_type_label
     ):
         return self.env['res.partner'].search(
-            [('supplier_invoice_name', '=ilike', partner_dict['name'])],
+            [('supplier_invoice_name', '=ilike', partner_dict.get('name'))],
             limit=1,
         ) or super(BusinessDocumentImport, self)._hook_match_partner(
             partner_dict, chatter_msg, domain, partner_type_label,
