@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Account Reversal Via Sql",
+    'name': "Account Reversal Sql/Job Queue",
 
     'summary': """
-         perform the reversal via a SQL query""",
+         perform the reversal via a SQL query OR Job Queue""",
 
     'description': """
        \n Create a new boolean field 'reversal via SQL' in the configuration form view.
@@ -21,17 +21,16 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','account','account_cutoff_prepaid',
-        'account_cutoff_base_operating_unit'],
+    'depends': ['account'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
+        'views/account_views.xml',
+        # 'views/templates.xml',
     ],
     # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
+    # 'demo': [
+    #     'demo/demo.xml',
+    # ],
 }
