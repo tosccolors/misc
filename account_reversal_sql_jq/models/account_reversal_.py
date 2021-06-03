@@ -45,7 +45,6 @@ class AccountMove(models.Model):
          })
 
         cr = self._cr
-        print()
         sql = "INSERT INTO account_move (ref,narration,operating_unit_id," \
               "reversal_id, date,journal_id, name, state, create_date, create_uid, write_date, write_uid," \
               " company_id, currency_id,move_type,matched_percentage, to_be_reversed) " \
@@ -60,7 +59,7 @@ class AccountMove(models.Model):
         
        
         # Create move line       
-        
+
         sql_query = ("""
                     INSERT INTO account_move_line (
                             create_date,
@@ -143,9 +142,9 @@ class AccountMove(models.Model):
                             company_id
                     FROM account_move_line
                     WHERE move_id={1} AND NOT (debit=0 AND credit=0);
-        """.format(                 
+        """.format(
                    move_id,
-                   self.id                 
+                   self.id
                    ))
         cr.execute(sql_query)
         return move

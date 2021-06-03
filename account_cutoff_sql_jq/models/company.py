@@ -10,6 +10,6 @@ class ResCompany(models.Model):
 
     perform_posting_by_line = fields.Boolean(string="Experimental - Perform Posting by Line", default=False)
     use_description_as_reference = fields.Boolean(string="Use description as reference")
-    reversal_via_sql = fields.Boolean(string="Experimental - Reversal Via Sql", default=False)
+    # reversal_via_sql = fields.Boolean(string="Experimental - Reversal Via Sql", default=False)
     perform_posting_by_line_jq = fields.Boolean(string="Perform Posting By Line Job Queue", default=False)
-    perform_reversal_by_line_jq = fields.Boolean(string="Perform Reversal by Line Job Queue", default=False)
+    # perform_reversal_by_line_jq = fields.Boolean(string="Perform Reversal by Line Job Queue", default=False)
