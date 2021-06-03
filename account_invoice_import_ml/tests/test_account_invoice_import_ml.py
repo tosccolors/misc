@@ -74,7 +74,6 @@ class TestAccountInvoiceImportMl(TransactionCase):
 
     def test_email_success(self):
         self._attach(MIMEApplication, 'pdf', 'PDF1', 'invoice1.pdf')
-        self._attach(MIMEApplication, 'pdf', 'PDF2', 'invoice2.pdf')
         self._attach(MIMEApplication, 'vnd.ms-excel', 'XLS1', 'specs.xls')
 
         existing_invoices = self.env['account.invoice'].search([])
@@ -87,7 +86,7 @@ class TestAccountInvoiceImportMl(TransactionCase):
         invoices = self.env['account.invoice'].search([]) - existing_invoices
         # given the way we mock the container above, all files will come back as valid
         # the real container will error out on the xls file
-        self.assertEqual(len(invoices), 3, 'Each attachment generates an invoice')
+        self.assertEqual(len(invoices), 2, 'Each attachment generates an invoice')
         self.assertEqual(invoices.mapped('invoice_line_ids.account_id'), self.account)
         self.assertFalse(invoices.mapped('invoice_line_ids.product_id'))
 
@@ -95,7 +94,7 @@ class TestAccountInvoiceImportMl(TransactionCase):
             ('res_model', '=', 'account.invoice'),
             ('res_id', 'in', invoices.ids),
         ])
-        self.assertEqual(len(attachments), 9, 'Each attachment is attached to each invoice')
+        self.assertEqual(len(attachments), 4, 'Each attachment is attached to each invoice')
 
     def test_email_failure(self):
         self._attach(MIMEApplication, 'pdf', 'PDF1', 'invoice1.pdf')
