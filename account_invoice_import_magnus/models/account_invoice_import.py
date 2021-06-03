@@ -22,26 +22,12 @@ class AccountInvoiceImport(models.TransientModel):
                     if key != 'attachments'
                 }
             )
-        if not new_invoices:
-            try:
-                partner = self.env['business.document.import']._match_partner(
-                    dict(email=msg_dict.get('email_from')), '',
-                )
-            except exceptions.UserError:
-                partner = self.env.ref('account_invoice_import_ml.unknown_supplier')
-            self.env['account.invoice'].message_new(
-                msg_dict, custom_values=dict(partner_id=partner.id),
-            )
         return result
 
     @api.model
     def _account_invoice_import_ml_add_email(self, partner, email, data):
-        if '@magnus' in email:
-            # suppress all vendor related actions if the mail came from a magnus employee
-            return
-        return super(AccountInvoiceImport, self)._account_invoice_import_ml_add_email(
-            partner, email, data,
-        )
+        # never create a new partner, leave this as manual step
+        pass
 
     @api.model
     def _prepare_create_invoice_vals(self, parsed_inv, import_config=False):
@@ -62,4 +48,52 @@ class AccountInvoiceImport(models.TransientModel):
                 for email in email_split(operating_unit.invoice_import_email):
                     if email.upper() in emails:
                         vals['operating_unit_id'] = operating_unit.id
+            vals['source_email'] = msg_dict.get('email_from')
         return vals, config
+
+    @api.model
+    def invoice_import_direct(self, invoice_b64, invoice_filename, raise_if_fail=True):
+        # we only ever want to import pdf or xml files
+        invoice_filename = invoice_filename or ''
+        if not invoice_filename.endswith('.xml') and\
+                not invoice_filename.endswith('.pdf'):
+            return False
+        try:
+            # super will fail for unknown xml files
+            return super(AccountInvoiceImport, self).invoice_import_direct(
+                invoice_b64, invoice_filename, raise_if_fail=raise_if_fail,
+            )
+        except exceptions.UserError:
+            # be sure to always import an invoice if we got a file
+            msg_dict = self.env.context.get(
+                'account_invoice_import_ml_msg_dict', {}
+            )
+            if not msg_dict:
+                return False
+
+            try:
+                partner = self.env['business.document.import']._match_partner(
+                    dict(email=msg_dict.get('email_from')), '',
+                )
+            except exceptions.UserError:
+                partner = self.env.ref('account_invoice_import_ml.unknown_supplier')
+
+            invoice_id = self.env['account.invoice'].message_new(
+                msg_dict, custom_values=dict(partner_id=partner.id),
+            )
+
+            if not invoice_id:
+                return False
+
+            invoice = self.env['account.invoice'].browse(invoice_id)
+
+            for attachment in msg_dict.get('attachments', {}):
+                self.env['ir.attachment'].create({
+                    'name': invoice_filename,
+                    'res_id': invoice.id,
+                    'res_model': invoice._name,
+                    'datas': attachment.content.encode('base64'),
+                    'datas_fname': invoice_filename,
+                })
+
+            return invoice
