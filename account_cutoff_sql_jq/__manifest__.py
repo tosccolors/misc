@@ -17,7 +17,7 @@
         ],
     'data': [
         'views/account_config_settings.xml',
-        'views/account_ccutoff.xml'
+        'views/account_cutoff.xml'
     ],
     'images': [
         ],
