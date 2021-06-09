@@ -27,7 +27,9 @@ class AccountInvoiceImport(models.TransientModel):
     @api.model
     def _account_invoice_import_ml_add_email(self, partner, email, data):
         # never create a new partner, leave this as manual step
-        pass
+        data.setdefault('__import_ml_warnings', []).append(_(
+            'Added unknown email address %s to vendor'
+        ) % email)
 
     @api.model
     def _prepare_create_invoice_vals(self, parsed_inv, import_config=False):
