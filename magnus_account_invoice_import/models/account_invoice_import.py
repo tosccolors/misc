@@ -1,6 +1,6 @@
 # Copyright 2021 Hunki Enterprises BV
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-from odoo import api, exceptions, models
+from odoo import api, exceptions, models, _
 from odoo.tools.mail import email_split
 
 
