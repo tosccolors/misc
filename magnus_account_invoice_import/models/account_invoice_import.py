@@ -50,7 +50,7 @@ class AccountInvoiceImport(models.TransientModel):
                 for email in email_split(operating_unit.invoice_import_email):
                     if email.upper() in emails:
                         vals['operating_unit_id'] = operating_unit.id
-            vals['source_email'] = msg_dict.get('email_from')
+            vals['source_email'] = ','.join(email_split(msg_dict.get('email_from', '')))
         return vals, config
 
     @api.model
