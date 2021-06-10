@@ -42,6 +42,11 @@ class TestAccountInvoiceImportMl(TransactionCase):
             'user_type_id': self.env.ref('account.data_account_type_payable').id,
             'reconcile': True,
         })
+        self.mail = MIMEMultipart()
+        self.mail['from'] = 'invoices@test-supplier.com'
+        self.mail['to'] = 'invoices@yourcompany.com'
+        self.mail.attach(MIMEText('This is your invoice'))
+
 
     def test_wrong_iban(self):
         # test we find suppliers by name if the iban isn't known
@@ -68,29 +73,20 @@ class TestAccountInvoiceImportMl(TransactionCase):
         pass
 
     def test_email_success(self):
-        mail = MIMEMultipart()
-        mail['from'] = 'invoices@test-supplier.com'
-        mail['to'] = 'invoices@yourcompany.com'
-        mail.attach(MIMEText('This is your invoice'))
-
-        def attach(cls, subtype, data, filename):
-            part = cls(data, subtype)
-            part.add_header('Content-Disposition', 'attachment', filename=filename)
-            mail.attach(part)
-
-        attach(MIMEApplication, 'pdf', 'PDF1', 'invoice1.pdf')
-        attach(MIMEApplication, 'pdf', 'PDF2', 'invoice2.pdf')
-        attach(MIMEApplication, 'vnd.ms-excel', 'XLS1', 'specs.xls')
+        self._attach(MIMEApplication, 'pdf', 'PDF1', 'invoice1.pdf')
+        self._attach(MIMEApplication, 'vnd.ms-excel', 'XLS1', 'specs.xls')
 
         existing_invoices = self.env['account.invoice'].search([])
 
         with self._mock(SUCCESS_RESULT):
-            self.env['mail.thread'].message_process('account.invoice.import', mail.as_string())
+            self.env['mail.thread'].message_process(
+                'account.invoice.import', self.mail.as_string(),
+            )
 
         invoices = self.env['account.invoice'].search([]) - existing_invoices
         # given the way we mock the container above, all files will come back as valid
         # the real container will error out on the xls file
-        self.assertEqual(len(invoices), 3, 'Each attachment generates an invoice')
+        self.assertEqual(len(invoices), 2, 'Each attachment generates an invoice')
         self.assertEqual(invoices.mapped('invoice_line_ids.account_id'), self.account)
         self.assertFalse(invoices.mapped('invoice_line_ids.product_id'))
 
@@ -98,17 +94,38 @@ class TestAccountInvoiceImportMl(TransactionCase):
             ('res_model', '=', 'account.invoice'),
             ('res_id', 'in', invoices.ids),
         ])
-        self.assertEqual(len(attachments), 9, 'Each attachment is attached to each invoice')
+        self.assertEqual(len(attachments), 4, 'Each attachment is attached to each invoice')
+
+    def test_email_failure(self):
+        self._attach(MIMEApplication, 'pdf', 'PDF1', 'invoice1.pdf')
+
+        existing_invoices = self.env['account.invoice'].search([])
+
+        with self._mock(dict(SUCCESS_RESULT, vendor_name=''), 400):
+            self.env['mail.thread'].message_process(
+                'account.invoice.import', self.mail.as_string(),
+            )
+
+        invoices = self.env['account.invoice'].search([]) - existing_invoices
+        self.assertEqual(
+            invoices.partner_id,
+            self.env.ref('account_invoice_import_ml.unknown_supplier'),
+        )
 
     @contextmanager
-    def _mock(self, payload):
+    def _mock(self, payload, status_code=200):
         with mock.patch(
                 'odoo.addons.account_invoice_import_ml.models.'
                 'account_invoice_import.requests.post'
         ) as mock_post:
-            mock_post.return_value.status_code = 200
+            mock_post.return_value.status_code = status_code
             mock_post.return_value.json.return_value = payload
             yield mock_post
+
+    def _attach(self, cls, subtype, data, filename):
+        part = cls(data, subtype)
+        part.add_header('Content-Disposition', 'attachment', filename=filename)
+        self.mail.attach(part)
 
     def _import_file(self):
         self.env['account.invoice.import'].create({

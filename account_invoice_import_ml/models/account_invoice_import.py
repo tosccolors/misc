@@ -77,6 +77,8 @@ class AccountInvoiceImport(models.TransientModel):
             ):
                 _logger.info('Ignoring file data %s...', file_data[:10])
                 partner = self.env.ref('account_invoice_import_ml.unknown_supplier')
+                self._account_invoice_import_ml_create_partner_config(partner)
+
                 return dict(
                     type='in_invoice',
                     partner=dict(recordset=partner),
@@ -85,6 +87,7 @@ class AccountInvoiceImport(models.TransientModel):
                     amount_tax=0,
                     amount_total=0,
                     invoice_number='Failed',
+                    lines=[dict(name='Failed', qty=0, price_unit=0, taxes=[])],
                 )
             else:
                 response.raise_for_status()
@@ -110,7 +113,7 @@ class AccountInvoiceImport(models.TransientModel):
         """Return data usable as result of account.invoice.import#parse_pdf_invoice"""
         data = response
         unknown_supplier = self.env.ref('account_invoice_import_ml.unknown_supplier')
-        # TODO will the model ever recogize the currency?
+        # TODO will the model ever recognize the currency?
         currency = self.env.user.company_id.currency_id
         try:
             partner = self._account_invoice_import_ml_get_vendor(response)
@@ -125,23 +128,14 @@ class AccountInvoiceImport(models.TransientModel):
         if from_email and partner != unknown_supplier and from_email not in (
                 partner + partner.child_ids
         ).mapped('email'):
-            # add unknown mail address as new partner
-            partner = self.env['res.partner'].create({
-                'type': 'invoice',
-                'name': partner.name,
-                'email': from_email,
-                'parent_id': partner.commercial_partner_id.id,
-            })
-            data.setdefault('__import_ml_warnings', []).append(_(
-                'Added unknown email address %s to vendor'
-            ) % partner.email)
+            self._account_invoice_import_ml_add_email(partner, from_email, data)
 
         if data.get('vendor_bank_account'):
             # warn for unknown account
             sanitized_account = sanitize_account_number(data['vendor_bank_account'])
             existing = self.env['res.partner.bank'].search([
                 ('sanitized_acc_number', '=', sanitized_account),
-            ])
+            ], limit=1)
             if existing and partner != existing.partner_id:
                 data.setdefault('__import_ml_warnings', []).append(_(
                     'Supplier coerced from %s to %s by IBAN'
@@ -186,6 +180,19 @@ class AccountInvoiceImport(models.TransientModel):
             partner_dict, '',
         )
 
+    def _account_invoice_import_ml_add_email(self, partner, email, data):
+        """Add email to partner, and add a warning about that"""
+        partner = self.env['res.partner'].create({
+            'type': 'invoice',
+            'name': partner.name,
+            'email': email,
+            'parent_id': partner.commercial_partner_id.id,
+        })
+        data.setdefault('__import_ml_warnings', []).append(_(
+            'Added unknown email address %s to vendor'
+        ) % partner.email)
+
+
     def _account_invoice_import_ml_create_partner_config(self, partner):
         config_model = self.env['account.invoice.import.config']
         if not partner:
@@ -193,6 +200,7 @@ class AccountInvoiceImport(models.TransientModel):
         config = config_model.search([('partner_id', '=', partner.id)])
         if config:
             return config
+        partner = partner.commercial_partner_id
         return config_model.create({
             'name': _('Config for %s') % partner.id,
             'partner_id': partner.id,
