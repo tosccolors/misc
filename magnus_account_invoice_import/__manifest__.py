@@ -12,6 +12,7 @@
         "account_operating_unit",
     ],
     "data": [
+        "views/account_invoice.xml",
         "views/operating_unit.xml",
     ],
 }
