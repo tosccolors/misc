@@ -140,7 +140,8 @@ class AccountMove(models.Model):
                    self.id
                    ))
         cr.execute(sql_query)
-        return move_id
+        move = self.browse(move_id)
+        return move
     
     @api.multi
     def create_reversals(self, date=False, journal=False, move_prefix=False,
@@ -155,8 +156,7 @@ class AccountMove(models.Model):
                 data, date=date, journal=journal, line_prefix=line_prefix)
             if self.env.user.company_id.reversal_via_sql:
                 # Create account move and lines using query
-                reversal_move_id = self.create_reversal_moveline_with_query(data)
-                reversal_move = self.browse(reversal_move_id)
+                reversal_move = self.create_reversal_moveline_with_query(data)
                 moves |= reversal_move
                 orig.write({
                     'reversal_id': reversal_move.id,
