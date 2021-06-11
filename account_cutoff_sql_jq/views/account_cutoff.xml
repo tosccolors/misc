@@ -16,10 +16,10 @@
         <button name="get_lines" position="after">
             <button class="btn-primary" name="get_lines_sql" string="Re-Generate Lines SQL" type="object" states="draft"/>
         </button>
-        <button name="create_move" position="after">
+        <!--<button name="create_move" position="after">
             <button class="btn-primary" name="create_move_sql" string="Create Journal Entry SQL" type="object" attrs="{'invisible': ['|', ('line_ids', '=', False), ('state', '=', 'done')]}"/>
             <button class="btn-primary" name="create_move_jq" string="Create Journal Entry jq" type="object" attrs="{'invisible': ['|', ('line_ids', '=', False), ('state', '=', 'done')]}"/>
-        </button>
+        </button>-->
     </field>
 </record>
 

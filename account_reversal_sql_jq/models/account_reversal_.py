@@ -18,25 +18,20 @@ class AccountMove(models.Model):
     def create_reversal_moveline_with_query(self, data):
 
         #  Create move
-        
-        if self.operating_unit_id.id==False:
-            operating_unit_id='NULL'
-        else:
-            operating_unit_id=self.operating_unit_id.id
-        
-        if self.reversal_id.id==False:
-            reversal_id='NULL'
-        else:
-            reversal_id=self.reversal_id.id
-        
+
+        operating_unit_id = self.operating_unit_id and self.operating_unit_id or "NUll"
+        reversal_id = self.reversal_id and self.reversal_id or "NUll"
+        uid = self._uid
+        company = self.env.user.company_id
+
         data.update({'name': "/",
          'state': "draft",
          'create_date': datetime.now(),
-         'create_uid': self._uid,
+         'create_uid': uid,
          'write_date': datetime.now(),
-         'write_uid': self._uid,
-         'company_id': self.env.user.company_id.id,
-         'currency_id': self.env.user.company_id.currency_id and self.env.user.company_id.currency_id.id,
+         'write_uid': uid,
+         'company_id': company.id,
+         'currency_id': company.currency_id and company.id,
          'matched_percentage': 0.0,
          'to_be_reversed': False,
          'operating_unit_id':operating_unit_id,
@@ -55,9 +50,7 @@ class AccountMove(models.Model):
         sql = 'select id from account_move order by id desc limit 1'
         cr.execute(sql)
         move_id = cr.fetchone()[0]
-        move=self.env['account.move'].browse([move_id])[0]
-        
-       
+
         # Create move line       
 
         sql_query = ("""
@@ -147,6 +140,7 @@ class AccountMove(models.Model):
                    self.id
                    ))
         cr.execute(sql_query)
+        move = self.browse(move_id)
         return move
     
     @api.multi
