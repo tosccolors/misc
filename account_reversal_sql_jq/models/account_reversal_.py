@@ -15,35 +15,42 @@ class AccountMove(models.Model):
 
     job_queue = fields.Many2one('queue.job', string='Job Queue', readonly=True, copy=False)
 
-    def create_reversal_moveline_with_query(self, data):
+    def create_reversal_moveline_with_query(self, date, journal, move_prefix, line_prefix, reconcile):
 
         #  Create move
-
         operating_unit_id = self.operating_unit_id and self.operating_unit_id or "NUll"
-        reversal_id = self.reversal_id and self.reversal_id or "NUll"
         uid = self._uid
         company = self.env.user.company_id
 
-        data.update({'name': "/",
-         'state': "draft",
-         'create_date': datetime.now(),
-         'create_uid': uid,
-         'write_date': datetime.now(),
-         'write_uid': uid,
-         'company_id': company.id,
-         'currency_id': company.currency_id and company.id,
-         'matched_percentage': 0.0,
-         'to_be_reversed': False,
-         'operating_unit_id':operating_unit_id,
-         'reversal_id':reversal_id,
-         'move_type':'other'       
-         })
+
+        ref = self.ref or move_prefix
+        if move_prefix and move_prefix != ref:
+            ref = ' '.join([move_prefix, ref])
+
+        data = {
+            'ref': ref,
+            'narration': self.narration,
+            'operating_unit_id': operating_unit_id,
+            'date': date or self.date,
+            'journal_id': journal.id,
+            'name': '/',
+            'state': "draft",
+            'create_date': datetime.now(),
+            'create_uid': uid,
+            'write_date': datetime.now(),
+            'write_uid': uid,
+            'company_id': company.id,
+            'currency_id': company.currency_id and company.currency_id.id,
+            'matched_percentage': 0.0,
+            'to_be_reversed': False,
+            'move_type':'other'
+        }
 
         cr = self._cr
         sql = "INSERT INTO account_move (ref,narration,operating_unit_id," \
-              "reversal_id, date,journal_id, name, state, create_date, create_uid, write_date, write_uid," \
+              " date,journal_id, name, state, create_date, create_uid, write_date, write_uid," \
               " company_id, currency_id,move_type,matched_percentage, to_be_reversed) " \
-              "VALUES ('%(ref)s','%(narration)s',%(operating_unit_id)s,%(reversal_id)s,'%(date)s'::date," \
+              "VALUES ('%(ref)s','%(narration)s',%(operating_unit_id)s,'%(date)s'::date," \
               "%(journal_id)s,'%(name)s', '%(state)s', '%(create_date)s', %(create_uid)s, '%(write_date)s', %(write_uid)s," \
               " %(company_id)s, %(currency_id)s,'%(move_type)s',%(matched_percentage)s, %(to_be_reversed)s);" % data
         cr.execute(sql)
@@ -150,13 +157,9 @@ class AccountMove(models.Model):
         moves = self.env['account.move']
 
         for orig in self:
-            data = orig._move_reverse_prepare(
-                date=date, journal=journal, move_prefix=move_prefix)
-            data = orig._move_lines_reverse_prepare(
-                data, date=date, journal=journal, line_prefix=line_prefix)
             if self.env.user.company_id.reversal_via_sql:
                 # Create account move and lines using query
-                reversal_move = self.create_reversal_moveline_with_query(data)
+                reversal_move = self.create_reversal_moveline_with_query(date, journal, move_prefix, line_prefix, reconcile)
                 moves |= reversal_move
                 orig.write({
                     'reversal_id': reversal_move.id,
@@ -171,6 +174,10 @@ class AccountMove(models.Model):
 
             else:
                 # Create account move and lines using ORM
+                data = orig._move_reverse_prepare(
+                    date=date, journal=journal, move_prefix=move_prefix)
+                data = orig._move_lines_reverse_prepare(
+                    data, date=date, journal=journal, line_prefix=line_prefix)
                 reversal_move = self.create(data)
                 moves |= reversal_move
                 orig.write({
@@ -190,7 +197,7 @@ class AccountMove(models.Model):
         moves = self.env['account.move']
         try:
             for orig in self:
-                reversal_move = self.create_reversal_moveline_with_query(data)
+                reversal_move = self.create_reversal_moveline_with_query(date, journal, move_prefix, line_prefix, reconcile)
                 moves |= reversal_move
                 orig.write({
                     'reversal_id': reversal_move.id,
