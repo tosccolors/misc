@@ -15,7 +15,7 @@ class AccountMove(models.Model):
 
     job_queue = fields.Many2one('queue.job', string='Job Queue', readonly=True, copy=False)
 
-    def create_reversal_moveline_with_query(self, date, journal, move_prefix, line_prefix, reconcile):
+    def create_reversal_moveline_with_query(self, date, journal, move_prefix):
 
         #  Create move
         operating_unit_id = self.operating_unit_id and self.operating_unit_id or "NUll"
@@ -159,7 +159,7 @@ class AccountMove(models.Model):
         for orig in self:
             if self.env.user.company_id.reversal_via_sql:
                 # Create account move and lines using query
-                reversal_move = self.create_reversal_moveline_with_query(date, journal, move_prefix, line_prefix, reconcile)
+                reversal_move = self.create_reversal_moveline_with_query(date, journal, move_prefix)
                 moves |= reversal_move
                 orig.write({
                     'reversal_id': reversal_move.id,
@@ -167,8 +167,8 @@ class AccountMove(models.Model):
                 })
             elif self.env.user.company_id.perform_reversal_by_line_jq :
                 # Create account move and lines using job queue
-                jq = self.with_delay(eta=datetime.now(),
-                                     priority=1,description="Create Reversal Move By Job Queues").create_reversal_move_job_queue(data,reconcile)
+                jq = self.with_delay(eta=datetime.now(), priority=1,description="Create Reversal Move By Job Queues").\
+                        create_reversal_move_job_queue(date, journal, move_prefix, reconcile)
                 job_id = self.env['queue.job'].search([('uuid', '=', jq.uuid)])
                 self.job_queue = job_id.id
 
@@ -193,11 +193,11 @@ class AccountMove(models.Model):
 
     # Create account move and lines using job queue
     @job
-    def create_reversal_move_job_queue(self,data,reconcile):
+    def create_reversal_move_job_queue(self, date, journal, move_prefix, reconcile):
         moves = self.env['account.move']
         try:
             for orig in self:
-                reversal_move = self.create_reversal_moveline_with_query(date, journal, move_prefix, line_prefix, reconcile)
+                reversal_move = self.create_reversal_moveline_with_query(date, journal, move_prefix)
                 moves |= reversal_move
                 orig.write({
                     'reversal_id': reversal_move.id,
