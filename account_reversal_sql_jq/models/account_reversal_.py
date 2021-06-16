@@ -168,7 +168,7 @@ class AccountMove(models.Model):
             elif self.env.user.company_id.perform_reversal_by_line_jq :
                 # Create account move and lines using job queue
                 data = date, journal, move_prefix
-                jq = self.with_delay(eta=datetime.now(), priority=1,description="Create Reversal Move By Job Queues").create_reversal_move_job_queue(data, reconcile)
+                jq = self.with_delay().create_reversal_move_job_queue(data, reconcile)
                 job_id = self.env['queue.job'].search([('uuid', '=', jq.uuid)])
                 self.job_queue = job_id.id
 
