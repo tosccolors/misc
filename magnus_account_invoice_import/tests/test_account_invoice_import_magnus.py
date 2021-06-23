@@ -20,6 +20,7 @@ class TestAccountInvoiceImportMagnus(ml_test.TestAccountInvoiceImportMl):
             )
 
         invoices = self.env['account.invoice'].search([]) - existing_invoices
+        self.assertEqual(set(invoices.mapped('type')), set(['in_invoice']))
         self.assertEqual(len(invoices), 2, 'Only XML and PDF attachments generate an invoice')
         self.assertEqual(invoices.mapped('invoice_line_ids.account_id'), self.account)
         self.assertFalse(invoices.mapped('invoice_line_ids.product_id'))
