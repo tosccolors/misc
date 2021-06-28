@@ -20,9 +20,9 @@
                     <field name="company_id" position="after">
                         <field name="country_id" />
                     </field>
-                    <filter string="Tax Application" position="after">
+                    <xpath expr="//search/group/filter[1]"  position="after">
                             <filter string="Country" domain="[]" context="{'group_by':'country_id'}" />
-                    </filter>
+                    </xpath>
             </field>
         </record>
         <record id="view_tax_form" model="ir.ui.view">

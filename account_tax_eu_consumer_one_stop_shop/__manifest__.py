@@ -15,7 +15,7 @@
         ],
     'data': [
         'views/product.xml',
-        'views/account_fiscal_position.xml'
+        'views/account_fiscal_position.xml',
         'views/account_tax.xml'
     ],
     'images': [

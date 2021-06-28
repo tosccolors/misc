@@ -12,15 +12,7 @@
                         <field name="eu_consumer_country_tax_ids" widget="one2many_list" groups="account.group_account_user">
                             <tree string="Country Tax Lines" editable="bottom">
                                 <field name="country_id" />
-                                <field name="tax_id"/>
-                            </tree>
-                        </field>
-                    </page>
-                    <page string="EU Consumer accounts" name="eu_consumer_account" groups="account.group_account_invoice">
-                        <field name="eu_consumer_country_account_ids" widget="one2many_list" groups="account.group_account_user">
-                            <tree string="Country Account Lines" editable="bottom">
-                                <field name="country_id" />
-                                <field name="account_id"/>
+                                <field name="tax_id" domain="[('country_id', '=', country_id)]"/>
                             </tree>
                         </field>
                     </page>

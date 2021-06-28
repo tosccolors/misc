@@ -10,8 +10,6 @@ from odoo.exceptions import ValidationError
 from odoo.addons.base.res.res_partner import WARNING_MESSAGE, WARNING_HELP
 
 
-
-
 class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
@@ -20,12 +18,12 @@ class AccountFiscalPosition(models.Model):
 
     @api.model     # noqa
     def map_tax(self, taxes, product=None, partner=None):
-        if self.country_tax:
+        if self.country_tax and product:
             country_id = partner.country_id or False
             if not country_id:
                 raise ValidationError(
                     _('No Country defined in Partner and "country_tax" is True. Please correct'))
-            eu_consumer_country_tax_id = product.eu_consumer_country_tax_ids.search([('country_id','=', country_id)])
+            eu_consumer_country_tax_id = product.eu_consumer_country_tax_ids.search([('country_id','=', country_id.id)])
             if len(eu_consumer_country_tax_id) == 1:
                 result = eu_consumer_country_tax_id.tax_id
             else:
@@ -33,37 +31,7 @@ class AccountFiscalPosition(models.Model):
                     _('More than one Taxes defined for the same Country on this Product. Please correct'))
         else:
             result = super(AccountFiscalPosition, self).map_tax(taxes, product=None, partner=None)
-
         return result
-
-    @api.model
-    def map_account(self, account, product=None, partner=None):
-        if self.country_tax:
-            country_id = partner.country_id or False
-            if not country_id:
-                raise ValidationError(
-                    _('No Country defined in partner and "country_tax" is True. Please correct'))
-            eu_consumer_country_account_id = product.eu_consumer_country_account_ids.search([('country_id','=', country_id)])
-            if len(eu_consumer_country_account_id) == 1:
-                account = eu_consumer_country_account_id.tax_id
-            else:
-                raise ValidationError(
-                    _('More than one Accounts defined for the same Country on this Product. Please correct'))
-        else:
-            account = super(AccountFiscalPosition, self).map_account(account)
-        return account
-
-    @api.model
-    def map_accounts(self, accounts):
-        """ Override without function. Only unsupported message when unexpectedly touched.
-        Receive a dictionary having accounts in values and try to replace those accounts accordingly to the fiscal position.
-        """
-        if self.country_tax:
-            raise ValidationError(
-                _('Not supported yet: multiple accounts mapped when "country_tax" is true'))
-        else:
-            accounts = super(AccountFiscalPosition, self).map_accounts(accounts)
-        return accounts
 
 
 class AccountTax(models.Model):
