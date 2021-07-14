@@ -81,7 +81,10 @@ class AccountInvoiceImport(models.TransientModel):
                 partner = self.env.ref('account_invoice_import_ml.unknown_supplier')
 
             invoice_id = self.env['account.invoice'].message_new(
-                msg_dict, custom_values=dict(partner_id=partner.id),
+                msg_dict, custom_values=dict(
+                    partner_id=partner.id,
+                    type='in_invoice',
+                ),
             )
 
             if not invoice_id:
