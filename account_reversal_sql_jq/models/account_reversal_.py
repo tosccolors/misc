@@ -15,7 +15,7 @@ class AccountMove(models.Model):
     def create_reversal_moveline_with_query(self, date, journal, move_prefix):
 
         #  Create move
-        operating_unit_id = self.operating_unit_id and self.operating_unit_id or "NUll"
+        operating_unit_id = self.operating_unit_id and self.operating_unit_id.id or "NUll"
         uid = self._uid
         company = self.env.user.company_id
 
