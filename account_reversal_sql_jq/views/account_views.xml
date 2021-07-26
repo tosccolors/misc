@@ -9,9 +9,11 @@
             <group name="accounting" position="after">
                 <group name="reversal" string="Reversal-By-SQL/JQ">
                     <field name="reversal_via_sql"
-                       attrs="{'invisible': [('perform_reversal_by_line_jq', '=', True)]}"/>
+                       attrs="{'invisible': ['|', ('perform_reversal_by_line_jq', '=', True), ('reversal_via_jq', '=', True)]}"/>
                     <field name="perform_reversal_by_line_jq"
-                       attrs="{'invisible': [('reversal_via_sql', '=', True)]}"/>
+                       attrs="{'invisible': ['|', ('reversal_via_sql', '=', True), ('reversal_via_jq', '=', True)]}"/>
+                    <field name="reversal_via_jq"
+                       attrs="{'invisible': ['|', ('perform_reversal_by_line_jq', '=', True), ('reversal_via_sql', '=', True)]}"/>
                 </group>
             </group>
         </field>
