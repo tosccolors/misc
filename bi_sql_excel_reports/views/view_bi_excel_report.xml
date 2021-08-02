@@ -150,7 +150,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                         <field name="formula" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
                         <field name="caption"/>
                         <field name="pivot_area" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
-                        <field name="format" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                        <field name="format"/>
                     </group>
                     <group attrs="{'invisible':[('report_is_index', '=', True)]}">
                         <field name="show_details"/>
@@ -162,6 +162,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                     <group  attrs="{'invisible':[('report_is_index', '=', False)]}">
                         <field name="index_level"/>
                         <field name="index_info"/>
+                        <field name="index_field_width"/>
                     </group>
                     <group>
                         <field name="active"/>

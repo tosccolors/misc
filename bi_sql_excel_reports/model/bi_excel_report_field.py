@@ -93,3 +93,8 @@ class BiExcelReportField(models.Model):
         string='Index Info',
         default=False,
         help="The field is displayed as an information field on an index page")
+
+    index_field_width = fields.Integer(
+        string='Index Width',
+        default=25,
+        help="The width (in points) of a field on an index page")
