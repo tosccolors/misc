@@ -55,13 +55,18 @@ class BiExcelReport(models.Model):
         default=False,
         help="Is a group or a report")
 
+    is_index = fields.Boolean(
+        string='Is index',
+        default=False,
+        help="Is a selection index to use as global filter in reports")
+
     query_name = fields.Char(
         string='SQL View name',
         help="SQL View technical name which is the data source for the Excel report")
 
     filter_global = fields.Char(
         string='Global filters',
-        help="List any global objects from which a selection is required, for example: projects,people")
+        help="List index(es) from which a selection is required, for example: projects,people")
 
     filter_on_user = fields.Boolean(
         string='Filter on current user',
@@ -106,7 +111,7 @@ class BiExcelReport(models.Model):
     chart_height = fields.Integer(
         string='Chart height',
         help='Chart position (points): height',
-        default=410)
+        default=401)
 
     chart_scale = fields.Float(
         string='Chart y-scale',
@@ -167,22 +172,25 @@ class BiExcelReport(models.Model):
             data = header
         return data
 
-    # @api.model
-    # def get_module_version(self):
-    #     """ Get the module version """
-    #     from bi_sql_excel_reports import __manifest__ as manifest
-    #     mod_version = '?'
-    #     with open(manifest.__file__, 'r') as mf:
-    #         mfdata = mf.read()
-    #         start = mfdata.find('"version":')
-    #         if start > -1:
-    #             stop = mfdata.find('",', start + 10)
-    #             if stop > -1:
-    #                 mod_version = mfdata[start + 10: stop]
-    #                 mod_version = mod_version.replace('"', '')
-    #                 mod_version = mod_version.strip()
-    #         print(mfdata)
-    #     return mod_version
+    @api.model
+    def get_module_version(self):
+        """ Get the module version from the manifest """
+        delim = '/' if '/' in __file__ else '\\'
+        file_parts = __file__.split(delim)[:-2]
+        file_parts.append('__manifest__.py')
+        manifest_path = delim.join(file_parts)
+        mod_version = '?'
+        with open(manifest_path, 'r') as mf:
+            mfdata = mf.read()
+            start = mfdata.find('"version":')
+            if start > -1:
+                stop = mfdata.find('",', start + 10)
+                if stop > -1:
+                    mod_version = mfdata[start + 10: stop]
+                    mod_version = mod_version.replace('"', '')
+                    mod_version = mod_version.strip()
+            print(mfdata)
+        return mod_version
 
     @api.model
     def excel_add_in_compatible(self, user_machine_info):
@@ -226,7 +234,7 @@ class BiExcelReport(models.Model):
             return []
         rpt_codes = {rpt['id']: rpt['report_code'] for rpt in reports}
         layouts = self._get_meta_data(table_name='bi_excel_report_field', where_clause='active=True',
-                                      order_by_clause='report_id, id', as_a_dict=True)
+                                      order_by_clause='report_id, sequence', as_a_dict=True)
         for layout in layouts:
             layout[u'report_code'] = rpt_codes[layout['report_id']]
         if not as_a_dict:

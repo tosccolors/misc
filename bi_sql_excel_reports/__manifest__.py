@@ -5,7 +5,7 @@
 {
     "name": "BI SQL Excel Reports",
     "summary": "Pull SQL reports, defined in Odoo from within Excel, using the Excel add-in and this module to define the pivot layout.",
-    "version": "10.0.1.1.0",
+    "version": "10.0.1.1.1",
     "author": "Magnus",
     "website": "https://www.magnus.nl/",
     "license": "AGPL-3",
@@ -14,7 +14,7 @@
         "bi_sql_editor"
     ],
     "data": [
-	    'views/view_bi_excel_report.xml', 
+	    'views/view_bi_excel_report.xml',
     ],
     'installable': True,
     'external_dependencies': {

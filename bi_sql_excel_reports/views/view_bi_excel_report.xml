@@ -40,13 +40,16 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                     </group>
                     <group>
                         <field name="query_name" attrs="{'invisible':[('is_group', '=', True)]}"/>
-                        <field name="filter_global" attrs="{'invisible':[('is_group', '=', True)]}"/>
-                        <field name="filter_on_user" attrs="{'invisible':[('is_group', '=', True)]}"/>
+                        <field name="filter_global" attrs="{'invisible':['|', ('is_group', '=', True),
+                            ('is_index', '=', True)]}"/>
+                        <field name="filter_on_user" attrs="{'invisible':['|', ('is_group', '=', True),
+                            ('is_index', '=', True)]}"/>
                         <field name="is_group"/>
+                        <field name="is_index"/>
                         <field name="active"/>
                     </group>
                 </group>
-                <group attrs="{'invisible':[('is_group', '=', True)]}">
+                <group attrs="{'invisible':['|', ('is_group', '=', True), ('is_index', '=', True)]}">
                     <group>
                         <field name="table_row"/>
                         <field name="table_col"/>
@@ -81,6 +84,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                 <field name="report_code"/>
                 <field name="name"/>
                 <field name="is_group"/>
+                <field name="is_index"/>
                 <field name="short_name"/>
                 <field name="query_name"/>
                 <field name="chart_type"/>
@@ -98,10 +102,14 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                 <field name="short_name"/>
                 <field name="query_name"/>
                 <field name="chart_type"/>
+                <filter string="Reports only"
+                    domain="[('is_index','=',False)]"/>
+                <filter string="Indexes only"
+                    domain="[('is_index','=',True)]"/>
                 <filter string="With queries"
                     domain="[('query_name','!=',False)]"/>
                 <filter string="Pivot tables only"
-                    domain="[('query_name','!=',False), ('chart_type','=',False)]"/>
+                    domain="[('query_name','!=',False), ('chart_type','=',False), ('is_index','=',False)]"/>
             </search>
         </field>
     </record>
@@ -114,13 +122,17 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
             <tree string="Excel report fields">
                 <field name="id" invisible="1"/>
                 <field name="report_id" invisible="1"/>
+                <field name="report_is_index" invisible="1"/>
+                <field name="sequence"/>
                 <field name="name"/>
                 <field name="caption"/>
-                <field name="pivot_area"/>
-                <field name="filter_value"/>
-                <field name="subtotal"/>
-                <field name="show_details"/>
-                <field name="is_user"/>
+                <field name="pivot_area" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                <field name="filter_value" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                <field name="subtotal" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                <field name="show_details" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                <field name="is_user" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                <field name="index_level" attrs="{'invisible':[('report_is_index', '=', False)]}"/>
+                <field name="index_info" attrs="{'invisible':[('report_is_index', '=', False)]}"/>
             </tree>
         </field>
     </record>
@@ -130,25 +142,26 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         <field name="model">bi.excel.report.field</field>
         <field name="arch" type="xml">
             <form>
+                <field name="report_is_index" invisible="1"/>
                 <group>
                     <group>
+                        <field name="sequence"/>
                         <field name="name"/>
-                        <field name="formula"/>
+                        <field name="formula" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
                         <field name="caption"/>
-                        <field name="pivot_area"/>
-                        <field name="format"/>
+                        <field name="pivot_area" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                        <field name="format" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
                     </group>
-                    <group>
+                    <group attrs="{'invisible':[('report_is_index', '=', True)]}">
                         <field name="show_details"/>
                         <field name="subtotal"/>
                         <field name="is_user"/>
                     </group>
                 </group>
                 <group>
-                    <group>
-                        <field name="filter_value"/>
-                        <field name="slicer_top"/>
-                        <field name="slicer_height"/>
+                    <group  attrs="{'invisible':[('report_is_index', '=', False)]}">
+                        <field name="index_level"/>
+                        <field name="index_info"/>
                     </group>
                     <group>
                         <field name="active"/>
