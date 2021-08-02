@@ -19,6 +19,14 @@ class BiExcelReportField(models.Model):
         index=True,
         ondelete='cascade')
 
+    report_is_index = fields.Boolean(
+        string='Is index',
+        related='report_id.is_index')
+
+    sequence = fields.Integer(
+        string='Sequence',
+        help="Determines the sequence of the fields")
+
     name = fields.Char(
         string='Field name',
         help="Field (technical) name of the underlying query / view")
@@ -29,6 +37,7 @@ class BiExcelReportField(models.Model):
 
     pivot_area = fields.Selection(
         selection=[
+            ('n/a', 'N/A'),
             ('filter', 'Filter'),
             ('columns', 'Columns / Legend / Series'),
             ('rows', 'Rows / Axis / Categories'),
@@ -75,4 +84,12 @@ class BiExcelReportField(models.Model):
         string='Slicer height',
         help="Slicer height in points")
 
+    index_level = fields.Integer(
+        string="Index Level",
+        default=0,
+        help="Hierarchy index level on an index page (-1 for hidden id column, 0 when not relevant)")
 
+    index_info = fields.Boolean(
+        string='Index Info',
+        default=False,
+        help="The field is displayed as an information field on an index page")
