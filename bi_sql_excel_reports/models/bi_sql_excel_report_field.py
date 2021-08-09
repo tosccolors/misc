@@ -7,28 +7,29 @@
 from odoo import fields, models
 
 
-class BiExcelReportField(models.Model):
-    _name = 'bi.excel.report.field'
-
-    active = fields.Boolean('Active', default=True)
+class BiSqlExcelReportField(models.Model):
+    _name = 'bi.sql.excel.report.field'
+    _order = 'report_id, sequence'
 
     report_id = fields.Many2one(
-        comodel_name='bi.excel.report',
+        comodel_name='bi.sql.excel.report',
         string='Report',
         copy=True,
         index=True,
         ondelete='cascade')
 
     report_is_index = fields.Boolean(
-        string='Is index',
-        related='report_id.is_index')
+        string='Rpt Select index',
+        related='report_id.is_select_index')
 
     sequence = fields.Integer(
         string='Sequence',
+        required=True,
         help="Determines the sequence of the fields")
 
     name = fields.Char(
         string='Field name',
+        required=True,
         help="Field (technical) name of the underlying query / view")
 
     formula = fields.Char(
@@ -39,13 +40,13 @@ class BiExcelReportField(models.Model):
         selection=[
             ('n/a', 'N/A'),
             ('filter', 'Filter'),
-            ('columns', 'Columns / Legend / Series'),
-            ('rows', 'Rows / Axis / Categories'),
+            ('columns', 'Columns - Legend'),
+            ('rows', 'Rows - Axis'),
             ('values', 'Values'),
             ('slicer', 'Slicer'),
-            ('timeline', 'Timeline')
         ],
         string='Pivot area',
+        default='n/a',
         required=True,
         help="Pivot area for tables or charts")
 
@@ -70,11 +71,15 @@ class BiExcelReportField(models.Model):
     is_user = fields.Boolean(
         string='Is user field',
         default=False,
-        help="This field holds the username")
+        help="This field holds the username: used to filter on only user's records")
 
     filter_value = fields.Char(
         string='Filter value',
-        help="Set this value to be the (initial) filter")
+        help="Set this value to be the (initial) filter in Excel")
+
+    global_filter = fields.Char(
+        string='Global filter',
+        help="Enter index (short name) from which a selection is required, for example: Projects")
 
     slicer_top = fields.Integer(
         string='Slicer top',
@@ -83,11 +88,6 @@ class BiExcelReportField(models.Model):
     slicer_height = fields.Integer(
         string='Slicer height',
         help="Slicer height in points")
-
-    index_level = fields.Integer(
-        string="Index Level",
-        default=0,
-        help="Hierarchy index level on an index page (-1 for hidden id column, 0 when not relevant)")
 
     index_info = fields.Boolean(
         string='Index Info',
