@@ -5,7 +5,9 @@
 
 # from datetime import datetime
 import logging
+import bi_sql_excel_authorization as auth
 from odoo import fields, models, api
+
 # from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -14,9 +16,6 @@ _logger = logging.getLogger(__name__)
 class BiSqlExcelReport(models.Model):
     _name = 'bi.sql.excel.report'
     _order = 'sequence, id'
-
-    bi_sql_view_model = None
-    user_model = None
 
     active = fields.Boolean('Active', default=True)
 
@@ -117,41 +116,26 @@ class BiSqlExcelReport(models.Model):
         help='Chart y-scale max value (1 = 100%), not applicable when zero',
         default=0.0)
 
-    def get_authorization_filter(self, model_name):
-        if not self.user_model:
-            self.user_model = self.env['res.users']
-        if not self.bi_sql_view_model:
-            self.bi_sql_view_model = self.env['bi.sql.view']
-        if model_name[:13] == 'x_bi_sql_view':
-            model_name = '.'.join((model_name[:13], model_name[14:]))
-        sql_view_id = self.bi_sql_view_model.search([('technical_name', '=', model_name)])
-        sql_view_rec = self.bi_sql_view_model.browse(sql_view_id)
-        # todo: fetch auth domain from sql_qry_model
-        args = ['|', ('x_company_id', 'child_of', self.user_model.company_id.ids), ('x_company_id', '=', False)]
-        sql_qry_model = self.env[model_name]
-        auth_filter_qry = sql_qry_model._where_calc(args)
-        auth_filter_list = auth_filter_qry.where_clause
-        for seq, fltr in enumerate(auth_filter_list):
-            auth_filter_list[seq] = fltr.replace(auth_filter_qry.tables[0] + '.', '')
-        return auth_filter_list
-
-    def _exec_query(self, table_or_view, where_clause='', order_by_clause='', is_meta_data=False):
+    def _exec_query(self, table_or_view, column_names=None, where_clause='', order_by_clause='', is_meta_data=False):
         """ Execute SQL query, selecting all columns and records matching the where clause (optional) """
+        auth_filter = ''
+        if not is_meta_data:
+            model_name = '.'.join(('x_bi_sql_view', table_or_view[14:])) if table_or_view[:13] == 'x_bi_sql_view'\
+                else table_or_view
+            auth_filter = auth.get_authorization_filter(self, model_name, column_names)
+        if auth_filter and where_clause:
+            where_clause = '(' + where_clause + ') AND ' + auth_filter
+        else:
+            where_clause = auth_filter
         sql = 'SELECT * FROM ' + table_or_view
         sql += ' WHERE ' + where_clause if where_clause else ''
         sql += ' ORDER BY ' + order_by_clause if order_by_clause else ''
         # sql += ' LIMIT 100'
-
-        auth_filter = ''
-        if not is_meta_data:
-            auth_filter = self.get_authorization_filter(table_or_view)
-        print auth_filter
-
         err_msg = ''
         try:
             self.env.cr.execute(sql)
         except Exception as err:
-            logging.info('%s _exec_query error reading table or view %s: %s', self._name, table_or_view, err)
+            logging.info('%s _exec_query error reading table or view %s: %s', self._name, table_or_view, err.message)
             err_msg = err.message
             p = err_msg.find('\n')
             if p > -1:
@@ -167,8 +151,8 @@ class BiSqlExcelReport(models.Model):
         try:
             self.env.cr.execute(sql)
         except Exception as err:
-            logging.info('% _get_query_column_names error reading table or view ' +
-                         'column names %s: %s', self._name, table_or_view, err)
+            logging.error('% _get_query_column_names error reading table or view ' +
+                          'column names %s: %s', self._name, table_or_view, err.message)
         else:
             for col_name in self.env.cr.fetchall():
                 data.append(col_name[0])
@@ -189,7 +173,7 @@ class BiSqlExcelReport(models.Model):
         """ Get the active contents of a meta data table, either as a list of dictionaries, a list of lists without
             header or a list of lists with a header. """
         header = self._get_query_column_names(table_name)
-        err_msg = self._exec_query(table_name, where_clause, order_by_clause, is_meta_data=True)
+        err_msg = self._exec_query(table_name, None, where_clause, order_by_clause, is_meta_data=True)
         if err_msg:
             return err_msg
         data = self.env.cr.fetchall()
@@ -305,7 +289,7 @@ class BiSqlExcelReport(models.Model):
         if not data or data == [[]]:
             return qry_not_found_msg
         del_first_columns = data[0][:5] == ['id', 'create_date', 'create_uid', 'write_date', 'write_uid']
-        err_msg = self._exec_query(query_name, where_clause)
+        err_msg = self._exec_query(query_name, column_names=data[0], where_clause=where_clause)
         if err_msg:
             return err_msg
         data.extend(self.env.cr.fetchall())

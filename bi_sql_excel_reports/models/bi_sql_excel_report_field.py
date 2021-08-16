@@ -4,12 +4,17 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import fields, models
+from odoo import api, fields, models, tools
 
 
 class BiSqlExcelReportField(models.Model):
     _name = 'bi.sql.excel.report.field'
     _order = 'report_id, sequence'
+
+    @api.model
+    def _get_default_is_select_index(self):
+        is_select_index = self.env.context.get('default_is_select_index', False)
+        return is_select_index
 
     report_id = fields.Many2one(
         comodel_name='bi.sql.excel.report',
@@ -20,7 +25,9 @@ class BiSqlExcelReportField(models.Model):
 
     report_is_index = fields.Boolean(
         string='Rpt Select index',
-        related='report_id.is_select_index')
+        copy=True,
+        related='report_id.is_select_index',
+        default=_get_default_is_select_index)
 
     sequence = fields.Integer(
         string='Sequence',

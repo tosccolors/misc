@@ -26,7 +26,7 @@ from the Excel add-in Odoo menu on the Home tab of the ribbon.
 Configuration
 =============
 
-* Create a SQL query with the ``BI SQL Editor`` (menu item "SQL Views" under Settings - Database Structure, enable "Debug mode" first) which generates a database view
+* Create an SQL query with the ``BI SQL Editor`` (menu item "SQL Views" under Settings - Database Structure, enable "Debug mode" first) which generates a database view
 * Create a report entry for an Excel report with module ``BI SQL Excel Reports`` and refer to the database view
 * Define the pivot table parameters: which fields are rows, columns, values and filters
 * Define the pivot chart type, for example ``Clusterd Column``
