@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2021 - Today: Magnus (http://www.magnus.nl)
+@author: Vincent Verheul (v.verheul@magnus.nl)
+License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+-->
+
+<odoo>
+    <!-- Actions -->
+    <act_window
+        id="open_bi_excel_reports"
+        name="Excel Reports definition"
+        res_model="bi.excel.report" />
+
+    <!-- Module main menu entry -->
+	<menuitem id="menu_bi_excel_reports_main"
+        name="SQL Excel Reports"
+        parent = "base.next_id_9"
+        action="open_bi_excel_reports"
+	    sequence=""/>
+
+    <!-- bi.excel.report -->
+    <record id="bi_excel_report_view_form" model="ir.ui.view">
+        <field name="name">Excel Report Form</field>
+        <field name="model">bi.excel.report</field>
+        <field name="arch" type="xml">
+        <form string="Excel Report">
+            <header>
+                <!-- Header button or state indicator -->
+            </header>
+            <sheet>
+                <h1>
+                    <field name="name"/>
+                </h1>
+                <group>
+                    <group>
+                        <field name="report_code"/>
+                        <field name="short_name" attrs="{'invisible':[('is_group', '=', True)]}"/>
+                        <field name="description"/>
+                    </group>
+                    <group>
+                        <field name="query_name" attrs="{'invisible':[('is_group', '=', True)]}"/>
+                        <field name="filter_global" attrs="{'invisible':['|', ('is_group', '=', True),
+                            ('is_index', '=', True)]}"/>
+                        <field name="filter_on_user" attrs="{'invisible':['|', ('is_group', '=', True),
+                            ('is_index', '=', True)]}"/>
+                        <field name="is_group"/>
+                        <field name="is_index"/>
+                        <field name="active"/>
+                    </group>
+                </group>
+                <group attrs="{'invisible':['|', ('is_group', '=', True), ('is_index', '=', True)]}">
+                    <group>
+                        <field name="table_row"/>
+                        <field name="table_col"/>
+                        <field name="table_row_tot"/>
+                        <field name="table_col_tot"/>
+                    </group>
+                    <group>
+                        <field name="chart_type"/>
+                        <field name="chart_left" attrs="{'invisible':[('chart_type', '=', False)]}"/>
+                        <field name="chart_top" attrs="{'invisible':[('chart_type', '=', False)]}"/>
+                        <field name="chart_width" attrs="{'invisible':[('chart_type', '=', False)]}"/>
+                        <field name="chart_height" attrs="{'invisible':[('chart_type', '=', False)]}"/>
+                        <field name="chart_scale" attrs="{'invisible':[('chart_type', '=', False)]}"/>
+                    </group>
+                </group>
+                <notebook attrs="{'invisible':[('is_group', '=', True)]}">
+                    <page string="Fields" id="fields">
+                        <field name="field_ids"/>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="bi_excel_report_view_tree" model="ir.ui.view">
+        <field name="name">Excel Reports List</field>
+        <field name="model">bi.excel.report</field>
+        <field name="arch" type="xml">
+            <tree string="Excel reports">
+                <field name="id" invisible="1"/>
+                <field name="report_code"/>
+                <field name="name"/>
+                <field name="is_group"/>
+                <field name="is_index"/>
+                <field name="short_name"/>
+                <field name="query_name"/>
+                <field name="chart_type"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="bi_excel_report_view_search" model="ir.ui.view">
+        <field name="name">Excel Reports Search</field>
+        <field name="model">bi.excel.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="report_code"/>
+                <field name="short_name"/>
+                <field name="query_name"/>
+                <field name="chart_type"/>
+                <filter string="Reports only"
+                    domain="[('is_index','=',False)]"/>
+                <filter string="Indexes only"
+                    domain="[('is_index','=',True)]"/>
+                <filter string="With queries"
+                    domain="[('query_name','!=',False)]"/>
+                <filter string="Pivot tables only"
+                    domain="[('query_name','!=',False), ('chart_type','=',False), ('is_index','=',False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- bi.excel.report.field -->
+    <record id="bi_excel_report_field_view_tree" model="ir.ui.view">
+        <field name="name">Excel Report Field List</field>
+        <field name="model">bi.excel.report.field</field>
+        <field name="arch" type="xml">
+            <tree string="Excel report fields">
+                <field name="id" invisible="1"/>
+                <field name="report_id" invisible="1"/>
+                <field name="report_is_index" invisible="1"/>
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="caption"/>
+                <field name="pivot_area" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                <field name="filter_value" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                <field name="subtotal" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                <field name="show_details" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                <field name="is_user" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                <field name="index_level" attrs="{'invisible':[('report_is_index', '=', False)]}"/>
+                <field name="index_info" attrs="{'invisible':[('report_is_index', '=', False)]}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="bi_excel_report_field_view_form" model="ir.ui.view">
+        <field name="name">Excel Report Field Form</field>
+        <field name="model">bi.excel.report.field</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="report_is_index" invisible="1"/>
+                <group>
+                    <group>
+                        <field name="sequence"/>
+                        <field name="name"/>
+                        <field name="formula" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                        <field name="caption"/>
+                        <field name="pivot_area" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                        <field name="format" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                    </group>
+                    <group attrs="{'invisible':[('report_is_index', '=', True)]}">
+                        <field name="show_details"/>
+                        <field name="subtotal"/>
+                        <field name="is_user"/>
+                    </group>
+                </group>
+                <group>
+                    <group  attrs="{'invisible':[('report_is_index', '=', False)]}">
+                        <field name="index_level"/>
+                        <field name="index_info"/>
+                    </group>
+                    <group>
+                        <field name="active"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+</odoo>
+
