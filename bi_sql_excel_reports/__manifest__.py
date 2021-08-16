@@ -14,7 +14,8 @@
         "bi_sql_editor"
     ],
     "data": [
-	    'views/view_bi_excel_report.xml',
+        'security/ir.model.access.csv',
+	    'views/view_bi_sql_excel_report.xml',
     ],
     'installable': True,
     'external_dependencies': {
