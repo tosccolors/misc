@@ -30,7 +30,7 @@ class AccountFiscalPosition(models.Model):
                 raise ValidationError(
                     _('More than one Taxes defined for the same Country on this Product. Please correct'))
         else:
-            result = super(AccountFiscalPosition, self).map_tax(taxes, product=None, partner=None)
+            result = super(AccountFiscalPosition, self).map_tax(taxes, product=product, partner=partner)
         return result
 
 
