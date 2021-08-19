@@ -4,31 +4,39 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import fields, models
+from odoo import api, fields, models, tools
 
 
-class BiExcelReportField(models.Model):
-    _name = 'bi.excel.report.field'
+class BiSqlExcelReportField(models.Model):
+    _name = 'bi.sql.excel.report.field'
+    _order = 'report_id, sequence'
 
-    active = fields.Boolean('Active', default=True)
+    @api.model
+    def _get_default_is_select_index(self):
+        is_select_index = self.env.context.get('default_is_select_index', False)
+        return is_select_index
 
     report_id = fields.Many2one(
-        comodel_name='bi.excel.report',
+        comodel_name='bi.sql.excel.report',
         string='Report',
         copy=True,
         index=True,
         ondelete='cascade')
 
     report_is_index = fields.Boolean(
-        string='Is index',
-        related='report_id.is_index')
+        string='Rpt Select index',
+        copy=True,
+        related='report_id.is_select_index',
+        default=_get_default_is_select_index)
 
     sequence = fields.Integer(
         string='Sequence',
+        required=True,
         help="Determines the sequence of the fields")
 
     name = fields.Char(
         string='Field name',
+        required=True,
         help="Field (technical) name of the underlying query / view")
 
     formula = fields.Char(
@@ -39,13 +47,13 @@ class BiExcelReportField(models.Model):
         selection=[
             ('n/a', 'N/A'),
             ('filter', 'Filter'),
-            ('columns', 'Columns / Legend / Series'),
-            ('rows', 'Rows / Axis / Categories'),
+            ('columns', 'Columns - Legend'),
+            ('rows', 'Rows - Axis'),
             ('values', 'Values'),
             ('slicer', 'Slicer'),
-            ('timeline', 'Timeline')
         ],
         string='Pivot area',
+        default='n/a',
         required=True,
         help="Pivot area for tables or charts")
 
@@ -70,11 +78,15 @@ class BiExcelReportField(models.Model):
     is_user = fields.Boolean(
         string='Is user field',
         default=False,
-        help="This field holds the username")
+        help="This field holds the username: used to filter on only user's records")
 
     filter_value = fields.Char(
         string='Filter value',
-        help="Set this value to be the (initial) filter")
+        help="Set this value to be the (initial) filter in Excel")
+
+    global_filter = fields.Char(
+        string='Global filter',
+        help="Enter index (short name) from which a selection is required, for example: Projects")
 
     slicer_top = fields.Integer(
         string='Slicer top',
@@ -84,12 +96,12 @@ class BiExcelReportField(models.Model):
         string='Slicer height',
         help="Slicer height in points")
 
-    index_level = fields.Integer(
-        string="Index Level",
-        default=0,
-        help="Hierarchy index level on an index page (-1 for hidden id column, 0 when not relevant)")
-
     index_info = fields.Boolean(
         string='Index Info',
         default=False,
         help="The field is displayed as an information field on an index page")
+
+    index_field_width = fields.Integer(
+        string='Index Width',
+        default=25,
+        help="The width (in points) of a field on an index page")
