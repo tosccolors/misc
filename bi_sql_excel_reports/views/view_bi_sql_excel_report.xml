@@ -148,7 +148,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
             <field name="model">bi.sql.excel.report.field</field>
             <field name="arch" type="xml">
                 <form>
-                    <field name="report_is_index" invisible="0"/>
+                    <field name="report_is_index" invisible="1"/>
                     <group>
                         <group>
                             <separator string="Field" colspan="2"/>
