@@ -77,13 +77,13 @@ Example::
   ORDER BY md.name
 
   Complete the steps via "Create SQL View, Indexes and Models" and "Create UI".
-  Next, add an entry for an Excel report via "SQL Excel Reports", enter a unique code for the
+  Next, add an entry for an Excel report via "SQL Excel Reports", enter a sequence nr for the
   report and give it a name, for example "Demo - Odoo Modules". Enter the technical name of the
   query we just created: excel_module_odoo_overview. Enter "Stacked Bar" for the Chart Type and
-  enter "Modules" for the short name (whis will be the name of the worksheet in Excel).
+  enter "Modules" for the short name (this will be the name of the worksheet in Excel).
 
   Complete the Excel report layout definition by adding fields for the pivot table:
-  - field x_author as filter
+  - field x_author as a filter
   - field x_state for columns
   - field x_category for rows
   - field x_module for rows and unselect "details"
