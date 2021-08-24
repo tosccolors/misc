@@ -160,7 +160,8 @@ class BiSqlExcelReport(models.Model):
 
     @staticmethod
     def _shorten_dates(header, data):
-        """ Change date field contents into a format that Excel understands as a date """
+        """ Change date field contents into a format that Excel understands as date-time
+            i.e. remove partial seconds """
         for field in header:
             if field[-4:] != 'date':
                 continue
@@ -177,10 +178,10 @@ class BiSqlExcelReport(models.Model):
         if err_msg:
             return err_msg
         data = self.env.cr.fetchall()
+        data = self._shorten_dates(header, data)
         if as_a_dict:
             data = [{col: dat for col, dat in zip(header, row)} for row in data]
         else:
-            data = self._shorten_dates(header, data)
             header = [header]
             header.extend(data)
             data = header
@@ -225,7 +226,7 @@ class BiSqlExcelReport(models.Model):
     @api.model
     def get_report_def_timestamp(self):
         """ Get the oldest update timestamp (write_date) of the active Excel report definitions """
-        data = self._get_meta_data(table_name='bi_sql_excel_report', where_clause='active=True', as_a_dict=True)
+        data = self.get_report_definitions(as_a_dict=True)
         timestamp = '2000-01-01 00:00:00'
         if data and type(data) == list:
             timestamp = max([row['write_date'] for row in data])
@@ -235,9 +236,23 @@ class BiSqlExcelReport(models.Model):
     @api.model
     def get_report_definitions(self, as_a_dict=True):
         """ Get all active Excel report definitions as a list of dicts or
-            as a list of lists (table) with the first row having the field names """
-        return self._get_meta_data(table_name='bi_sql_excel_report', where_clause='active=True',
-                                   order_by_clause='sequence', as_a_dict=as_a_dict)
+            as a list of lists (table) with the first row having the field names.
+            The list is filtered on only those queries that the user is authorized for. """
+        ddata = self._get_meta_data(table_name='bi_sql_excel_report', where_clause='active=True',
+                                    order_by_clause='sequence', as_a_dict=True)
+        if not auth.is_super_user(self):
+            auth_queries = auth.get_authorized_queries(self)
+            auth_queries.append('')
+            for line in ddata:
+                if line['query_name'] not in auth_queries or (not line['is_group'] and not line['query_name']):
+                    line['active'] = False
+            ddata = auth.hierarchy_filter_node_auth(self, ddata)
+        if not as_a_dict:
+            data = [[col_name for col_name in ddata[0]]]
+            data.extend([[fld for fld in rec.values()] for rec in ddata])
+        else:
+            data = ddata
+        return data
 
     @api.model
     def get_report_layout_definitions(self, as_a_dict=True):
@@ -269,19 +284,32 @@ class BiSqlExcelReport(models.Model):
                 layouts = []
         return layouts
 
-    @api.model
-    def get_report_data(self, report_seq, where_clause=''):
-        """ Get the contents of the query associated with report_seq and return as
-            a list of lists (table) with the first row having the field names """
-        qry_not_found_msg = 'Error: No SQL View found for report code {}'.format(report_seq)
+    def _get_query_name(self, report_seq):
+        """ Get the query name for the report sequence number and check if the user is authorized to execute it """
         sql = "SELECT query_name FROM bi_sql_excel_report WHERE sequence='" + str(report_seq) + "'"
         self.env.cr.execute(sql)
         try:
             query_name = self.env.cr.fetchone()[0]
         except Exception as err:
-            logging.error('% get_report_data error ', self._name, err.message)
-            return qry_not_found_msg
+            logging.error('% _get_query_name error ', self._name, err.message)
+            return 'Error: ' + err.message
 
+        if not query_name:
+            return ''
+        if not auth.is_super_user(self):
+            if not auth.get_authorized_queries(self, query_name):
+                return 'Error: You are not authorized to run query ' + query_name
+        return query_name
+
+    @api.model
+    def get_report_data(self, report_seq, where_clause=''):
+        """ Get the contents of the query associated with report_seq and return as
+            a list of lists (table) with the first row having the field names """
+        qry_not_found_msg = 'Error: No SQL View found for report code {}'.format(report_seq)
+        query_name = self._get_query_name(report_seq)
+        if query_name[:5] == 'Error':
+            err_msg = query_name
+            return err_msg
         if not query_name:
             return qry_not_found_msg
         query_name = 'x_bi_sql_view_' + query_name
@@ -296,7 +324,7 @@ class BiSqlExcelReport(models.Model):
         if del_first_columns:
             data = [row[5:] for row in data]
         # cannot have plain brackets [] or curly brackets {} in a string as these are interpreted
-        # in the Excel add-in logic as list and dict delimiters
+        # in the Excel add-in logic as list and dict delimiters within the json message
         data = [[fld.replace(u'[', u"'['").replace(u']', u"']'").replace(u'{', u"'{'").replace(u'}', u"'}'")
                  if fld and type(fld) in (str, unicode) else fld for fld in row]
                 for row in data]
