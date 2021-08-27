@@ -21,7 +21,7 @@ class BiSqlExcelReportField(models.Model):
         sql = 'SELECT max(sequence) AS max_seq FROM bi_sql_excel_report_field WHERE report_id=' + str(report_id)
         self.env.cr.execute(sql)
         max_seq = self.env.cr.fetchone()
-        new_seq = max_seq[0] + 1 if max_seq else 1
+        new_seq = 1 if max_seq[0] is None else max_seq[0] + 1
         return new_seq
 
     @api.model
