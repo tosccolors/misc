@@ -72,7 +72,10 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                             </group>
                         </page>
                         <page string="Fields" id="fields">
-                            <field name="field_ids" context="{'default_is_select_index':is_select_index}" />
+                            <field name="field_ids" context="{
+                             'parent_report_id':id,
+                             'parent_report_query_name':query_name,
+                             'parent_report_is_select_index':is_select_index}" />
                         </page>
                     </notebook>
                 </sheet>
@@ -84,7 +87,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
             <field name="name">SQL Excel Reports List</field>
             <field name="model">bi.sql.excel.report</field>
             <field name="arch" type="xml">
-                <tree string="Excel reports">
+                <tree string="Excel reports" decoration-info="is_group==True" decoration-warning="is_select_index==True">
                     <field name="id" invisible="1"/>
                     <field name="sequence"/>
                     <field name="name"/>
@@ -108,9 +111,9 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                     <field name="short_name"/>
                     <field name="query_name"/>
                     <field name="chart_type"/>
-                    <filter string="Reports only"
+                    <filter string="Reports"
                         domain="[('is_select_index','=',False)]"/>
-                    <filter string="Selection Indexes only"
+                    <filter string="Selection Indexes"
                         domain="[('is_select_index','=',True)]"/>
                     <filter string="Having queries"
                         domain="[('query_name','!=',False)]"/>
