@@ -13,6 +13,13 @@ from odoo import fields, models, api
 _logger = logging.getLogger(__name__)
 
 
+@api.model
+def _get_default_sequence(self):
+    existing = self.search([])
+    new_seq = max([rec.sequence for rec in existing]) + 1 if existing else 1
+    return new_seq
+
+
 class BiSqlExcelReport(models.Model):
     _name = 'bi.sql.excel.report'
     _order = 'sequence, id'
@@ -27,13 +34,8 @@ class BiSqlExcelReport(models.Model):
     sequence = fields.Integer(
         string='Sequence',
         required=True,
+        default=_get_default_sequence,
         help="Determines the sequence of the reports")
-
-    # _sql_constraints = [
-    #     ('sequence_uniq',
-    #      'UNIQUE (sequence)',
-    #      'The sequence must be unique.')
-    #     ]
 
     name = fields.Char(
         string='Report name',
@@ -62,8 +64,10 @@ class BiSqlExcelReport(models.Model):
         string='Is Select Index',
         help="Is a selection index to use as global filter in reports")
 
-    query_name = fields.Char(
+    query_name = fields.Selection(
         string='SQL View name',
+        selection=lambda self: self._sql_view_names(),
+        default=False,
         help="SQL View technical name which is the data source for the Excel report")
 
     filter_on_user = fields.Boolean(
@@ -87,9 +91,51 @@ class BiSqlExcelReport(models.Model):
         string='Table grand tot cols',
         default=True)
 
-    chart_type = fields.Char(
+    chart_type = fields.Selection(
+        # Values for Microsoft Excel Chart Type (XlChartType)
+        selection=[
+            (0, 'N/A'),
+            (51, 'Clusterd Column'),
+            (52, 'Stacked Column'),
+            (53, '100% Stacked Column'),
+            (54, '3-D Clustered Column'),
+            (55, '3-D Stacked Column'),
+            (56, '3-D 100% Stacked Column'),
+            (-4100, '3-D Column'),
+            (4, 'Line'),
+            (63, 'Stacked Line'),
+            (64, '100% Stacked Line'),
+            (65, 'Line with Markers'),
+            (66, 'Stacked Line with Markers'),
+            (67, '100% Stacked Line with Markers'),
+            (-4101, '3-D Line'),
+            (5, 'Pie'),
+            (-4102, '3-D Pie'),
+            (68, 'Pie of Pie'),
+            (71, 'Bar of Pie'),
+            (-4120, 'Dougnut'),
+            (57, 'Clustered Bar'),
+            (58, 'Stacked Bar'),
+            (59, '100% Stacked Bar'),
+            (60, '3-D Clustered Bar'),
+            (61, '3-D Stacked Bar'),
+            (62, '3-D 100% Stacked Bar'),
+            (1, 'Area'),
+            (76, 'Stacked Area'),
+            (77, '100% Stacked Area'),
+            (-4098, '3-D Area'),
+            (78, '3-D Stacked Area'),
+            (79, '3-D 100% Stacked Area'),
+            (-4103, '3-D Surface'),
+            (84, 'Wireframe 3-D Surface'),
+            (85, 'Contour'),
+            (86, 'Wireframe Contour'),
+            (-4151, 'Radar'),
+            (81, 'Radar with Markers'),
+            (82, 'Filled Radar'),
+            ],
         string='Excel chart type',
-        help="Excel chart type (in English) or leave blank when no chart required")
+        help="Excel chart type (in English) or leave blank (or N/A) when no chart required")
 
     chart_left = fields.Integer(
         string='Chart left',
@@ -116,6 +162,11 @@ class BiSqlExcelReport(models.Model):
         help='Chart y-scale max value (1 = 100%), not applicable when zero',
         default=0.0)
 
+    @api.model
+    def _sql_view_names(self):
+        sql_views = self.env['bi.sql.view'].search([])
+        return [(vw.technical_name, vw.technical_name) for vw in sql_views]
+
     def _exec_query(self, table_or_view, column_names=None, where_clause='', order_by_clause='', is_meta_data=False):
         """ Execute SQL query, selecting all columns and records matching the where clause (optional) """
         auth_filter = ''
@@ -125,17 +176,19 @@ class BiSqlExcelReport(models.Model):
             auth_filter = auth.get_authorization_filter(self, model_name, column_names)
         if auth_filter and where_clause:
             where_clause = '(' + where_clause + ') AND ' + auth_filter
-        else:
+        elif not where_clause:
             where_clause = auth_filter
         sql = 'SELECT * FROM ' + table_or_view
         sql += ' WHERE ' + where_clause if where_clause else ''
         sql += ' ORDER BY ' + order_by_clause if order_by_clause else ''
         # sql += ' LIMIT 100'
+        logging.info('%s._exec_query (user %s):  %s', self._name, self.env.user.name, sql)
         err_msg = ''
         try:
             self.env.cr.execute(sql)
         except Exception as err:
-            logging.info('%s _exec_query error reading table or view %s: %s', self._name, table_or_view, err.message)
+            logging.error('%s._exec_query (user %s) error reading table or view %s: %s',
+                          self._name, table_or_view, self.env.user.name, err.message)
             err_msg = err.message
             p = err_msg.find('\n')
             if p > -1:
@@ -151,7 +204,7 @@ class BiSqlExcelReport(models.Model):
         try:
             self.env.cr.execute(sql)
         except Exception as err:
-            logging.error('% _get_query_column_names error reading table or view ' +
+            logging.error('%._get_query_column_names error reading table or view ' +
                           'column names %s: %s', self._name, table_or_view, err.message)
         else:
             for col_name in self.env.cr.fetchall():
@@ -227,9 +280,10 @@ class BiSqlExcelReport(models.Model):
     def get_report_def_timestamp(self):
         """ Get the oldest update timestamp (write_date) of the active Excel report definitions """
         data = self.get_report_definitions(as_a_dict=True)
-        timestamp = '2000-01-01 00:00:00'
+        default = '2000-01-01 00:00:00'
+        timestamp = default
         if data and type(data) == list:
-            timestamp = max([row['write_date'] for row in data])
+            timestamp = max([row.get('write_date', default) for row in data])
             timestamp = timestamp[:19]
         return timestamp
 
@@ -244,10 +298,10 @@ class BiSqlExcelReport(models.Model):
             auth_queries = auth.get_authorized_queries(self)
             auth_queries.append('')
             for line in ddata:
-                if line['query_name'] not in auth_queries or (not line['is_group'] and not line['query_name']):
+                if not line['is_group'] and line['query_name'] not in auth_queries:
                     line['active'] = False
             ddata = auth.hierarchy_filter_node_auth(self, ddata)
-        if not as_a_dict:
+        if ddata and not as_a_dict:
             data = [[col_name for col_name in ddata[0]]]
             data.extend([[fld for fld in rec.values()] for rec in ddata])
         else:
@@ -261,17 +315,10 @@ class BiSqlExcelReport(models.Model):
         reports = self.get_report_definitions(as_a_dict=True)
         if not reports:
             return []
-        rpt_seqs = {rpt['id']: rpt['sequence'] for rpt in reports}
         layouts = self._get_meta_data(table_name='bi_sql_excel_report_field',
                                       order_by_clause='report_id, sequence', as_a_dict=True)
         if type(layouts) != list:
             return layouts
-        for layout in layouts:
-            if layout[u'report_id'] in rpt_seqs:
-                layout[u'report_seq'] = rpt_seqs[layout['report_id']]
-            else:
-                layout[u'report_seq'] = None
-        layouts = [layout for layout in layouts if layout[u'report_seq'] is not None]
         if not as_a_dict:
             if layouts:
                 header = [fld_name for fld_name in layouts[0].keys()]
@@ -284,14 +331,14 @@ class BiSqlExcelReport(models.Model):
                 layouts = []
         return layouts
 
-    def _get_query_name(self, report_seq):
-        """ Get the query name for the report sequence number and check if the user is authorized to execute it """
-        sql = "SELECT query_name FROM bi_sql_excel_report WHERE sequence='" + str(report_seq) + "'"
+    def _get_query_name(self, report_id):
+        """ Get the query name for the report id and check if the user is authorized to execute it """
+        sql = "SELECT query_name FROM bi_sql_excel_report WHERE id='" + str(report_id) + "'"
         self.env.cr.execute(sql)
         try:
             query_name = self.env.cr.fetchone()[0]
         except Exception as err:
-            logging.error('% _get_query_name error ', self._name, err.message)
+            logging.error('%._get_query_name error ', self._name, err.message)
             return 'Error: ' + err.message
 
         if not query_name:
@@ -302,11 +349,11 @@ class BiSqlExcelReport(models.Model):
         return query_name
 
     @api.model
-    def get_report_data(self, report_seq, where_clause=''):
+    def get_report_data(self, report_id, where_clause=''):
         """ Get the contents of the query associated with report_seq and return as
             a list of lists (table) with the first row having the field names """
-        qry_not_found_msg = 'Error: No SQL View found for report code {}'.format(report_seq)
-        query_name = self._get_query_name(report_seq)
+        qry_not_found_msg = 'Error: No SQL View found for report ID {}'.format(report_id)
+        query_name = self._get_query_name(report_id)
         if query_name[:5] == 'Error':
             err_msg = query_name
             return err_msg

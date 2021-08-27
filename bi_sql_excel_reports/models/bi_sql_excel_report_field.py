@@ -13,28 +13,50 @@ class BiSqlExcelReportField(models.Model):
 
     @api.model
     def _get_default_is_select_index(self):
-        is_select_index = self.env.context.get('default_is_select_index', False)
-        return is_select_index
+        return self.env.context.get('parent_report_is_select_index', False)
+
+    @api.model
+    def _get_default_sequence(self):
+        report_id = self.env.context.get('parent_report_id', False)
+        sql = 'SELECT max(sequence) AS max_seq FROM bi_sql_excel_report_field WHERE report_id=' + str(report_id)
+        self.env.cr.execute(sql)
+        max_seq = self.env.cr.fetchone()
+        new_seq = max_seq[0] + 1 if max_seq else 1
+        return new_seq
+
+    @api.model
+    def _get_field_names(self):
+        field_names = [('n/a', 'n/a')]
+        report_query_name = self.env.context.get('parent_report_query_name', False)
+        if report_query_name:
+            sql_views = self.env['bi.sql.view'].sudo().search([('technical_name', '=', report_query_name)])
+            field_id_list = sql_views[0].bi_sql_view_field_ids
+            field_names.extend([(fld.name, fld.name) for fld in field_id_list])
+        return field_names
 
     report_id = fields.Many2one(
         comodel_name='bi.sql.excel.report',
         string='Report',
         copy=True,
         index=True,
-        ondelete='cascade')
+        ondelete='cascade',
+        help="Reference to the report object")
 
     report_is_index = fields.Boolean(
         string='Rpt Select index',
         copy=True,
         related='report_id.is_select_index',
-        default=_get_default_is_select_index)
+        default=_get_default_is_select_index,
+        help="Reference to the report field is_select_index")
 
     sequence = fields.Integer(
         string='Sequence',
         required=True,
+        default=_get_default_sequence,
         help="Determines the sequence of the fields")
 
-    name = fields.Char(
+    name = fields.Selection(
+        selection=_get_field_names,
         string='Field name',
         required=True,
         help="Field (technical) name of the underlying query / view")
@@ -47,10 +69,20 @@ class BiSqlExcelReportField(models.Model):
         selection=[
             ('n/a', 'N/A'),
             ('filter', 'Filter'),
-            ('columns', 'Columns - Legend'),
-            ('rows', 'Rows - Axis'),
-            ('values', 'Values'),
             ('slicer', 'Slicer'),
+            ('columns', 'Columns or Legend'),
+            ('rows', 'Rows or Axis'),
+            ('values:sum', 'Values:Sum'),
+            ('values:count', 'Values:Count'),
+            ('values:average', 'Values:Average'),
+            ('values:max', 'Values:Max'),
+            ('values:min', 'Values:Min'),
+            ('values:product', 'Values:Product'),
+            ('values:count_numbers', 'Values:Count Numbers'),
+            ('values:stdev', 'Values:StDev'),
+            ('values:stdevp', 'Values:StDevp'),
+            ('values:var', 'Values:Var'),
+            ('values:varp', 'Values:Varp'),
         ],
         string='Pivot area',
         default='n/a',
