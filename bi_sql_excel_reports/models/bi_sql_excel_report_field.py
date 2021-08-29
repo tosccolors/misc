@@ -16,23 +16,23 @@ class BiSqlExcelReportField(models.Model):
         return self.env.context.get('parent_report_is_select_index', False)
 
     @api.model
-    def _get_default_sequence(self):
+    def _get_default_sequence(self):  # only works on records saved to the database ..
+        new_seq = 1
         report_id = self.env.context.get('parent_report_id', False)
-        sql = 'SELECT max(sequence) AS max_seq FROM bi_sql_excel_report_field WHERE report_id=' + str(report_id)
-        self.env.cr.execute(sql)
-        max_seq = self.env.cr.fetchone()
-        new_seq = 1 if max_seq[0] is None else max_seq[0] + 1
+        existing = self.search([])  # 'report_id', '=', report_id
+        existing = [rec for rec in existing if rec.report_id.id == report_id]
+        if existing:
+            new_seq = max([rec.sequence for rec in existing]) + 1
         return new_seq
 
     @api.model
-    def _get_field_names(self):
-        field_names = [('n/a', 'n/a')]
-        report_query_name = self.env.context.get('parent_report_query_name', False)
-        if report_query_name:
-            sql_views = self.env['bi.sql.view'].sudo().search([('technical_name', '=', report_query_name)])
-            field_id_list = sql_views[0].bi_sql_view_field_ids
-            field_names.extend([(fld.name, fld.name) for fld in field_id_list])
-        return field_names
+    def _get_query_id(self):
+        report_query_id = None
+        if self.report_id:
+            report_query_id = self.report_id.query
+        if not report_query_id:
+            report_query_id = self.env.context.get('parent_report_query_id', False)
+        return report_query_id
 
     report_id = fields.Many2one(
         comodel_name='bi.sql.excel.report',
@@ -41,6 +41,14 @@ class BiSqlExcelReportField(models.Model):
         index=True,
         ondelete='cascade',
         help="Reference to the report object")
+
+    report_query_id = fields.Many2one(
+        string='Rpt Query ID',
+        copy=True,
+        readonly=True,
+        related='report_id.query',
+        default=_get_query_id,
+        help="Reference to the report SQL View ID")
 
     report_is_index = fields.Boolean(
         string='Rpt Select index',
@@ -55,11 +63,18 @@ class BiSqlExcelReportField(models.Model):
         default=_get_default_sequence,
         help="Determines the sequence of the fields")
 
-    name = fields.Selection(
-        selection=_get_field_names,
+    name_id = fields.Many2one(
+        comodel_name='bi.sql.view.field',
         string='Field name',
         required=True,
-        help="Field (technical) name of the underlying query / view")
+        help="Field (technical) name (id) of the underlying query / view")
+
+    name = fields.Char(
+        related='name_id.name',
+        string='Field txt',
+        readonly=True,
+        store=True,
+        help="Field (technical) name")
 
     formula = fields.Char(
         string='Pivot formula',
