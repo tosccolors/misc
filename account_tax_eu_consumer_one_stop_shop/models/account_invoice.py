@@ -8,7 +8,7 @@ class AccountInvoiceLine(models.Model):
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
-        result = super(AccountInvoiceLine(), self)._onchange_product_id()
+        result = super(AccountInvoiceLine, self)._onchange_product_id()
         if not self.product_id \
                 and self.invoice_id.fiscal_position_id.country_tax \
                 and type not in ('in_invoice', 'in_refund'):
