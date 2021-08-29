@@ -13,16 +13,15 @@ from odoo import fields, models, api
 _logger = logging.getLogger(__name__)
 
 
-@api.model
-def _get_default_sequence(self):
-    existing = self.search([])
-    new_seq = max([rec.sequence for rec in existing]) + 1 if existing else 1
-    return new_seq
-
-
 class BiSqlExcelReport(models.Model):
     _name = 'bi.sql.excel.report'
     _order = 'sequence, id'
+
+    @api.model
+    def _get_default_sequence(self):
+        existing = self.search([])
+        new_seq = max([rec.sequence for rec in existing]) + 1 if existing else 1
+        return new_seq
 
     active = fields.Boolean('Active', default=True)
 
@@ -64,11 +63,10 @@ class BiSqlExcelReport(models.Model):
         string='Is Select Index',
         help="Is a selection index to use as global filter in reports")
 
-    query_name = fields.Selection(
-        string='SQL View name',
-        selection=lambda self: self._sql_view_names(),
-        default=False,
-        help="SQL View technical name which is the data source for the Excel report")
+    query = fields.Many2one(
+        comodel_name='bi.sql.view',
+        string='SQL View',
+        help="SQL View which is the data source for the Excel report")
 
     filter_on_user = fields.Boolean(
         string='Filter on current user',
@@ -161,11 +159,6 @@ class BiSqlExcelReport(models.Model):
         string='Chart y-scale',
         help='Chart y-scale max value (1 = 100%), not applicable when zero',
         default=0.0)
-
-    @api.model
-    def _sql_view_names(self):
-        sql_views = self.env['bi.sql.view'].search([])
-        return [(vw.technical_name, vw.technical_name) for vw in sql_views]
 
     def _exec_query(self, table_or_view, column_names=None, where_clause='', order_by_clause='', is_meta_data=False):
         """ Execute SQL query, selecting all columns and records matching the where clause (optional) """
@@ -331,32 +324,18 @@ class BiSqlExcelReport(models.Model):
                 layouts = []
         return layouts
 
-    def _get_query_name(self, report_id):
-        """ Get the query name for the report id and check if the user is authorized to execute it """
-        sql = "SELECT query_name FROM bi_sql_excel_report WHERE id='" + str(report_id) + "'"
-        self.env.cr.execute(sql)
-        try:
-            query_name = self.env.cr.fetchone()[0]
-        except Exception as err:
-            logging.error('%._get_query_name error ', self._name, err.message)
-            return 'Error: ' + err.message
-
-        if not query_name:
-            return ''
-        if not auth.is_super_user(self):
-            if not auth.get_authorized_queries(self, query_name):
-                return 'Error: You are not authorized to run query ' + query_name
-        return query_name
-
     @api.model
     def get_report_data(self, report_id, where_clause=''):
         """ Get the contents of the query associated with report_seq and return as
             a list of lists (table) with the first row having the field names """
-        qry_not_found_msg = 'Error: No SQL View found for report ID {}'.format(report_id)
-        query_name = self._get_query_name(report_id)
-        if query_name[:5] == 'Error':
-            err_msg = query_name
-            return err_msg
+        report = self.sudo().search([('id', '=', report_id)])
+        if not report:
+            return 'Error: No report found for report ID {}'.format(report_id)
+        query_name = report.query.technical_name
+        if not auth.is_super_user(self):
+            if not auth.get_authorized_queries(self, query_name):
+                return 'Error: You are not authorized to run query {}'.format(query_name)
+        qry_not_found_msg = 'Error: No SQL View found for report {}'.format(report.name)
         if not query_name:
             return qry_not_found_msg
         query_name = 'x_bi_sql_view_' + query_name
