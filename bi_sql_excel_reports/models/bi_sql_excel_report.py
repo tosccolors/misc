@@ -66,7 +66,7 @@ class BiSqlExcelReport(models.Model):
     query = fields.Many2one(
         comodel_name='bi.sql.view',
         string='SQL View',
-        help="SQL View which is the data source for the Excel report")
+        help="SQL View which is the data source for the Excel report"
 
     query_name = fields.Char(
         related='query.technical_name',

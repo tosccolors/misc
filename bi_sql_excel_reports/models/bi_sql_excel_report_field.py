@@ -33,16 +33,6 @@ class BiSqlExcelReportField(models.Model):
             report_query_id = self.env.context.get('parent_report_query_id', False)
         return report_query_id
 
-    @api.model
-    def _get_field_names(self):
-        field_names = [('n/a', 'n/a')]
-        report_query_name = self.env.context.get('parent_report_query_name', False)
-        if report_query_name:
-            sql_views = self.env['bi.sql.view'].sudo().search([('technical_name', '=', report_query_name)])
-            field_id_list = sql_views[0].bi_sql_view_field_ids
-            field_names.extend([(fld.name, fld.name) for fld in field_id_list])
-        return field_names
-
     report_id = fields.Many2one(
         comodel_name='bi.sql.excel.report',
         string='Report',
