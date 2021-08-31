@@ -66,7 +66,14 @@ class BiSqlExcelReport(models.Model):
     query = fields.Many2one(
         comodel_name='bi.sql.view',
         string='SQL View',
-        help="SQL View which is the data source for the Excel report")
+        help="SQL View which is the data source for the Excel report"
+
+    query_name = fields.Char(
+        related='query.technical_name',
+        string='SQL View tech name',
+        readonly=True,
+        store=True,
+        help="SQL View technical name: the suffix following after 'x_bi_sql_view_'")
 
     filter_on_user = fields.Boolean(
         string='Filter on current user',
@@ -314,8 +321,9 @@ class BiSqlExcelReport(models.Model):
             return layouts
         if not as_a_dict:
             if layouts:
+                report_ids = [rpt['id'] for rpt in reports]
                 header = [fld_name for fld_name in layouts[0].keys()]
-                data = [[fld_val for fld_val in row.values()] for row in layouts]
+                data = [[fld_val for fld_val in row.values()] for row in layouts if row['report_id'] in report_ids]
                 data = self._shorten_dates(header, data)
                 rows = [header]
                 rows.extend(data)

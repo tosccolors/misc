@@ -4,7 +4,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from odoo import api, fields, models, tools
+from odoo import api, fields, models
 
 
 class BiSqlExcelReportField(models.Model):
@@ -27,10 +27,9 @@ class BiSqlExcelReportField(models.Model):
 
     @api.model
     def _get_query_id(self):
-        report_query_id = None
         if self.report_id:
             report_query_id = self.report_id.query
-        if not report_query_id:
+        else:
             report_query_id = self.env.context.get('parent_report_query_id', False)
         return report_query_id
 
