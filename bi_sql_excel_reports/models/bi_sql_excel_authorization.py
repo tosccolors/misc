@@ -105,14 +105,14 @@ def _valid_domain_fields(column_names, domain, model_name):
     return True
 
 
-def _query_techical_name_only(model_name):
-    """ Remove 'x_bi_sql_view.' from the query model name """
+def _query_techical_name_suffix(model_name):
+    """ Remove 'x_bi_sql_view.' from the query model name to obtain the suffix """
     return model_name[14:] if model_name[:13] == 'x_bi_sql_view' else model_name
 
 
 def _get_authorization_domain(model_name):
     """ Get the domain string as defined for 'Rule Definition' on the security tab of BI SQL Views """
-    technical_name = _query_techical_name_only(model_name)
+    technical_name = _query_techical_name_suffix(model_name)
     bi_sql_view_model = MDL.env['bi.sql.view']
     sql_views = bi_sql_view_model.sudo().search([('technical_name', '=', technical_name)])
     model_domain = []
@@ -175,7 +175,7 @@ def get_authorized_queries(caller_object, query_name_wildcard=''):
                 query_authorized = True
                 break
         if query_authorized:
-            allowed_queries.append(_query_techical_name_only(sql_view.model_name))
+            allowed_queries.append(_query_techical_name_suffix(sql_view.model_name))
     return allowed_queries
 
 
