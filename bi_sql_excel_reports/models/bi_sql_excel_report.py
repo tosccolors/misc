@@ -357,6 +357,10 @@ class BiSqlExcelReport(models.Model):
         data.extend(self.env.cr.fetchall())
         if del_first_columns:
             data = [row[5:] for row in data]
+        # must reduce the number of decimals for proper processing in Excel
+        dpo = self.env['decimal.precision']
+        qty_precision = dpo.precision_get('Product Unit of Measure')
+        data = [[round(fld, qty_precision) if fld and type(fld) == float else fld for fld in row] for row in data]
         # cannot have plain brackets [] or curly brackets {} in a string as these are interpreted
         # in the Excel add-in logic as list and dict delimiters within the json message
         data = [[fld.replace(u'[', u"'['").replace(u']', u"']'").replace(u'{', u"'{'").replace(u'}', u"'}'")
