@@ -5,9 +5,8 @@
 
 # from datetime import datetime
 import logging
-import bi_sql_excel_authorization as auth
 from odoo import fields, models, api
-
+from bi_sql_excel_authorization import ReportAuthorization
 # from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -16,6 +15,7 @@ _logger = logging.getLogger(__name__)
 class BiSqlExcelReport(models.Model):
     _name = 'bi.sql.excel.report'
     _order = 'sequence, id'
+    auth = None
 
     @api.model
     def _get_default_sequence(self):
@@ -78,7 +78,7 @@ class BiSqlExcelReport(models.Model):
     filter_on_user = fields.Boolean(
         string='Filter on current user',
         default=False,
-        help="Add a filter on records that contain the current user")
+        help="Add a filter on query field x_user_id to equal to the current user_id")
 
     table_row = fields.Integer(
         string='Table top-left row',
@@ -95,6 +95,11 @@ class BiSqlExcelReport(models.Model):
     table_col_tot = fields.Boolean(
         string='Table grand tot cols',
         default=True)
+
+    classic_pivot_table = fields.Boolean(
+        string='Classic layout',
+        default=False,
+        help="Use the classic pivot table layout")
 
     chart_type = fields.Selection(
         # Values for Microsoft Excel Chart Type (XlChartType)
@@ -167,13 +172,19 @@ class BiSqlExcelReport(models.Model):
         help='Chart y-scale max value (1 = 100%), not applicable when zero',
         default=0.0)
 
+    def _init_auth(self):
+        """ Initialize the authorization object if not already done so """
+        if not self.auth:
+            self.auth = ReportAuthorization(self)
+
     def _exec_query(self, table_or_view, column_names=None, where_clause='', order_by_clause='', is_meta_data=False):
         """ Execute SQL query, selecting all columns and records matching the where clause (optional) """
+        self._init_auth()
         auth_filter = ''
         if not is_meta_data:
             model_name = '.'.join(('x_bi_sql_view', table_or_view[14:])) if table_or_view[:13] == 'x_bi_sql_view'\
                 else table_or_view
-            auth_filter = auth.get_authorization_filter(self, model_name, column_names)
+            auth_filter = self.auth.get_authorization_filter(model_name, column_names)
         if auth_filter and where_clause:
             where_clause = '(' + where_clause + ') AND ' + auth_filter
         elif not where_clause:
@@ -291,16 +302,18 @@ class BiSqlExcelReport(models.Model):
     def get_report_definitions(self, as_a_dict=True):
         """ Get all active Excel report definitions as a list of dicts or
             as a list of lists (table) with the first row having the field names.
-            The list is filtered on only those queries that the user is authorized for. """
+            The list is filtered on only those queries that the user is authorized for.
+            :rtype list[dict] """
         ddata = self._get_meta_data(table_name='bi_sql_excel_report', where_clause='active=True',
                                     order_by_clause='sequence', as_a_dict=True)
-        if not auth.is_super_user(self):
-            auth_queries = auth.get_authorized_queries(self)
+        self._init_auth()
+        if not self.auth.is_super_user():
+            auth_queries = self.auth.get_authorized_queries()
             auth_queries.append('')
             for line in ddata:
                 if not line['is_group'] and line['query_name'] not in auth_queries:
                     line['active'] = False
-            ddata = auth.hierarchy_filter_node_auth(self, ddata)
+            ddata = self.auth.hierarchy_filter_node_auth(ddata)
         if ddata and not as_a_dict:
             data = [[col_name for col_name in ddata[0]]]
             data.extend([[fld for fld in rec.values()] for rec in ddata])
@@ -332,28 +345,49 @@ class BiSqlExcelReport(models.Model):
                 layouts = []
         return layouts
 
+    def _get_report_and_query(self, report_id):
+        """ Get Excel report format definition based on report_id and validate authorization on related query """
+        report = self.sudo().search([('id', '=', report_id)])
+        if not report:
+            return 'Error: No report found for report ID {}'.format(report_id), None
+        query_name = report.query.technical_name
+        self._init_auth()
+        if not self.auth.is_super_user():
+            if not self.auth.get_authorized_queries(query_name):
+                return 'Error: You are not authorized to run query {}'.format(query_name), None
+        query_name = 'x_bi_sql_view_' + query_name
+        return report, query_name
+
     @api.model
     def get_report_data(self, report_id, where_clause=''):
         """ Get the contents of the query associated with report_seq and return as
             a list of lists (table) with the first row having the field names """
-        report = self.sudo().search([('id', '=', report_id)])
-        if not report:
-            return 'Error: No report found for report ID {}'.format(report_id)
-        query_name = report.query.technical_name
-        if not auth.is_super_user(self):
-            if not auth.get_authorized_queries(self, query_name):
-                return 'Error: You are not authorized to run query {}'.format(query_name)
+        report, query_name = self._get_report_and_query(report_id)
+        if type(report) == str:
+            return report
         qry_not_found_msg = 'Error: No SQL View found for report {}'.format(report.name)
         if not query_name:
             return qry_not_found_msg
-        query_name = 'x_bi_sql_view_' + query_name
-        data = [self._get_query_column_names(query_name)]
-        if not data or data == [[]]:
+        header = self._get_query_column_names(query_name)
+        if not header:
             return qry_not_found_msg
-        del_first_columns = data[0][:5] == ['id', 'create_date', 'create_uid', 'write_date', 'write_uid']
-        err_msg = self._exec_query(query_name, column_names=data[0], where_clause=where_clause)
+        del_first_columns = header[:5] == ['id', 'create_date', 'create_uid', 'write_date', 'write_uid']
+
+        if report.filter_on_user:
+            if 'x_user_id' in header:
+                user_filter = 'x_user_id = {}'.format(str(self.env.user.id))
+                where_clause += '({}) AND {}'.format(where_clause, user_filter) if where_clause else user_filter
+            else:
+                err_msg = 'Error: Column x_user_id does not exist but is required for report {} '.format(report.name)
+                err_msg += '(query {})'.format(query_name)
+                logging.error(err_msg)
+                return err_msg
+
+        err_msg = self._exec_query(query_name, column_names=header, where_clause=where_clause)
         if err_msg:
             return err_msg
+        data = list()
+        data.extend([header])
         data.extend(self.env.cr.fetchall())
         if del_first_columns:
             data = [row[5:] for row in data]

@@ -59,6 +59,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                                     <field name="table_col"/>
                                     <field name="table_row_tot"/>
                                     <field name="table_col_tot"/>
+                                    <field name="classic_pivot_table"/>
                                 </group>
                                 <group>
                                     <separator string="Pivot Chart" colspan="2"/>
@@ -140,7 +141,6 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                     <field name="global_filter" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
                     <field name="subtotal" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
                     <field name="show_details" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
-    <!--            <field name="is_user" attrs="{'invisible':[('report_is_index', '=', True)]}"/>         -->
                     <field name="index_info" attrs="{'invisible':[('report_is_index', '=', False)]}"/>
                 </tree>
             </field>
@@ -152,7 +152,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
             <field name="arch" type="xml">
                 <form>
                     <field name="report_is_index" invisible="1"/>
-                    <field name="report_query_id" invisible="0"/>
+                    <field name="report_query_id" invisible="1"/>
                     <group>
                         <group>
                             <separator string="Field" colspan="2"/>
@@ -167,19 +167,19 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                             <separator string="Field flags" colspan="2"/>
                             <field name="show_details"/>
                             <field name="subtotal"/>
-                            <field name="is_user"/>
                         </group>
                     </group>
                     <group>
-                        <group  attrs="{'invisible':[('report_is_index', '=', True)]}">
+                        <group attrs="{'invisible':[('report_is_index', '=', True)]}">
                             <separator string="Slicer" colspan="2"/>
                             <field name="slicer_top"/>
                             <field name="slicer_height"/>
                         </group>
-                        <group  attrs="{'invisible':[('report_is_index', '=', False)]}">
+                        <group attrs="{'invisible':[('report_is_index', '=', False)]}">
                             <separator string="Index" colspan="2"/>
-                            <field name="index_info"/>
                             <field name="index_field_width"/>
+                            <field name="index_info"/>
+                            <field name="index_info_no_group"/>
                         </group>
                         <group attrs="{'invisible':[('report_is_index', '=', True)]}">
                             <separator string="Filter" colspan="2"/>
