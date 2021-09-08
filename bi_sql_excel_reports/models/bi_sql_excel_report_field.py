@@ -65,7 +65,6 @@ class BiSqlExcelReportField(models.Model):
     name_id = fields.Many2one(
         comodel_name='bi.sql.view.field',
         string='Field name',
-        required=True,
         help="Field (technical) name (id) of the underlying query / view")
 
     name = fields.Char(
@@ -121,11 +120,6 @@ class BiSqlExcelReportField(models.Model):
         default=True,
         help="Show details on the next hierarchy level in a pivot table")
 
-    is_user = fields.Boolean(
-        string='Is user field',
-        default=False,
-        help="This field holds the username: used to filter on only user's records")
-
     filter_value = fields.Char(
         string='Filter value',
         help="Set this value to be the (initial) filter in Excel")
@@ -146,6 +140,11 @@ class BiSqlExcelReportField(models.Model):
         string='Index Info',
         default=False,
         help="The field is displayed as an information field on an index page")
+
+    index_info_no_group = fields.Boolean(
+        string='Index Info No Group',
+        default=False,
+        help="The information field is outside the group")
 
     index_field_width = fields.Integer(
         string='Index Width',
