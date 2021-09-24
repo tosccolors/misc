@@ -15,7 +15,9 @@ _logger = logging.getLogger(__name__)
 class BiSqlExcelReport(models.Model):
     _name = 'bi.sql.excel.report'
     _order = 'sequence, id'
-    auth = None
+    auth = None                              # reference to authorization object
+    add_in_latest_ver = 0.68                 # the latest Excel Add-in version
+    add_in_incompatible_ver = 0.65           # Add-in version (or older) incompatible with Odoo module
 
     @api.model
     def _get_default_sequence(self):
@@ -253,7 +255,7 @@ class BiSqlExcelReport(models.Model):
 
     @api.model
     def get_module_version(self):
-        """ Get the module version from the manifest """
+        """ Get the module version from the manifest :rtype string """
         delim = '/' if '/' in __file__ else '\\'
         file_parts = __file__.split(delim)[:-2]
         file_parts.append('__manifest__.py')
@@ -273,9 +275,17 @@ class BiSqlExcelReport(models.Model):
 
     @api.model
     def excel_add_in_compatible(self, user_machine_info):
-        """ Called from the Excel add-in to check if its version is compatible with this Odoo module """
+        """ Called from the Excel add-in to check if its version is compatible with this Odoo module
+            :rtype dict """
+        result = {'upgrade_available': False, 'upgrade_required': False, 'message': ''}
+        upd_msg_a = 'Please update your Odoo-Reports Excel Add-in.'
+        upd_msg_b = 'A new version of the Odoo-Reports Excel Add-in is available.'
+        upd_msg_c = 'Log in to Odoo, goto Dashboards and choose SQL Excel Reports Add-in.'
         if type(user_machine_info) != dict:
-            return False
+            result['upgrade_available'] = True
+            result['upgrade_required'] = True
+            result['message'] = ' '.join((upd_msg_a, upd_msg_c))
+            return result
         expected_keys = ['os_version', 'excel_version', 'addin_version']
         info = {key: val for key, val in user_machine_info.items() if key in expected_keys}
         add_in_ver = info.get('addin_version')
@@ -283,13 +293,18 @@ class BiSqlExcelReport(models.Model):
             add_in_ver = float(add_in_ver)
         if add_in_ver is None:
             add_in_ver = 0.0
-        if add_in_ver < 0.3:
-            return False
-        return True
+        if add_in_ver < self.add_in_latest_ver:
+            result['upgrade_available'] = True
+            result['message'] = ' '.join((upd_msg_b, upd_msg_c))
+        if add_in_ver < self.add_in_incompatible_ver:
+            result['upgrade_required'] = True
+            result['message'] = ' '.join((upd_msg_a, upd_msg_c))
+        return result
 
     @api.model
     def get_report_def_timestamp(self):
-        """ Get the oldest update timestamp (write_date) of the active Excel report definitions """
+        """ Get the oldest update timestamp (write_date) of the active Excel report definitions
+            (limited to authorized reports) :rtype string """
         data = self.get_report_definitions(as_a_dict=True)
         default = '2000-01-01 00:00:00'
         timestamp = default
@@ -303,7 +318,7 @@ class BiSqlExcelReport(models.Model):
         """ Get all active Excel report definitions as a list of dicts or
             as a list of lists (table) with the first row having the field names.
             The list is filtered on only those queries that the user is authorized for.
-            :rtype list[dict] """
+            :rtype list[dict] or list[list] """
         ddata = self._get_meta_data(table_name='bi_sql_excel_report', where_clause='active=True',
                                     order_by_clause='sequence', as_a_dict=True)
         self._init_auth()
@@ -324,7 +339,8 @@ class BiSqlExcelReport(models.Model):
     @api.model
     def get_report_layout_definitions(self, as_a_dict=True):
         """ Get all Excel report field definitions (for all reports) as a list of dicts or
-            as a list of lists (table) with the first row having the field names """
+            as a list of lists (table) with the first row having the field names
+            :rtype list[dict] or list[list] """
         reports = self.get_report_definitions(as_a_dict=True)
         if not reports:
             return []
@@ -334,7 +350,7 @@ class BiSqlExcelReport(models.Model):
             return layouts
         if not as_a_dict:
             if layouts:
-                report_ids = [rpt['id'] for rpt in reports]
+                report_ids = [rpt.get('id') for rpt in reports]
                 header = [fld_name for fld_name in layouts[0].keys()]
                 data = [[fld_val for fld_val in row.values()] for row in layouts if row['report_id'] in report_ids]
                 data = self._shorten_dates(header, data)
@@ -360,8 +376,8 @@ class BiSqlExcelReport(models.Model):
 
     @api.model
     def get_report_data(self, report_id, where_clause=''):
-        """ Get the contents of the query associated with report_seq and return as
-            a list of lists (table) with the first row having the field names """
+        """ Get the contents of the query for report_id and return as a list
+            of lists (table) with the first row having the field names :rtype list[list] """
         report, query_name = self._get_report_and_query(report_id)
         if type(report) == str:
             return report
