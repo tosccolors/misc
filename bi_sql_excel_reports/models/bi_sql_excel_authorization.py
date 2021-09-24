@@ -18,7 +18,6 @@ class ReportAuthorization:
         """ :param caller_object is a reference to the bi_sql_excel_report object (to use its .env property)
             nodes is a dictionary with the report tree hierarchy nodes, excluding the reports which are the 'leaves' """
         self.parent_object = caller_object
-        self.nodes = OrderedDict()
         self.sql_view_prefix = 'x_bi_sql_view'
 
     def __repr__(self):
@@ -170,27 +169,28 @@ class ReportAuthorization:
                 allowed_queries.append(self._query_techical_name_suffix(sql_view.model_name))
         return allowed_queries
 
-    def _hierarchy_node_rpt_count(self, data, seq):
-        """ Count the number of authorized reports per hierarchy level """
+    def _hierarchy_node_rpt_count(self, data, nodes, seq):
+        """ Count the number of authorized reports per hierarchy level: updates nodes """
         for line in data:
             if line['sequence'] <= seq or line['is_select_index']:
                 continue
             if line['is_group']:
                 grp_seq = line['sequence']
-                self._hierarchy_node_rpt_count(data, grp_seq)
-                if self.nodes[grp_seq]['parent'] > 0:
-                    self.nodes[self.nodes[grp_seq]['parent']]['rpt_cnt'] += self.nodes[grp_seq]['rpt_cnt']
+                self._hierarchy_node_rpt_count(data, nodes, grp_seq)
+                if nodes[grp_seq]['parent'] > 0:
+                    nodes[nodes[grp_seq]['parent']]['rpt_cnt'] += nodes[grp_seq]['rpt_cnt']
                 break
             else:
                 if seq > 0 and line['active']:
-                    self.nodes[seq]['rpt_cnt'] += 1
+                    nodes[seq]['rpt_cnt'] += 1
 
-    def _hierarchy_set_parents(self):
+    @staticmethod
+    def _hierarchy_set_parents(nodes):
         """ Set a reference to the parent node within the report hierarchy for lower level hierarchy levels """
-        maxlevel = max(node['group_level'] for node in self.nodes.values())
+        maxlevel = max(node['group_level'] for node in nodes.values())
         curr_hierarchy = [0 for _ in range(-1, maxlevel)]
         prevlevel = -1
-        for seq, node in self.nodes.items():
+        for seq, node in nodes.items():
             node['parent'] = curr_hierarchy[node['group_level'] - 1] if node['group_level'] >= prevlevel else 0
             if node['group_level'] != prevlevel:
                 curr_hierarchy[node['group_level']] = seq
@@ -200,15 +200,15 @@ class ReportAuthorization:
         """ Hierarchy nodes within the report hierarchy are (potentially) filtered-out based on
             (un)authorised reports on the 'leaves' of the tree.
             :param report_def is the contents of report definitions (list of dicts) """
-        self.nodes = OrderedDict()
+        nodes = OrderedDict()
         for idx, line in enumerate(report_def):
             if line['is_group'] and not line['is_select_index']:
-                self.nodes[line['sequence']] = {'data_index': idx, 'group_level': line['group_level'],
-                                                'name': line['name'], 'parent': 0, 'rpt_cnt': 0}
-        if self.nodes:
-            self._hierarchy_set_parents()
-            self._hierarchy_node_rpt_count(report_def, 0)
-            for node in self.nodes.values():
+                nodes[line['sequence']] = {'data_index': idx, 'group_level': line['group_level'],
+                                           'name': line['name'], 'parent': 0, 'rpt_cnt': 0}
+        if nodes:
+            self._hierarchy_set_parents(nodes)
+            self._hierarchy_node_rpt_count(report_def, nodes, 0)
+            for node in nodes.values():
                 if node['rpt_cnt'] == 0:
                     report_def[node['data_index']]['active'] = False
             report_def = [line for line in report_def if line['active']]

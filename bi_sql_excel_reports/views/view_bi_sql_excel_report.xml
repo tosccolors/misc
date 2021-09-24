@@ -16,7 +16,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         <!-- Module main menu entry -->
         <menuitem id="menu_bi_sql_excel_reports_main"
             name="SQL Excel Reports"
-            parent = "base.next_id_9"
+            parent="base.next_id_9"
             action="open_bi_sql_excel_reports"
             sequence="150"/>
 
@@ -139,8 +139,10 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                     <field name="pivot_area" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
     <!--            <field name="filter_value" attrs="{'invisible':[('report_is_index', '=', True)]}"/>    -->
                     <field name="global_filter" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
-                    <field name="subtotal" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
-                    <field name="show_details" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
+                    <field name="subtotal" attrs="{'invisible':['|', '|', '|', ('report_is_index', '=', True),
+                        ('pivot_area', '=', 'slicer'), ('pivot_area', '=', 'filter'), ('pivot_area', '=', 'n/a')]}"/>
+                    <field name="show_details" attrs="{'invisible':['|', '|', '|', ('report_is_index', '=', True),
+                        ('pivot_area', '=', 'slicer'), ('pivot_area', '=', 'filter'), ('pivot_area', '=', 'n/a')]}"/>
                     <field name="index_info" attrs="{'invisible':[('report_is_index', '=', False)]}"/>
                 </tree>
             </field>
@@ -163,14 +165,16 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                             <field name="formula" attrs="{'invisible':[('report_is_index', '=', True)]}"/>
                             <field name="format"/>
                         </group>
-                        <group attrs="{'invisible':[('report_is_index', '=', True)]}">
+                        <group attrs="{'invisible':['|', '|', '|', ('report_is_index', '=', True),
+                            ('pivot_area', '=', 'slicer'), ('pivot_area', '=', 'filter'), ('pivot_area', '=', 'n/a')]}">
                             <separator string="Field flags" colspan="2"/>
                             <field name="show_details"/>
                             <field name="subtotal"/>
                         </group>
                     </group>
                     <group>
-                        <group attrs="{'invisible':[('report_is_index', '=', True)]}">
+                        <group attrs="{'invisible':['|', ('report_is_index', '=', True),
+                            ('pivot_area', '!=', 'slicer')]}">
                             <separator string="Slicer" colspan="2"/>
                             <field name="slicer_top"/>
                             <field name="slicer_height"/>
