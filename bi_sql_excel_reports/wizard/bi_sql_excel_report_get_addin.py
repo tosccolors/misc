@@ -35,6 +35,18 @@ class GetAddInFile(models.TransientModel):
             addin_data = f.read()
         return addin_data
 
+    def _add_log_entry(self, message, line=0):
+        """ Add to the log table (ir.logging) which user interface is in Settings - Database Structure - Logging """
+        level = 'info'
+        func = 'Download ' + self.excel_add_in_name + ' by ' + self.env.user.name
+        path = 'action'
+        record_type = 'server'
+        with self.pool.cursor() as cr:
+            cr.execute("""
+                INSERT INTO ir_logging(create_date, create_uid, type, dbname, name, level, message, path, line, func)
+                VALUES (NOW() at time zone 'UTC', %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (self.env.uid, record_type, self._cr.dbname, __name__, level, message, path, line, func))
+
     @api.multi
     def prepare_addin_file(self):
         """ Prepare the Excel Add-in for download and (re-) open the form with data loaded """
@@ -44,6 +56,7 @@ class GetAddInFile(models.TransientModel):
             'file_name': self.excel_add_in_name,
             'has_data': True
         })
+        self._add_log_entry('Excel Add-in download prepared ({} bytes)'.format(len(addin_data)))
         return {
             'name': 'Download Excel Add-in',
             'view_type': 'form',

@@ -28,12 +28,12 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                     <separator string="Installing the Add-in" colspan="2"/>
                     <strong>Windows</strong>
                     <p colspan="2">
-                        Save the Excel Add-in file to your Downloads folder. Close Excel if it is opened.
+                        Save the Excel Add-in file to your Downloads folder. Open the Properties of the
+                        file and uncheck the <i>Blocked</i> indicator when it is set. Close Excel if it is opened.
                         Now move the file to a folder of choice or the official folder for Add-ins
                         C:\Users\&lt;username&gt;\AppData\Roaming\Microsoft\AddIns.
                         The AppData folder is a hidden folder. To make it visible in the File Explorer,
-                        select View in the menu and enable the Hidden Items option. When you are updating
-                        a previous version, you need to close Excel first.
+                        select View in the menu and enable the Hidden Items option.
                     </p>
                     <p colspan="2">
                         Start Excel when the Add-in file is in the designated folder.
@@ -44,7 +44,8 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                     </p>
                     <strong>Mac</strong>
                     <p colspan="2">
-                        Save the Excel Add-in file to your Downloads folder. Then <strong>quit</strong> Excel.
+                        Save the Excel Add-in file to your Downloads folder. Get the file info and uncheck the
+                        <i>Locked</i> indicator when it is set. Then <strong>quit</strong> Excel.
                         Now move the file to a folder of choice or the official folder for Add-ins
                         /Users/&lt;username&gt;/Library/Group Containers/UBF8T346G9.Office/User Content/Add-ins.
                         Note that 'Library' and 'User Content' is language dependent. The Library folder (under Users)
@@ -63,7 +64,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                         In Excel, from the Odoo menu click <strong>Settings</strong>.
                         Check the settings and enter your password. Click Test to validate and click OK to save.
                         Now click <strong>Get Index</strong> to get an overview of available reports. Select reports
-                        by marking them in column B with a character (x for example). You may need to select the csope
+                        by marking them in column B with a character (x for example). You may need to select the scope
                         for some reports, for example select the relevant projects when the report is about projects.
                         Then click <strong>Get Reports</strong> to get the reports which will appear on
                         separate worsksheets.
