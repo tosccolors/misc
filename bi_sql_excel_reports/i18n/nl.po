@@ -128,7 +128,7 @@ msgstr "Add a filter on query field x_user_id to equal to the current user_id"
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
 msgid "Add-in file ready for download"
-msgstr "Add-in file ready for download"
+msgstr "Add-in bestand gereed om te downloaden"
 
 #. module: bi_sql_excel_reports
 #: selection:bi.sql.excel.report,chart_type:0
@@ -448,13 +448,13 @@ msgid "In Excel, from the Odoo menu click <strong>Settings</strong>.\n"
 "                        for some reports, for example select the relevant projects when the report is about projects.\n"
 "                        Then click <strong>Get Reports</strong> to get the reports which will appear on\n"
 "                        separate worsksheets."
-msgstr "In Excel, from the Odoo menu click <strong>Settings</strong>.\n"
-"                        Check the settings and enter your password. Click Test to validate and click OK to save.\n"
-"                        Now click <strong>Get Index</strong> to get an overview of available reports. Select reports\n"
-"                        by marking them in column B with a character (x for example). You may need to select the scope\n"
-"                        for some reports, for example select the relevant projects when the report is about projects.\n"
-"                        Then click <strong>Get Reports</strong> to get the reports which will appear on\n"
-"                        separate worsksheets."
+msgstr "In Excel, vanuit het Odoo menu kies <strong>Settings</strong>.\n"
+"                        Controleer de instellingen en geef het wachtwoord in. Klik op Test om te controleren en klik OK om te bewaren.\n"
+"                        Kies vervolgens <strong>Get Index</strong> om een overzicht van beschikbare rapporten op te halen. Kies rapporten\n"
+"                        door deze in kolom B te markeren met een karakter (bijvoorbeeld een x). Voor bepaalde rapporten is het nodig om eerst\n"
+"                        een selectie te maken, wanneer een rapport over projecten gaat bijvoorbeeld.\n"
+"                        Kies daarna <strong>Get Reports</strong> om de rapporten op te halen. Deze verschijnen op\n"
+"                        afzondelijke tabbladen."
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_field_view_form
@@ -728,21 +728,21 @@ msgstr "Bewaar de Excel Add-in in de Downloads map. Ga naar de bestandsinformati
 "                        Verplaats nu de Add-in file naar een map naar eigen keuze of naar de officiële map voor Add-ins\n"
 "                        /Users/&lt;username&gt;/Library/Group Containers/UBF8T346G9.Office/User Content/Add-ins.\n"
 "                        Let op: 'Library' en 'User Content' is taal afhankelijk. De Library map (onder Users)\n"
-"                        is een onzichtbare map. Om deze zichtbaar te maken in de Finder, type Shift + Command + dot.\n"
+"                        is een onzichtbare map. Om deze zichtbaar te maken in de Finder, type Shift + Command + punt.\n"
 "                        Gebruik de 'Go' menu optie en kies Computer, dan Macintosh HD. Nu moet de Users map te zien zijn.\n"
 "                        Volg dan het pad zoals hiervoor beschreven."
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "Bewaar de Excel Add-in in de Downloads map. Open de Properties (Eigenschappen) van het\n"
-"                        bestand en schakel de <i>Blocked</i> indicator uit wanneer die aan staat.\n"
-"                        Dan Excel afsluiten wanneer die is geopend.\n"
+msgid "Save the Excel Add-in file to your Downloads folder. Open the Properties of the\n"
+"                        file and uncheck the <i>Blocked</i> indicator when it is set. Close Excel if it is opened.\n"
 "                        Now move the file to a folder of choice or the official folder for Add-ins\n"
 "                        C:\\Users\\&lt;username&gt;\\AppData\\Roaming\\Microsoft\\AddIns.\n"
 "                        The AppData folder is a hidden folder. To make it visible in the File Explorer,\n"
 "                        select View in the menu and enable the Hidden Items option."
-msgstr "Save the Excel Add-in file to your Downloads folder. Open the Properties of the\n"
-"                        file and uncheck the <i>Blocked</i> indicator when it is set. Close Excel if it is opened.\n"
+msgstr "Bewaar de Excel Add-in in de Downloads map. Open de Properties (Eigenschappen) van het\n"
+"                        bestand en schakel de <i>Blocked</i> indicator uit wanneer die aan staat.\n"
+"                        Dan Excel afsluiten wanneer die is geopend.\n"
 "                        Verplaats nu de Add-in file naar een map naar eigen keuze of naar de officiële map voor Add-ins\n"
 "                        C:\\Users\\&lt;username&gt;\\AppData\\Roaming\\Microsoft\\AddIns.\n"
 "                        De AppData map is een onzichtbare map. Om deze zichtbaar te maken in de File Explorer,\n"
