@@ -1,3 +1,6 @@
+.. image:: https://img.shields.io/badge/maturity-Beta-yellow.png
+    :target: https://odoo-community.org/page/development-status
+    :alt: Beta
 .. image:: https://img.shields.io/badge/licence-LGPL--3-blue.svg
    :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
    :alt: License: LGPL-3
@@ -18,7 +21,7 @@ Installation
 * Install this module ``BI SQL Excel Reports`` in Odoo
 * The module ``BI SQL Editor`` (menu item "SQL Views" under "Settings", "Database Stucture") will also be installed when not already present
 * The menu item for this module "SQL Excel Reports" will appear below the BI SQL Editor module
-* Install the Excel add-in on the user's Windows or Apple computer
+* Install the Excel add-in on the user's Windows or Apple computer: see the Download Add-in section.
 
 The user configures the connection to Odoo via the ``Settings`` option,
 from the Excel add-in Odoo menu on the Home tab of the ribbon.
@@ -30,6 +33,20 @@ Configuration
 * Create a report entry for an Excel report with module ``BI SQL Excel Reports`` and refer to the database view
 * Define the pivot table parameters: which fields are rows, columns, values and filters
 * Define the pivot chart type, for example ``Clusterd Column``
+
+Modifies
+========
+
+A boolean variable ``On Dashboard`` is added to the ``BI SQL Editor`` module. When True a menu entry
+for the query is added to the Dashboard under ``SQL Reports`` after you have create the UI.
+When False, the UI is created but no menu entry is added to the Dashboard.
+
+Download Add-in
+===============
+
+A menu item ``SQL Excel Reports Add-in`` is added to the Dashboards main menu. Instruct your users to
+go here to download the Excel Add-in. The Add-in is compatible with Windows and Apple Macintosh computers
+that have Microsoft Excel installed. Information on how to install the Add-in is provided to the user.
 
 
 Usage
@@ -43,20 +60,22 @@ After activating the Excel add-in, the users will see three additional buttons o
 
 The user must initially configure the connection to the Odoo server via
 ``Settings``. The ``Get Report Index`` option will fetch the list of available reports
-onto a worksheet. Then the user makes a selection of reports.
+onto a worksheet. The user makes a selection of reports.
 Next, the ``Get Reports`` option will get the report data and format the pivot tables.
 
 Technical info::
 
   The Excel add-in uses cURL (https://curl.se) to connect to Odoo. The Odoo jsonrpc request
   format is used. Received data is temporarily saved to disk before it is loaded into Excel.
-  Add-in directories used on a Windows and Apple machine are respectively:
+  Official Add-in directories used on a Windows and Apple Macintosh are respectively:
 
-  Windows Excel add-in directory
+  Windows Excel official add-in directory
   C:\Users\<username>\AppData\Roaming\Microsoft\AddIns
 
-  Apple Excel add-in directory
+  Apple Mac Excel official add-in directory
   /Users/<username>/Library/Group Containers/UBF8T346G9.Office/User Content/Add-ins
+
+  But the add-in file can be placed in any directory.
 
 Example::
 

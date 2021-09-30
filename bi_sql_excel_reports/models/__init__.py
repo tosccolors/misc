@@ -3,4 +3,6 @@
 
 from . import bi_sql_excel_report
 from . import bi_sql_excel_report_field
+from . import bi_sql_view
+
 

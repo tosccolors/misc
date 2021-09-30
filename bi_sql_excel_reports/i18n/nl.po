@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-07 05:03+0000\n"
-"PO-Revision-Date: 2021-08-07 05:03+0000\n"
+"POT-Creation-Date: 2021-09-27 11:15+0000\n"
+"PO-Revision-Date: 2021-09-27 11:15+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,482 +16,979 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_active
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "100% Stacked Area"
+msgstr "100% Stacked Area"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "100% Stacked Bar"
+msgstr "100% Stacked Bar"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "100% Stacked Column"
+msgstr "100% Stacked Column"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "100% Stacked Line"
+msgstr "100% Stacked Line"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "100% Stacked Line with Markers"
+msgstr "100% Stacked Line with Markers"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "3-D 100% Stacked Area"
+msgstr "3-D 100% Stacked Area"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "3-D 100% Stacked Bar"
+msgstr "3-D 100% Stacked Bar"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "3-D 100% Stacked Column"
+msgstr "3-D 100% Stacked Column"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "3-D Area"
+msgstr "3-D Area"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "3-D Clustered Bar"
+msgstr "3-D Clustered Bar"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "3-D Clustered Column"
+msgstr "3-D Clustered Column"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "3-D Column"
+msgstr "3-D Column"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "3-D Line"
+msgstr "3-D Line"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "3-D Pie"
+msgstr "3-D Pie"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "3-D Stacked Area"
+msgstr "3-D Stacked Area"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "3-D Stacked Bar"
+msgstr "3-D Stacked Bar"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "3-D Stacked Column"
+msgstr "3-D Stacked Column"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "3-D Surface"
+msgstr "3-D Surface"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "<strong>Mac</strong>"
+msgstr "<strong>Mac</strong>"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "<strong>Windows</strong>"
+msgstr "<strong>Windows</strong>"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_active
 msgid "Active"
-msgstr ""
+msgstr "Actief"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_filter_on_user
-msgid "Add a filter on records that contain the current user"
-msgstr ""
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_filter_on_user
+msgid "Add a filter on query field x_user_id to equal to the current user_id"
+msgstr "Add a filter on query field x_user_id to equal to the current user_id"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_subtotal
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "Add-in file ready for download"
+msgstr "Add-in bestand gereed om te downloaden"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Area"
+msgstr "Area"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Bar of Pie"
+msgstr "Bar of Pie"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_subtotal
 msgid "Calculate sub total for this field in the pivot table"
-msgstr ""
+msgstr "Calculate sub total for this field in the pivot table"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_caption
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "Cancel"
+msgstr "Annuleer"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_caption
 msgid "Caption"
 msgstr "Veldnaam in Excel"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_chart_height
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_chart_height
 msgid "Chart height"
 msgstr "Grafiek hoogte"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_chart_left
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_chart_left
 msgid "Chart left"
 msgstr "Grafiek links"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_chart_height
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_chart_height
 msgid "Chart position (points): height"
 msgstr "Grafiek hoogte"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_chart_left
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_chart_left
 msgid "Chart position (points): left"
-msgstr ""
+msgstr "Chart position (points): left"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_chart_top
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_chart_top
 msgid "Chart position (points): top"
-msgstr ""
+msgstr "Chart position (points): top"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_chart_width
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_chart_width
 msgid "Chart position (points): width"
-msgstr ""
+msgstr "Chart position (points): width"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_chart_top
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_chart_top
 msgid "Chart top"
 msgstr "Grafiek bovenkant"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_chart_width
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_chart_width
 msgid "Chart width"
 msgstr "Grafiek breedte"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_chart_scale
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_chart_scale
 msgid "Chart y-scale"
 msgstr "Grafiek y-schaal"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_chart_scale
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_chart_scale
 msgid "Chart y-scale max value (1 = 100%), not applicable when zero"
-msgstr ""
+msgstr "Chart y-scale max value (1 = 100%), not applicable when zero"
 
 #. module: bi_sql_excel_reports
-#: selection:bi.excel.report.field,pivot_area:0
-msgid "Columns / Legend / Series"
-msgstr "Kolommen"
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_classic_pivot_table
+msgid "Classic layout"
+msgstr "Classic layout"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_create_uid
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_create_uid
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "Click Prepare File first, then download the file to your computer"
+msgstr "Klik eerst op Download voorbereiden, download daarna het bestand"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "Click to download:"
+msgstr "Klik om te downloaden:"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Clusterd Column"
+msgstr "Clusterd Column"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Clustered Bar"
+msgstr "Clustered Bar"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Columns or Legend"
+msgstr "Kolommen of Legenda"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "Configure the Excel Add-in"
+msgstr "Configureer de Excel Add-in"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Contour"
+msgstr "Contour"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_create_uid
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_create_uid
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Aangemaakt door"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_create_date
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_create_date
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_create_date
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_create_date
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_create_date
 msgid "Created on"
-msgstr ""
+msgstr "Aangemaakt op"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_sequence
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_has_data
+msgid "Data loaded"
+msgstr "Data gela"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_sequence
 msgid "Determines the sequence of the fields"
-msgstr ""
+msgstr "Determines the sequence of the fields"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_sequence
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_sequence
 msgid "Determines the sequence of the reports"
-msgstr ""
+msgstr "Determines the sequence of the reports"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_display_name
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_display_name
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_display_name
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_display_name
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Weergave naam"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_global_filter
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Dougnut"
+msgstr "Dougnut"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_addin_data
+msgid "Download Excel Add-in for SQL Excel Reports"
+msgstr "Download Excel Add-in for SQL Excel Reports"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_global_filter
 msgid "Enter index (short name) from which a selection is required, for example: Projects"
-msgstr ""
+msgstr "Enter index (short name) from which a selection is required, for example: Projects"
 
 #. module: bi_sql_excel_reports
-#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_excel_report_view_form
-msgid "Excel Report"
-msgstr "Excel Rapport"
-
-#. module: bi_sql_excel_reports
-#: model:ir.model,name:bi_sql_excel_reports.model_bi_excel_report_field
-msgid "Excel Report (pivot) Field Definition"
-msgstr ""
-
-#. module: bi_sql_excel_reports
-#: model:ir.model,name:bi_sql_excel_reports.model_bi_excel_report
-msgid "Excel Report Definition"
-msgstr ""
-
-#. module: bi_sql_excel_reports
-#: model:ir.actions.act_window,name:bi_sql_excel_reports.open_bi_excel_reports
-msgid "Excel Reports definition"
-msgstr ""
-
-#. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_chart_type
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_chart_type
 msgid "Excel chart type"
 msgstr "Excel grafiek type"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_chart_type
-msgid "Excel chart type (in English) or leave blank when no chart required"
-msgstr ""
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_chart_type
+msgid "Excel chart type (in English) or leave blank (or N/A) when no chart required"
+msgstr "Excel grafiek type (in Engels) or laat leeg (of N/A) wanneer geen grafiek nodig"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_format
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_format
 msgid "Excel field format for numerical fields, for example  0  for no decimals"
-msgstr ""
+msgstr "Excel veld formaat voor velden met getallen, bijvoorbeeld  0  voor weergave zonder decimalen"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_formula
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_formula
 msgid "Excel pivot formula (instead of a selected field)"
-msgstr ""
+msgstr "Excel draaitabel formule (in plaats van een geselecteerd veld)"
 
 #. module: bi_sql_excel_reports
-#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_excel_report_field_view_tree
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_field_view_tree
 msgid "Excel report fields"
 msgstr "Excel rapport velden"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_description
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_description
 msgid "Excel report long description"
 msgstr "Excel rapport lange omschrijving"
 
 #. module: bi_sql_excel_reports
-#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_excel_report_view_tree
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_tree
 msgid "Excel reports"
 msgstr "Excel rapporten"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_name
-msgid "Field (technical) name of the underlying query / view"
-msgstr ""
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_field_view_form
+msgid "Field"
+msgstr "Veld"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_name
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_name
+msgid "Field (technical) name"
+msgstr "Field (technical) name"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_name_id
+msgid "Field (technical) name (id) of the underlying query / view"
+msgstr "Field (technical) name (id) of the underlying query / view"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_field_view_form
+msgid "Field flags"
+msgstr "Field flags"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_name_id
 msgid "Field name"
 msgstr "Veld naam"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_caption
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_caption
 msgid "Field name (caption) as shown in Excel, overrides the default (technical) field name"
-msgstr ""
+msgstr "Field name (caption) as shown in Excel, overrides the default (technical) field name"
 
 #. module: bi_sql_excel_reports
-#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_excel_report_view_form
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_name
+msgid "Field txt"
+msgstr "Field txt"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_form
 msgid "Fields"
 msgstr "Velden"
 
 #. module: bi_sql_excel_reports
-#: selection:bi.excel.report.field,pivot_area:0
-msgid "Filter"
-msgstr ""
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_addin_data
+msgid "File data"
+msgstr "File data"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_filter_on_user
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "File download"
+msgstr "Bestand download"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_file_name
+msgid "File name"
+msgstr "Bestandsnaam"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Filled Radar"
+msgstr "Filled Radar"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_field_view_form
+msgid "Filter"
+msgstr "Filter"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_filter_on_user
 msgid "Filter on current user"
 msgstr "Filter op gebruiker"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_filter_value
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_filter_value
 msgid "Filter value"
 msgstr "Filter waarde"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_global_filter
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_global_filter
 msgid "Global filter"
 msgstr "Globaal filter"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_name
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_group_level
+msgid "Group level"
+msgstr "Groep niveau"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_search
+msgid "Has only a pivot table"
+msgstr "Heeft alleen een draaitabel"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_search
+msgid "Having queries"
+msgstr "Heeft een querie"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_name
 msgid "Hierarchy (sub)group name or report name"
-msgstr ""
+msgstr "Hierarchie (sub)groep naam of rapport naam"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_id
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_id
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_id
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_id
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_index_info
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "In Excel, from the Odoo menu click <strong>Settings</strong>.\n"
+"                        Check the settings and enter your password. Click Test to validate and click OK to save.\n"
+"                        Now click <strong>Get Index</strong> to get an overview of available reports. Select reports\n"
+"                        by marking them in column B with a character (x for example). You may need to select the scope\n"
+"                        for some reports, for example select the relevant projects when the report is about projects.\n"
+"                        Then click <strong>Get Reports</strong> to get the reports which will appear on\n"
+"                        separate worsksheets."
+msgstr "In Excel, vanuit het Odoo menu kies <strong>Settings</strong>.\n"
+"                        Controleer de instellingen en geef het wachtwoord in. Klik op Test om te controleren en klik OK om te bewaren.\n"
+"                        Kies vervolgens <strong>Get Index</strong> om een overzicht van beschikbare rapporten op te halen. Kies rapporten\n"
+"                        door deze in kolom B te markeren met een karakter (bijvoorbeeld een x). Voor bepaalde rapporten is het nodig om eerst\n"
+"                        een selectie te maken, wanneer een rapport over projecten gaat bijvoorbeeld.\n"
+"                        Kies daarna <strong>Get Reports</strong> om de rapporten op te halen. Deze verschijnen op\n"
+"                        afzondelijke tabbladen."
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_field_view_form
+msgid "Index"
+msgstr "Index"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_index_info
 msgid "Index Info"
-msgstr ""
+msgstr "Index Info"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_index_field_width
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_index_info_no_group
+msgid "Index Info No Group"
+msgstr "Index Info No Group"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_index_field_width
 msgid "Index Width"
 msgstr "Index breedte"
 
 #. module: bi_sql_excel_reports
-#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_excel_report_view_search
-msgid "Indexes only"
-msgstr ""
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_is_group
+msgid "Indicate that this is a group, not a report"
+msgstr "Indicate that this is a group, not a report"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_is_group
-msgid "Is a group"
-msgstr ""
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_has_data
+msgid "Indicates that the Excel Add-in has been loaded"
+msgstr "Indicates that the Excel Add-in has been loaded"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_is_group
-msgid "Is a group or a report"
-msgstr ""
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "Installing the Add-in"
+msgstr "Add-in installeren"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_report_is_index
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_is_index
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_is_group
+msgid "Is Group"
+msgstr "Is Groep"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_is_select_index
+msgid "Is Select Index"
+msgstr "Is Selectie Index"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_is_select_index
 msgid "Is a selection index to use as global filter in reports"
-msgstr ""
+msgstr "Is a selection index to use as global filter in reports"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_report_is_index
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_is_index
-msgid "Is index"
-msgstr ""
-
-#. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_is_user
-msgid "Is user field"
-msgstr "Is veld met gebruikersnaam"
-
-#. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report___last_update
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field___last_update
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard___last_update
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report___last_update
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field___last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Laatst gewijzigd op"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_write_uid
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_write_uid
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_write_uid
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_write_uid
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Laatst bijgewerkt door"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_write_date
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_write_date
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_write_date
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_write_date
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Laatst bijgewerkt op"
 
 #. module: bi_sql_excel_reports
-#: selection:bi.excel.report.field,pivot_area:0
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Line"
+msgstr "Line"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Line with Markers"
+msgstr "Line with Markers"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+#: selection:bi.sql.excel.report.field,pivot_area:0
 msgid "N/A"
-msgstr ""
+msgstr "N/A"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_format
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_format
 msgid "Number format"
 msgstr "Getal formaat"
 
 #. module: bi_sql_excel_reports
-#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_excel_report_view_form
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "OK"
+msgstr "OK"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_view_show_on_dashboard
+msgid "On Dashboard"
+msgstr "Op Dashboard"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Pie"
+msgstr "Pie"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Pie of Pie"
+msgstr "Pie of Pie"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_form
 msgid "Pivot Chart"
 msgstr "Draaigrafiek"
 
 #. module: bi_sql_excel_reports
-#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_excel_report_view_form
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_form
 msgid "Pivot Table"
 msgstr "Draaitabel"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_pivot_area
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_pivot_area
 msgid "Pivot area"
 msgstr "Draaitabel gebied"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_pivot_area
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_pivot_area
 msgid "Pivot area for tables or charts"
-msgstr ""
+msgstr "Pivot area for tables or charts"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_formula
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_formula
 msgid "Pivot formula"
-msgstr Draaitabel formule"
+msgstr "Draaitabel formule"
 
 #. module: bi_sql_excel_reports
-#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_excel_report_view_form
-msgid "Pivot table"
-msgstr "Draaitabel"
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "Prepare File"
+msgstr "Download voorbereiden"
 
 #. module: bi_sql_excel_reports
-#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_excel_report_view_search
-msgid "Pivot tables only"
-msgstr "Alleen draaitabel"
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Radar"
+msgstr "Radar"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_report_id
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Radar with Markers"
+msgstr "Radar with Markers"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_report_query_id
+msgid "Reference to the report SQL View ID"
+msgstr "Reference to the report SQL View ID"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_report_is_index
+msgid "Reference to the report field is_select_index"
+msgstr "Reference to the report field is_select_index"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_report_id
+msgid "Reference to the report object"
+msgstr "Reference to the report object"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_report_id
 msgid "Report"
 msgstr "Rapport"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_description
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_description
 msgid "Report description"
 msgstr "Rapport omschrijving"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_ids
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_ids
 msgid "Report fields"
 msgstr "Rapport velden"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_name
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_name
 msgid "Report name"
 msgstr "Rapport naam"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_short_name
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_short_name
 msgid "Report short name"
 msgstr "Rapport korte naam"
 
 #. module: bi_sql_excel_reports
-#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_excel_report_view_search
-msgid "Reports only"
-msgstr "Alleen rapporten"
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_search
+msgid "Reports"
+msgstr "Rapporten"
 
 #. module: bi_sql_excel_reports
-#: selection:bi.excel.report.field,pivot_area:0
-msgid "Rows / Axis / Categories"
-msgstr "Rijen"
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Rows or Axis"
+msgstr "Rijen of X-as"
 
 #. module: bi_sql_excel_reports
-#: model:ir.ui.menu,name:bi_sql_excel_reports.menu_bi_excel_reports_main
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_report_query_id
+msgid "Rpt Query ID"
+msgstr "Rpt Query ID"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_report_is_index
+msgid "Rpt Select index"
+msgstr "Rpt Selectie index"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_form
+msgid "SQL Excel Report"
+msgstr "SQL Excel Report"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.menu,name:bi_sql_excel_reports.menu_bi_sql_excel_reports_main
 msgid "SQL Excel Reports"
-msgstr ""
+msgstr "SQL Excel Rapporten"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_query_name
-msgid "SQL View name"
-msgstr ""
+#: model:ir.ui.menu,name:bi_sql_excel_reports.menu_bi_sql_excel_reports_addin
+msgid "SQL Excel Reports Add-in"
+msgstr "SQL Excel Rapporten Add-in"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_query_name
-msgid "SQL View technical name which is the data source for the Excel report"
-msgstr ""
+#: model:ir.actions.act_window,name:bi_sql_excel_reports.open_bi_sql_excel_reports_addin_download
+msgid "SQL Excel Reports Add-in download"
+msgstr "SQL Excel Rapporten Add-in download"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_sequence
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_sequence
+#: model:ir.actions.act_window,name:bi_sql_excel_reports.open_bi_sql_excel_reports
+msgid "SQL Excel Reports definition"
+msgstr "SQL Excel Rapporten definitie"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_query
+msgid "SQL View"
+msgstr "SQL View"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_query_name
+msgid "SQL View tech name"
+msgstr "SQL View tech name"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_query_name
+msgid "SQL View technical name: the suffix following after 'x_bi_sql_view_'"
+msgstr "SQL View technical name: the suffix following after 'x_bi_sql_view_'"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_query
+msgid "SQL View which is the data source for the Excel report"
+msgstr "SQL View which is the data source for the Excel report"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "Save the Excel Add-in file to your Downloads folder. Get the file info and uncheck the\n"
+"                        <i>Locked</i> indicator when it is set. Then <strong>quit</strong> Excel.\n"
+"                        Now move the file to a folder of choice or the official folder for Add-ins\n"
+"                        /Users/&lt;username&gt;/Library/Group Containers/UBF8T346G9.Office/User Content/Add-ins.\n"
+"                        Note that 'Library' and 'User Content' is language dependent. The Library folder (under Users)\n"
+"                        is a hidden folder. To make it visible in the Finder, type Shift + Command + dot.\n"
+"                        Use the 'Go' menu option and choose Computer, then Macintosh HD. Now you should see the\n"
+"                        Users folder. Follow the path as descibed above."
+msgstr "Bewaar de Excel Add-in in de Downloads map. Ga naar de bestandsinformatie en schakel de\n"
+"                        <i>Locked</i> indicator uit wanneer die aan staat. Dan Excel <strong>quitten</strong>.\n"
+"                        Verplaats nu de Add-in file naar een map naar eigen keuze of naar de officiële map voor Add-ins\n"
+"                        /Users/&lt;username&gt;/Library/Group Containers/UBF8T346G9.Office/User Content/Add-ins.\n"
+"                        Let op: 'Library' en 'User Content' is taal afhankelijk. De Library map (onder Users)\n"
+"                        is een onzichtbare map. Om deze zichtbaar te maken in de Finder, type Shift + Command + punt.\n"
+"                        Gebruik de 'Go' menu optie en kies Computer, dan Macintosh HD. Nu moet de Users map te zien zijn.\n"
+"                        Volg dan het pad zoals hiervoor beschreven."
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "Save the Excel Add-in file to your Downloads folder. Open the Properties of the\n"
+"                        file and uncheck the <i>Blocked</i> indicator when it is set. Close Excel if it is opened.\n"
+"                        Now move the file to a folder of choice or the official folder for Add-ins\n"
+"                        C:\\Users\\&lt;username&gt;\\AppData\\Roaming\\Microsoft\\AddIns.\n"
+"                        The AppData folder is a hidden folder. To make it visible in the File Explorer,\n"
+"                        select View in the menu and enable the Hidden Items option."
+msgstr "Bewaar de Excel Add-in in de Downloads map. Open de Properties (Eigenschappen) van het\n"
+"                        bestand en schakel de <i>Blocked</i> indicator uit wanneer die aan staat.\n"
+"                        Dan Excel afsluiten wanneer die is geopend.\n"
+"                        Verplaats nu de Add-in file naar een map naar eigen keuze of naar de officiële map voor Add-ins\n"
+"                        C:\\Users\\&lt;username&gt;\\AppData\\Roaming\\Microsoft\\AddIns.\n"
+"                        De AppData map is een onzichtbare map. Om deze zichtbaar te maken in de File Explorer,\n"
+"                        selecteer View in het menu en kies daar voor het zichtbaar maken van onzichbare mappen."
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_search
+msgid "Selection Indexes"
+msgstr "Selectie Indexen"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_sequence
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_sequence
 msgid "Sequence"
-msgstr "Volgorde"
+msgstr "Volgnummer"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_filter_value
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_filter_value
 msgid "Set this value to be the (initial) filter in Excel"
-msgstr ""
+msgstr "Set this value to be the (initial) filter in Excel"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_show_details
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_view_show_on_dashboard
+msgid "Show a menu item for this query on the dashboard"
+msgstr "Show a menu item for this query on the dashboard"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_show_details
 msgid "Show details"
 msgstr "Met details"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_show_details
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_show_details
 msgid "Show details on the next hierarchy level in a pivot table"
-msgstr ""
+msgstr "Show details on the next hierarchy level in a pivot table"
 
 #. module: bi_sql_excel_reports
-#: selection:bi.excel.report.field,pivot_area:0
+#: selection:bi.sql.excel.report.field,pivot_area:0
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_field_view_form
 msgid "Slicer"
-msgstr ""
+msgstr "Slicer"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_slicer_height
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_slicer_height
 msgid "Slicer height"
 msgstr "Slicer hoogte"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_slicer_height
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_slicer_height
 msgid "Slicer height in points"
-msgstr ""
+msgstr "Slicer height in points"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_slicer_top
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_slicer_top
 msgid "Slicer top"
 msgstr "Slicer bovenkant"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_slicer_top
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_slicer_top
 msgid "Slicer top position in points"
-msgstr ""
+msgstr "Slicer top position in points"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_field_subtotal
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Stacked Area"
+msgstr "Stacked Area"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Stacked Bar"
+msgstr "Stacked Bar"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Stacked Column"
+msgstr "Stacked Column"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Stacked Line"
+msgstr "Stacked Line"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Stacked Line with Markers"
+msgstr "Stacked Line with Markers"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "Start Excel when the Add-in file is in the designated folder.\n"
+"                        In Excel choose File - Options - Add-ins. At the bottom you will\n"
+"                        see 'Manage: Excel Add-ins'. Select 'Excel Add-ins' when not already selected and\n"
+"                        click 'Go...'. You should see Odoo-Reports in the list (or use Browse...); select it to activate.\n"
+"                        Now you should see an Odoo section in the ribbon (within 'Home')."
+msgstr "Start Excel wanneer het Add-in bestand op de juiste plek staat.\n"
+"                        In Excel kies File - Options - Add-ins. Onderaan staat\n"
+"                        'Manage: Excel Add-ins'. Selecteer 'Excel Add-ins' als deze nog niet standaard is gekozen en\n"
+"                        klik op 'Go...'. Nu moet Odoo-Reports in de lijst staan (of gebruik Browse...); selecteer deze om te activeren.\n"
+"                        Nu moet in het menu (onder 'Home') een onderdeel voor Odoo zichtbaar zijn."
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "Start Excel when the Add-in file is in the designated folder. In Excel choose Tools - Add-ins.\n"
+"                        You should see Odoo-Reports in the list (or use Browse...); select it to activate.\n"
+"                        Now you should see an Odoo section in the ribbon (within 'Home')."
+msgstr "Start Excel wanneer het Add-in bestand op de juiste plek staat. In Excel kies Tools - Add-ins.\n"
+"                        Nu moet Odoo-Reports in de lijst staan (of gebruik Browse...); selecteer deze om te activeren.\n"
+"                        Nu moet in het menu (onder 'Home') een onderdeel voor Odoo zichtbaar zijn."
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_subtotal
 msgid "Sub total"
 msgstr "Subtotaal"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_table_col_tot
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_table_col_tot
 msgid "Table grand tot cols"
 msgstr "Tabel eindtotaal kolommen"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_table_row_tot
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_table_row_tot
 msgid "Table grand tot rows"
 msgstr "Tabel eindtotaal rijen"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_table_col
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_table_col
 msgid "Table top-left column"
 msgstr "Tabel linksboven kolom"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_excel_report_table_row
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_table_row
 msgid "Table top-left row"
 msgstr "Tabel linksboven rij"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_index_info
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_index_info
 msgid "The field is displayed as an information field on an index page"
-msgstr ""
+msgstr "The field is displayed as an information field on an index page"
 
 #. module: bi_sql_excel_reports
-#: sql_constraint:bi.excel.report:0
-msgid "The sequence must be unique."
-msgstr ""
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_index_info_no_group
+msgid "The information field is outside the group"
+msgstr "The information field is outside the group"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_index_field_width
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_index_field_width
 msgid "The width (in points) of a field on an index page"
-msgstr ""
+msgstr "The width (in points) of a field on an index page"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_field_is_user
-msgid "This field holds the username: used to filter on only user's records"
-msgstr ""
-
-#. module: bi_sql_excel_reports
-#: selection:bi.excel.report.field,pivot_area:0
-msgid "Timeline"
-msgstr "Tijdsbalk"
-
-#. module: bi_sql_excel_reports
-#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_excel_report_short_name
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_short_name
 msgid "Unique short name used as worksheet name"
-msgstr ""
+msgstr "Unique short name used as worksheet name"
 
 #. module: bi_sql_excel_reports
-#: selection:bi.excel.report.field,pivot_area:0
-msgid "Values"
-msgstr "Waarden"
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_group_level
+msgid "Use groups to build a hierarchy under which you place your reports, specify the level if you use groups within groups"
+msgstr "Use groups to build a hierarchy under which you place your reports, specify the level if you use groups within groups"
 
 #. module: bi_sql_excel_reports
-#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_excel_report_view_search
-msgid "With queries"
-msgstr "Met queries"
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_classic_pivot_table
+msgid "Use the classic pivot table layout"
+msgstr "Use the classic pivot table layout"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Values:Average"
+msgstr "Values:Average"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Values:Count"
+msgstr "Values:Count"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Values:Count Numbers"
+msgstr "Values:Count Numbers"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Values:Max"
+msgstr "Values:Max"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Values:Min"
+msgstr "Values:Min"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Values:Product"
+msgstr "Values:Product"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Values:StDev"
+msgstr "Values:StDev"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Values:StDevp"
+msgstr "Values:StDevp"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Values:Sum"
+msgstr "Values:Sum"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Values:Var"
+msgstr "Values:Var"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Values:Varp"
+msgstr "Values:Varp"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Wireframe 3-D Surface"
+msgstr "Wireframe 3-D Surface"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report,chart_type:0
+msgid "Wireframe Contour"
+msgstr "Wireframe Contour"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model,name:bi_sql_excel_reports.model_bi_sql_excel_addinfile_wizard
+msgid "bi.sql.excel.addinfile.wizard"
+msgstr "bi.sql.excel.addinfile.wizard"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model,name:bi_sql_excel_reports.model_bi_sql_excel_report
+msgid "bi.sql.excel.report"
+msgstr "bi.sql.excel.report"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model,name:bi_sql_excel_reports.model_bi_sql_excel_report_field
+msgid "bi.sql.excel.report.field"
+msgstr "bi.sql.excel.report.field"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model,name:bi_sql_excel_reports.model_bi_sql_view
+msgid "bi.sql.view"
+msgstr "bi.sql.view"
 
