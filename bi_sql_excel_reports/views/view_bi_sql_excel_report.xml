@@ -18,7 +18,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
             name="SQL Excel Reports"
             parent="base.next_id_9"
             action="open_bi_sql_excel_reports"
-            sequence="150"/>
+            sequence="12"/>
 
         <!-- bi.sql.excel.report -->
         <record id="bi_sql_excel_report_view_form" model="ir.ui.view">

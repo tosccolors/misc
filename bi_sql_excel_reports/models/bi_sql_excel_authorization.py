@@ -202,9 +202,11 @@ class ReportAuthorization:
             :param report_def is the contents of report definitions (list of dicts) """
         nodes = OrderedDict()
         for idx, line in enumerate(report_def):
-            if line['is_group'] and not line['is_select_index']:
-                nodes[line['sequence']] = {'data_index': idx, 'group_level': line['group_level'],
-                                           'name': line['name'], 'parent': 0, 'rpt_cnt': 0}
+            seqnr = line['sequence']
+            grplvl = line['group_level'] if line['group_level'] else 0
+            if seqnr and line['is_group'] and not line['is_select_index']:
+                nodes[seqnr] = {'data_index': idx, 'group_level': grplvl,
+                                'name': line['name'], 'parent': 0, 'rpt_cnt': 0}
         if nodes:
             self._hierarchy_set_parents(nodes)
             self._hierarchy_node_rpt_count(report_def, nodes, 0)
