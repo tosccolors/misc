@@ -157,7 +157,7 @@ class BiSqlExcelReport(models.Model):
     chart_top = fields.Integer(
         string='Chart top',
         help='Chart position (points): top',
-        default=8)
+        default=27)
 
     chart_width = fields.Integer(
         string='Chart width',

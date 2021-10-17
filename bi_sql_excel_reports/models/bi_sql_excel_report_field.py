@@ -86,6 +86,7 @@ class BiSqlExcelReportField(models.Model):
             ('columns', 'Columns or Legend'),
             ('rows', 'Rows or Axis'),
             ('values:sum', 'Values:Sum'),
+            ('values:sum_cumul', 'Values:Sum Cumulative'),
             ('values:count', 'Values:Count'),
             ('values:average', 'Values:Average'),
             ('values:max', 'Values:Max'),
