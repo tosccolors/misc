@@ -17,7 +17,8 @@
             <field name="directory"/>  
             <field name="user"/> 
             <field name="password"/>  
-            <field name="tempdir"/> 
+            <field name="tempdir"/>
+            <field name="output_type"/>
 <!--            <field name="days"/>  -->
 <!--            <field name="pretty_print"/>  -->
 <!--            <field name="use_sql"/>  -->
