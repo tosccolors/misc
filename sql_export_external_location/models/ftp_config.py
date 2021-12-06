@@ -3,6 +3,7 @@
 import datetime, ftputil, logging
 from odoo import models, fields, api
 import base64
+import json
 # try:
 #     import ftputil.session
 # except:
@@ -24,7 +25,7 @@ class FTPConfig(models.Model):
 
     latest_run = fields.Char(string='Latest run', help="Date of latest run of Announcement connector")
     latest_status = fields.Char(string='Latest status', help="Log of latest run")
-    output_type = fields.Selection([('csv','CSV'), ('xml', 'XML')], string='Output File Format', default='csv')
+    output_type = fields.Selection([('csv','CSV'), ('xml', 'XML'), ('json','JSON')], string='Output File Format', default='csv')
 
     # show only first record to configure, no options to create an additional one
     @api.multi
@@ -64,12 +65,17 @@ class FTPConfig(models.Model):
 
     def ship_file(self, msg, data, filename):
         config = self[0]
+        path = config.tempdir + "/"
 
-        print ("data", type(data), data)
-        f = open(config.tempdir + "/" + filename, "w")
-        f.write(data)
+        # JSON
+        if isinstance(data, dict):
+            with open(path + filename, 'a') as f:
+                json.dump(data, f)
+        else:
+            f = open(path + filename, "w")
+            f.write(data)
+
         f = None  # to force releasing the file handle
-        # f = data
 
         # Initiate File Transfer Connection
         try:
@@ -144,7 +150,6 @@ class FTPConfig(models.Model):
                 res = cursor.fetchall()
                 res = res[0][0]
                 filename = str(se.id) + '_' + str(se.name) + '.xml'
-                # self.ship_xml_file(msg, res, filename)
                 self.ship_file(msg, res, filename)
 
         elif config.output_type == 'csv':
@@ -153,8 +158,13 @@ class FTPConfig(models.Model):
                 data = base64.decodestring(wizRec.binary_file)
                 self.ship_file(msg, data, wizRec.file_name)
 
-        # TODO: ftputil.session
-
+        else: # JSON
+            for se in sqlExports:
+                cursor.execute(se.query)
+                res = cursor.dictfetchall()
+                data = {'0': res}
+                filename = str(se.id) + '_' + str(se.name) + '.json'
+                self.ship_file(msg, data, filename)
 
 
         # report and exit positively
@@ -175,9 +185,9 @@ class FTPConfig(models.Model):
 
         # Manage Params
         variable_dict = {}
-        today = datetime.datetime.now()
-        today_tz = fields.Datetime.context_timestamp(
-            sql_export, today)
+        # today = datetime.datetime.now()
+        # today_tz = fields.Datetime.context_timestamp(
+        #     sql_export, today)
 
         if sql_export.field_ids:
             for field in sql_export.field_ids:
