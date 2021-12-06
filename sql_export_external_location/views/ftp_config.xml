@@ -19,9 +19,6 @@
             <field name="password"/>  
             <field name="tempdir"/>
             <field name="output_type"/>
-<!--            <field name="days"/>  -->
-<!--            <field name="pretty_print"/>  -->
-<!--            <field name="use_sql"/>  -->
           </group>
           <button name="save_config" type="object" 
             string="Save" class="oe_highlight" /> 
@@ -40,12 +37,6 @@
             <div colspan="2">
               <p>Press "Send" to initiate File Transfer of exported SQL Result </p>
             </div>
-<!--            <div colspan="2">-->
-<!--              <p>Enter end date and press "Send" to ship orderlines. History is collected for the configured number of days. </p>-->
-<!--            </div>-->
-<!--            <group>-->
-<!--              <field name="end"/>-->
-<!--            </group>-->
             <group>
             </group>
           </group>
