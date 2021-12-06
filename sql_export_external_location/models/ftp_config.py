@@ -4,10 +4,10 @@ import datetime, ftputil, logging
 from odoo import models, fields, api
 import base64
 import json
-# try:
-#     import ftputil.session
-# except:
-#     pass
+try:
+    import ftputil.session
+except ImportError:
+    pass
 
 _logger = logging.getLogger(__name__)
 
