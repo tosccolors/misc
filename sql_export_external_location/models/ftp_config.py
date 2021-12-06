@@ -3,7 +3,15 @@
 import datetime, ftputil, logging
 from lxml import etree
 from odoo import models, fields, api
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+import csv
+import StringIO
+import xlwt
+import base64
+# try:
+#     import ftputil.session
+# except:
+#     pass
 
 _logger = logging.getLogger(__name__)
 
@@ -11,7 +19,6 @@ _logger = logging.getLogger(__name__)
 class FTPConfig(models.Model):
     _name = 'ftp.config'
     _description = 'Connection info of FTP Transfers'
-
 
 
     server = fields.Char(string='Server', help="Servername, including protocol, e.g. https://prod.barneveldsekrant.nl")
@@ -25,6 +32,7 @@ class FTPConfig(models.Model):
 
     latest_run = fields.Char(string='Latest run', help="Date of latest run of Announcement connector")
     latest_status = fields.Char(string='Latest status', help="Log of latest run")
+    output_type = fields.Selection([('csv','CSV'), ('xml', 'XML')], string='Output File Format', default='csv')
 
     # end = fields.Date(string='End', help="End date of date range in format yyyy-mm-dd")
 
@@ -66,18 +74,51 @@ class FTPConfig(models.Model):
         config.write({})
         return
 
-    def ship_xml_file(self, msg, xml, filename):
+    # def ship_xml_file(self, msg, xml, filename):
+    #     config = self[0]
+    #
+    #     f = open(config.tempdir + "/" + filename, "w")
+    #     f.write(xml)
+    #     # if self.use_sql:
+    #     #     f.write(xml)
+    #     # else:
+    #     #     data = etree.tostring(xml, pretty_print=self.pretty_print)
+    #     #     f.write(data)
+    #     f.close
+    #     f = None  # to force releasing the file handle
+    #
+    #     # Initiate File Transfer Connection
+    #     try:
+    #         port_session_factory = ftputil.session.session_factory(port=21, use_passive_mode=True)
+    #         ftp = ftputil.FTPHost(config.server, config.user, config.password, session_factory=port_session_factory)
+    #     except Exception, e:
+    #         self.log_exception(msg, "Invalid FTP configuration")
+    #         return False
+    #
+    #     try:
+    #         _logger.info("Transfering " + filename)
+    #         if config.directory:
+    #             target = str(config.directory) + '/' + filename
+    #         else:
+    #             target = '/' + filename
+    #         source = config.tempdir + '/' + filename
+    #         ftp.upload(source, target)
+    #     except Exception, e:
+    #         self.log_exception(msg, "Transfer failed, quiting....")
+    #         return False
+    #
+    #     ftp.close()
+    #
+    #     return True
+
+    def ship_file(self, msg, data, filename):
         config = self[0]
 
+        print ("data", type(data), data)
         f = open(config.tempdir + "/" + filename, "w")
-        f.write(xml)
-        # if self.use_sql:
-        #     f.write(xml)
-        # else:
-        #     data = etree.tostring(xml, pretty_print=self.pretty_print)
-        #     f.write(data)
-        f.close
+        f.write(data)
         f = None  # to force releasing the file handle
+        # f = data
 
         # Initiate File Transfer Connection
         try:
@@ -104,7 +145,6 @@ class FTPConfig(models.Model):
         return True
 
 
-
     @api.multi
     def automated_run(self):
         configurations = self.search([])
@@ -127,7 +167,11 @@ class FTPConfig(models.Model):
         msg = ""
         config = self[0]
         if not config:
-            self.log_exception(msg, "No configuration found. <br>Please configure Schuiteman Peacock connector.")
+            self.log_exception(msg, "No configuration found. <br>Please configure FTP connector.")
+            return False
+
+        if not config.output_type:
+            self.log_exception(msg, "Output Format of the File not defined. <br>Please configure FTP connector.")
             return False
 
         # if not config.end:
@@ -175,15 +219,24 @@ class FTPConfig(models.Model):
                                "Program not started. <br>Please create a valid record in SQL Export, & ensure it is in 'SQL Valid' state ")
             return False
 
-        for se in sqlExports:
-            query = 'SELECT query_to_xml(\'' + str(se.query) + '\',\
-                                          true,false,\'\')'
+        if config.output_type == 'xml':
 
-            cursor.execute(query)
-            res = cursor.fetchall()
-            res = res[0][0]
-            filename = str(se.name) + '.xml'
-            self.ship_xml_file(msg, res, filename)
+            for se in sqlExports:
+                query = 'SELECT query_to_xml(\'' + str(se.query) + '\',\
+                                              true,false,\'\')'
+
+                cursor.execute(query)
+                res = cursor.fetchall()
+                res = res[0][0]
+                filename = str(se.id) + '_' + str(se.name) + '.xml'
+                # self.ship_xml_file(msg, res, filename)
+                self.ship_file(msg, res, filename)
+
+        elif config.output_type == 'csv':
+            for se in sqlExports:
+                wizRec = self.export_sql(sqlExport=se)
+                data = base64.decodestring(wizRec.binary_file)
+                self.ship_file(msg, data, wizRec.file_name)
 
         # TODO: ftputil.session
 
@@ -237,3 +290,37 @@ class FTPConfig(models.Model):
     #         else:  # object
     #             self.add_element(element, value, key)
     #     return True
+
+    @api.multi
+    def export_sql(self, sqlExport):
+        self.ensure_one()
+        wiz = self.env['sql.file.wizard'].create({
+            'sql_export_id': sqlExport.id})
+        sql_export = sqlExport
+
+        # Manage Params
+        variable_dict = {}
+        today = datetime.datetime.now()
+        today_tz = fields.Datetime.context_timestamp(
+            sql_export, today)
+        # date = today_tz.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        if sql_export.field_ids:
+            for field in sql_export.field_ids:
+                variable_dict[field.name] = self[field.name]
+        if "%(company_id)s" in sql_export.query:
+            variable_dict['company_id'] = self.env.user.company_id.id
+        if "%(user_id)s" in sql_export.query:
+            variable_dict['user_id'] = self._uid
+
+        # Execute Request
+        res = sql_export._execute_sql_request(
+            params=variable_dict, mode='stdout',
+            copy_options=sql_export.copy_options)
+        if wiz.sql_export_id.encoding:
+            res = res.encode(wiz.sql_export_id.encoding)
+
+        wiz.write({
+            'binary_file': res,
+            'file_name': str(sql_export.id) + '_' + sql_export.name + '.csv'
+        })
+        return wiz
