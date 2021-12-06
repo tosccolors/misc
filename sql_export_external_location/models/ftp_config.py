@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime, ftputil, logging
-from lxml import etree
 from odoo import models, fields, api
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
-import csv
-import StringIO
-import xlwt
 import base64
 # try:
 #     import ftputil.session
@@ -26,17 +21,10 @@ class FTPConfig(models.Model):
     tempdir = fields.Char(string='Local temp dir', help="Local temporary directory. e.g. /home/odoo")
     user = fields.Char(string='User')
     password = fields.Char(string='Password')
-    # days = fields.Integer(string='History in days')
-    # pretty_print = fields.Boolean(string='Pretty print XML')
-    # use_sql = fields.Boolean(string='Use SQL')
 
     latest_run = fields.Char(string='Latest run', help="Date of latest run of Announcement connector")
     latest_status = fields.Char(string='Latest status', help="Log of latest run")
     output_type = fields.Selection([('csv','CSV'), ('xml', 'XML')], string='Output File Format', default='csv')
-
-    # end = fields.Date(string='End', help="End date of date range in format yyyy-mm-dd")
-
-
 
     # show only first record to configure, no options to create an additional one
     @api.multi
@@ -74,43 +62,6 @@ class FTPConfig(models.Model):
         config.write({})
         return
 
-    # def ship_xml_file(self, msg, xml, filename):
-    #     config = self[0]
-    #
-    #     f = open(config.tempdir + "/" + filename, "w")
-    #     f.write(xml)
-    #     # if self.use_sql:
-    #     #     f.write(xml)
-    #     # else:
-    #     #     data = etree.tostring(xml, pretty_print=self.pretty_print)
-    #     #     f.write(data)
-    #     f.close
-    #     f = None  # to force releasing the file handle
-    #
-    #     # Initiate File Transfer Connection
-    #     try:
-    #         port_session_factory = ftputil.session.session_factory(port=21, use_passive_mode=True)
-    #         ftp = ftputil.FTPHost(config.server, config.user, config.password, session_factory=port_session_factory)
-    #     except Exception, e:
-    #         self.log_exception(msg, "Invalid FTP configuration")
-    #         return False
-    #
-    #     try:
-    #         _logger.info("Transfering " + filename)
-    #         if config.directory:
-    #             target = str(config.directory) + '/' + filename
-    #         else:
-    #             target = '/' + filename
-    #         source = config.tempdir + '/' + filename
-    #         ftp.upload(source, target)
-    #     except Exception, e:
-    #         self.log_exception(msg, "Transfer failed, quiting....")
-    #         return False
-    #
-    #     ftp.close()
-    #
-    #     return True
-
     def ship_file(self, msg, data, filename):
         config = self[0]
 
@@ -129,7 +80,7 @@ class FTPConfig(models.Model):
             return False
 
         try:
-            _logger.info("Transfering " + filename)
+            _logger.info("Transferring " + filename)
             if config.directory:
                 target = str(config.directory) + '/' + filename
             else:
@@ -150,13 +101,11 @@ class FTPConfig(models.Model):
         configurations = self.search([])
         if not configurations:
             # cannot use local method because there is no record
-            _logger.exception(msg, "Cannot start automated_run. Need a valid configuration")
+            _logger.exception("Cannot start automated_run. Need a valid configuration")
             return False
         else:
             # start with previous end
             self = configurations[0]
-            # self.end = datetime.date.today()
-            self.write({})
             return self.do_send()
 
 
@@ -174,43 +123,10 @@ class FTPConfig(models.Model):
             self.log_exception(msg, "Output Format of the File not defined. <br>Please configure FTP connector.")
             return False
 
-        # if not config.end:
-        #     self.log_exception(msg, "Program not started. <br>Please provide a valid date")
-        #     return False
-
-        # if not config.days:
-        #     self.log_exception(msg, "Program not started. <br>Please provide a valid period (i.e. history in days)")
-        #     return False
-
         if not config.server or not config.user or not config.password or not config.tempdir:
             self.log_exception(msg,
                                "Program not started. <br>Please provide a valid server/user/password/tempdir configuration")
             return False
-
-        # # calc begin and end date
-        # end = datetime.datetime.strptime(config.end, DEFAULT_SERVER_DATE_FORMAT).date()
-        # begin = end - datetime.timedelta(days=config.days)
-
-        # # for sql queries
-        # period_end = end.strftime('%Y-%m-%d')
-        # period_begin = begin.strftime('%Y-%m-%d')
-        # # for ORM search_reads
-        # end = end.strftime('UTC %Y-%m-%d T23:59:59')
-        # begin = begin.strftime('UTC %Y-%m-%d T00:00:00')
-
-        # # --------------- MANUAL QUERY -------------------------
-        # query = 'SELECT  query_to_xml(\'SELECT  id, name, create_date, create_uid, write_date, write_uid, \
-        #                                                 company_id, code \
-        #                                         FROM account_account WHERE deprecated>=$$False$$\',true,false,\'\')'
-        # cursor.execute(query)
-        # aa = cursor.fetchall()
-        # aa_root = aa[0][0]
-        #
-        # print ("aa query", query)
-        # # Transfer files
-        # self.ship_xml_file(msg, aa_root, 'account_account.xml')
-        # ----- [ENDS]
-
 
         sqlExports = self.env['sql.export'].search([('state','=', 'sql_valid')], order='id')
 
@@ -220,7 +136,6 @@ class FTPConfig(models.Model):
             return False
 
         if config.output_type == 'xml':
-
             for se in sqlExports:
                 query = 'SELECT query_to_xml(\'' + str(se.query) + '\',\
                                               true,false,\'\')'
@@ -250,46 +165,6 @@ class FTPConfig(models.Model):
         config.write({})
         return True
 
-    # def add_element(self, node, dict, tag):
-    #
-    #     new_node = etree.Element(tag)
-    #     node.append(new_node)
-    #     for key, value in dict.iteritems():
-    #         element = etree.Element(key)
-    #         new_node.append(element)
-    #         if type(value) in [str, int, float]:
-    #             element.text = str(value)
-    #         elif type(value) == unicode:
-    #             element.text = value.encode("ascii", "replace")
-    #         elif type(value) == bool:
-    #             element.text = str(value)
-    #         elif key.endswith('ids'):
-    #             n = 0
-    #             for v in value:
-    #                 sub_node = etree.Element('_' + str(n))
-    #                 element.append(sub_node)
-    #                 sub_node.text = str(v)
-    #                 n += 1
-    #         elif type(value) == tuple and type(value[0]) == int and type(value[1]) == unicode:
-    #             sub_node = etree.Element('id')
-    #             element.append(sub_node)
-    #             sub_node.text = str(value[0])
-    #             sub_node = etree.Element('name')
-    #             element.append(sub_node)
-    #             sub_node.text = value[1].encode("ascii", "replace")
-    #         elif type(value) == tuple:
-    #             n = 0
-    #             for v in value:
-    #                 sub_node = etree.Element('_' + str(n))
-    #                 element.append(sub_node)
-    #                 if type(v) == unicode:
-    #                     sub_node.text = v.encode("ascii", "replace")
-    #                 else:
-    #                     sub_node.text = str(v)
-    #                 n += 1
-    #         else:  # object
-    #             self.add_element(element, value, key)
-    #     return True
 
     @api.multi
     def export_sql(self, sqlExport):
@@ -303,7 +178,7 @@ class FTPConfig(models.Model):
         today = datetime.datetime.now()
         today_tz = fields.Datetime.context_timestamp(
             sql_export, today)
-        # date = today_tz.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+
         if sql_export.field_ids:
             for field in sql_export.field_ids:
                 variable_dict[field.name] = self[field.name]
