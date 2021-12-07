@@ -30,6 +30,9 @@ class FTPConfig(models.Model):
     active = fields.Boolean(string='Active', default=True)
     description = fields.Char(string='Description')
 
+    sql_export_ids = fields.Many2many('sql.export', 'sql_export_ftp_rel', 'lead_id', 'sql_export_id',
+                                      string='SQL Exports')
+
     # show only first record to configure, no options to create an additional one
     # @api.multi
     # def default_view(self):
@@ -52,10 +55,10 @@ class FTPConfig(models.Model):
     #     return action
 
 
-    @api.multi
-    def save_config(self):
-        self.write({})
-        return True
+    # @api.multi
+    # def save_config(self):
+    #     self.write({})
+    #     return True
 
 
     def log_exception(self, msg, final_msg):
@@ -86,7 +89,7 @@ class FTPConfig(models.Model):
                 ftp = ftputil.FTPHost(config.server, config.user, config.password, session_factory=port_session_factory)
             except Exception, e:
                 config.log_exception(msg, "Invalid FTP configuration")
-                return False
+                continue
 
             try:
                 _logger.info("Transferring " + filename)
@@ -98,7 +101,7 @@ class FTPConfig(models.Model):
                 ftp.upload(source, target)
             except Exception, e:
                 config.log_exception(msg, "Transfer failed, quiting....")
-                return False
+                continue
 
             ftp.close()
 
@@ -118,7 +121,6 @@ class FTPConfig(models.Model):
             return self.do_send()
 
 
-
     @api.multi
     def do_send(self):
         cursor = self._cr
@@ -135,7 +137,8 @@ class FTPConfig(models.Model):
                                    "Program not started. <br>Please provide a valid server/user/password/tempdir configuration")
                 continue
 
-            sqlExports = self.env['sql.export'].search([('state','=', 'sql_valid')], order='id')
+            # sqlExports = self.env['sql.export'].search([('state','=', 'sql_valid')], order='id')
+            sqlExports = config.sql_export_ids.filtered(lambda s: s.state == 'sql_valid')
 
             if not len(sqlExports.ids):
                 config.log_exception(msg,
@@ -175,7 +178,7 @@ class FTPConfig(models.Model):
 
 
             # report and exit positively
-            final_msg = "File(s) transferred: %s Success & %s Failed out of %s files..."%(OkFiles, ErrFiles, idx+1 )
+            final_msg = "File(s) transferred: %s Success & %s Failed out of %s file(s)..."%(OkFiles, ErrFiles, idx+1 )
             _logger.info(final_msg)
             config.latest_run = datetime.datetime.utcnow().strftime('UTC %Y-%m-%d %H:%M:%S ')
             config.latest_status = msg + final_msg
