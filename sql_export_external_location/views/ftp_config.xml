@@ -23,6 +23,7 @@
             <field name="password"/>  
             <field name="tempdir"/>
             <field name="output_type"/>
+            <field name="description"/>
           </group>
           <button name="save_config" type="object" 
             string="Save" class="oe_highlight" /> 
@@ -69,6 +70,7 @@
        <tree string="FTP connector" decoration-muted="not active">
             <field name="server"/>
             <field name="user"/>
+            <field name="description"/>
             <field name="active" invisible="1"/>
        </tree>
        </field>
@@ -96,6 +98,7 @@
       <tree string="FTP connector" decoration-muted="not active">
         <field name="server"/>
         <field name="user"/>
+        <field name="description"/>
         <field name="active" invisible="1"/>
       </tree>
     </field>

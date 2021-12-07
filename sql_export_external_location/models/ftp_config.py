@@ -28,27 +28,28 @@ class FTPConfig(models.Model):
     output_type = fields.Selection([('csv','CSV'), ('xml', 'XML'), ('json','JSON')], string='Output File Format', default='csv')
 
     active = fields.Boolean(string='Active', default=True)
+    description = fields.Char(string='Description')
 
     # show only first record to configure, no options to create an additional one
-    @api.multi
-    def default_view(self):
-        configurations = self.search([])
-        if not configurations:
-            server = "bdu.nl"
-            self.write({'server': server})
-            configuration = self.id
-            _logger.info("configuration created")
-        else:
-            configuration = configurations[0].id
-        action = {
-            "type": "ir.actions.act_window",
-            "res_model": "ftp.config",
-            "view_type": "form",
-            "view_mode": "form",
-            "res_id": configuration,
-            "target": "inline",
-        }
-        return action
+    # @api.multi
+    # def default_view(self):
+    #     configurations = self.search([])
+    #     if not configurations:
+    #         server = "bdu.nl"
+    #         self.write({'server': server})
+    #         configuration = self.id
+    #         _logger.info("configuration created")
+    #     else:
+    #         configuration = configurations[0].id
+    #     action = {
+    #         "type": "ir.actions.act_window",
+    #         "res_model": "ftp.config",
+    #         "view_type": "form",
+    #         "view_mode": "form",
+    #         "res_id": configuration,
+    #         "target": "inline",
+    #     }
+    #     return action
 
 
     @api.multi
@@ -58,48 +59,48 @@ class FTPConfig(models.Model):
 
 
     def log_exception(self, msg, final_msg):
-        config = self[0]
-        _logger.exception(final_msg)
-        config.latest_run = datetime.datetime.utcnow().strftime('UTC %Y-%m-%d %H:%M:%S ')
-        config.latest_status = msg + final_msg
-        config.write({})
+        for config in self:
+            _logger.exception(final_msg)
+            config.latest_run = datetime.datetime.utcnow().strftime('UTC %Y-%m-%d %H:%M:%S ')
+            config.latest_status = msg + final_msg
+            config.write({})
         return
 
     def ship_file(self, msg, data, filename):
-        config = self[0]
-        path = config.tempdir + "/"
+        for config in self:
+            path = config.tempdir + "/"
 
-        # JSON
-        if isinstance(data, dict):
-            with open(path + filename, 'a') as f:
-                json.dump(data, f)
-        else:
-            f = open(path + filename, "w")
-            f.write(data)
-
-        f = None  # to force releasing the file handle
-
-        # Initiate File Transfer Connection
-        try:
-            port_session_factory = ftputil.session.session_factory(port=21, use_passive_mode=True)
-            ftp = ftputil.FTPHost(config.server, config.user, config.password, session_factory=port_session_factory)
-        except Exception, e:
-            self.log_exception(msg, "Invalid FTP configuration")
-            return False
-
-        try:
-            _logger.info("Transferring " + filename)
-            if config.directory:
-                target = str(config.directory) + '/' + filename
+            # JSON
+            if isinstance(data, dict):
+                with open(path + filename, 'a') as f:
+                    json.dump(data, f)
             else:
-                target = '/' + filename
-            source = config.tempdir + '/' + filename
-            ftp.upload(source, target)
-        except Exception, e:
-            self.log_exception(msg, "Transfer failed, quiting....")
-            return False
+                f = open(path + filename, "w")
+                f.write(data)
 
-        ftp.close()
+            f = None  # to force releasing the file handle
+
+            # Initiate File Transfer Connection
+            try:
+                port_session_factory = ftputil.session.session_factory(port=21, use_passive_mode=True)
+                ftp = ftputil.FTPHost(config.server, config.user, config.password, session_factory=port_session_factory)
+            except Exception, e:
+                config.log_exception(msg, "Invalid FTP configuration")
+                return False
+
+            try:
+                _logger.info("Transferring " + filename)
+                if config.directory:
+                    target = str(config.directory) + '/' + filename
+                else:
+                    target = '/' + filename
+                source = config.tempdir + '/' + filename
+                ftp.upload(source, target)
+            except Exception, e:
+                config.log_exception(msg, "Transfer failed, quiting....")
+                return False
+
+            ftp.close()
 
         return True
 
@@ -113,7 +114,7 @@ class FTPConfig(models.Model):
             return False
         else:
             # start with previous end
-            self = configurations[0]
+            # self = configurations[0]
             return self.do_send()
 
 
@@ -122,59 +123,63 @@ class FTPConfig(models.Model):
     def do_send(self):
         cursor = self._cr
         msg = ""
-        config = self[0]
-        if not config:
-            self.log_exception(msg, "No configuration found. <br>Please configure FTP connector.")
-            return False
+        for config in self:
+            if not config:
+                config.log_exception(msg, "No configuration found. <br>Please configure FTP connector.")
+                continue
+            elif not config.output_type:
+                config.log_exception(msg, "Output Format of the File not defined. <br>Please configure FTP connector.")
+                continue
+            elif not config.server or not config.user or not config.password or not config.tempdir:
+                config.log_exception(msg,
+                                   "Program not started. <br>Please provide a valid server/user/password/tempdir configuration")
+                continue
 
-        if not config.output_type:
-            self.log_exception(msg, "Output Format of the File not defined. <br>Please configure FTP connector.")
-            return False
+            sqlExports = self.env['sql.export'].search([('state','=', 'sql_valid')], order='id')
 
-        if not config.server or not config.user or not config.password or not config.tempdir:
-            self.log_exception(msg,
-                               "Program not started. <br>Please provide a valid server/user/password/tempdir configuration")
-            return False
+            if not len(sqlExports.ids):
+                config.log_exception(msg,
+                                   "Program not started. <br>Please create a valid record in SQL Export, & ensure it is in 'SQL Valid' state ")
+                continue
 
-        sqlExports = self.env['sql.export'].search([('state','=', 'sql_valid')], order='id')
+            OkFiles = ErrFiles = 0
+            for idx, se in enumerate(sqlExports):
+                try:
+                    if config.output_type == 'xml':
+                        query = 'SELECT query_to_xml(\'' + str(se.query) + '\',\
+                                                      true,false,\'\')'
 
-        if not len(sqlExports.ids):
-            self.log_exception(msg,
-                               "Program not started. <br>Please create a valid record in SQL Export, & ensure it is in 'SQL Valid' state ")
-            return False
+                        cursor.execute(query)
+                        res = cursor.fetchall()
+                        res = res[0][0]
+                        filename = str(se.id) + '_' + str(se.name) + '.xml'
+                        config.ship_file(msg, res, filename)
 
-        if config.output_type == 'xml':
-            for se in sqlExports:
-                query = 'SELECT query_to_xml(\'' + str(se.query) + '\',\
-                                              true,false,\'\')'
+                    elif config.output_type == 'csv':
+                        wizRec = self.export_sql(sqlExport=se)
+                        data = base64.decodestring(wizRec.binary_file)
+                        config.ship_file(msg, data, wizRec.file_name)
 
-                cursor.execute(query)
-                res = cursor.fetchall()
-                res = res[0][0]
-                filename = str(se.id) + '_' + str(se.name) + '.xml'
-                self.ship_file(msg, res, filename)
+                    else: # JSON
+                        cursor.execute(se.query)
+                        res = cursor.dictfetchall()
+                        data = {'0': res}
+                        filename = str(se.id) + '_' + str(se.name) + '.json'
+                        config.ship_file(msg, data, filename)
 
-        elif config.output_type == 'csv':
-            for se in sqlExports:
-                wizRec = self.export_sql(sqlExport=se)
-                data = base64.decodestring(wizRec.binary_file)
-                self.ship_file(msg, data, wizRec.file_name)
+                    OkFiles += 1
 
-        else: # JSON
-            for se in sqlExports:
-                cursor.execute(se.query)
-                res = cursor.dictfetchall()
-                data = {'0': res}
-                filename = str(se.id) + '_' + str(se.name) + '.json'
-                self.ship_file(msg, data, filename)
+                except:
+                    ErrFiles += 1
+                    pass
 
 
-        # report and exit positively
-        final_msg = "File transfer Successfull ..."
-        _logger.info(final_msg)
-        config.latest_run = datetime.datetime.utcnow().strftime('UTC %Y-%m-%d %H:%M:%S ')
-        config.latest_status = msg + final_msg
-        config.write({})
+            # report and exit positively
+            final_msg = "File(s) transferred: %s Success & %s Failed out of %s files..."%(OkFiles, ErrFiles, idx+1 )
+            _logger.info(final_msg)
+            config.latest_run = datetime.datetime.utcnow().strftime('UTC %Y-%m-%d %H:%M:%S ')
+            config.latest_status = msg + final_msg
+            config.write({})
         return True
 
 
