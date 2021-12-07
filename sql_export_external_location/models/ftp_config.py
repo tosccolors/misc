@@ -27,6 +27,8 @@ class FTPConfig(models.Model):
     latest_status = fields.Char(string='Latest status', help="Log of latest run")
     output_type = fields.Selection([('csv','CSV'), ('xml', 'XML'), ('json','JSON')], string='Output File Format', default='csv')
 
+    active = fields.Boolean(string='Active', default=True)
+
     # show only first record to configure, no options to create an additional one
     @api.multi
     def default_view(self):
