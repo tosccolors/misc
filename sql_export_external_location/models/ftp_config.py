@@ -8,6 +8,7 @@ try:
     import ftputil.session
 except ImportError:
     pass
+import ftplib
 
 _logger = logging.getLogger(__name__)
 
@@ -69,6 +70,44 @@ class FTPConfig(models.Model):
             config.write({})
         return
 
+    # def ship_file(self, msg, data, filename):
+    #     for config in self:
+    #         path = config.tempdir + "/"
+    #
+    #         # JSON
+    #         if isinstance(data, dict):
+    #             with open(path + filename, 'a') as f:
+    #                 json.dump(data, f)
+    #         else:
+    #             f = open(path + filename, "w")
+    #             f.write(data)
+    #
+    #         f = None  # to force releasing the file handle
+    #
+    #         # Initiate File Transfer Connection
+    #         try:
+    #             port_session_factory = ftputil.session.session_factory(port=21, use_passive_mode=True)
+    #             ftp = ftputil.FTPHost(config.server, config.user, config.password, session_factory=port_session_factory)
+    #         except Exception, e:
+    #             config.log_exception(msg, "Invalid FTP configuration")
+    #             continue
+    #
+    #         try:
+    #             _logger.info("Transferring " + filename)
+    #             if config.directory:
+    #                 target = str(config.directory) + '/' + filename
+    #             else:
+    #                 target = '/' + filename
+    #             source = config.tempdir + '/' + filename
+    #             ftp.upload(source, target)
+    #         except Exception, e:
+    #             config.log_exception(msg, "Transfer failed, quiting....")
+    #             continue
+    #
+    #         ftp.close()
+    #
+    #     return True
+
     def ship_file(self, msg, data, filename):
         for config in self:
             path = config.tempdir + "/"
@@ -85,8 +124,10 @@ class FTPConfig(models.Model):
 
             # Initiate File Transfer Connection
             try:
-                port_session_factory = ftputil.session.session_factory(port=21, use_passive_mode=True)
-                ftp = ftputil.FTPHost(config.server, config.user, config.password, session_factory=port_session_factory)
+
+                ftpServer = ftplib.FTP(config.server, config.user, config.password)
+                ftpServer.encoding = "utf-8"
+
             except Exception, e:
                 config.log_exception(msg, "Invalid FTP configuration")
                 continue
@@ -94,19 +135,25 @@ class FTPConfig(models.Model):
             try:
                 _logger.info("Transferring " + filename)
                 if config.directory:
-                    target = str(config.directory) + '/' + filename
+                    target = str(config.directory)
                 else:
-                    target = '/' + filename
-                source = config.tempdir + '/' + filename
-                ftp.upload(source, target)
+                    target = '/'
+
+                source = config.tempdir + '/'
+
+                ftpServer.cwd(target)
+                with open(source + filename, "rb") as file:
+                    ftpServer.storbinary("STOR %s"%(filename), fp=file)
+
+                ftpServer.quit()
+
             except Exception, e:
                 config.log_exception(msg, "Transfer failed, quiting....")
                 continue
 
-            ftp.close()
+            ftpServer.close()
 
         return True
-
 
     @api.multi
     def automated_run(self):
@@ -176,7 +223,6 @@ class FTPConfig(models.Model):
                     ErrFiles += 1
                     pass
 
-
             # report and exit positively
             final_msg = "File(s) transferred: %s Success & %s Failed out of %s file(s)..."%(OkFiles, ErrFiles, idx+1 )
             _logger.info(final_msg)
@@ -184,6 +230,28 @@ class FTPConfig(models.Model):
             config.latest_status = msg + final_msg
             config.write({})
         return True
+
+
+    # def do_send(self):
+    #
+    #     for config in self:
+    #         print ("Transferring to =====", config.server)
+    #         import ftplib
+    #         ftp_server = ftplib.FTP(config.server, config.user, config.password)
+    #         ftp_server.encoding = "utf-8"
+    #         filename = '2_Accounts.xml'
+    #         sourcepath = '/home/deep/Downloads/'
+    #         destpath = '/odoo'
+    #         # with open(sourcepath + filename, "rb") as file:
+    #         #     # Command for Uploading the file "STOR filename"
+    #         #     ftp_server.storbinary("STOR %s"%(filename), fp=file)
+    #
+    #         file = open(sourcepath + filename, "rb")
+    #         ftp_server.cwd(destpath)
+    #         ftp_server.storbinary('STOR ' + filename, file)
+    #         ftp_server.quit()
+    #         ftp_server.close()
+
 
 
     @api.multi
