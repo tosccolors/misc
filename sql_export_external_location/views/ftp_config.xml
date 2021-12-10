@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<odoo>
+
+  <!--  Form view for accountant info collection and shipping --> 
+  <record id="view_form_ftp_connector" model="ir.ui.view">
+    <field name="name">FTP connector</field>
+    <field name="model">ftp.config</field>
+    <field name="arch" type="xml">
+      <form string="FTP connector">
+        <header>
+            <button string="Send Now" name="do_send" type="object" class="oe_highlight"/>
+        </header>
+         <div class="oe_button_box" name="button_box">
+            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+            </button>
+         </div>
+
+          <br/>
+          <group name="connector_config" string="Connector configuration">
+            <field name="server"/> 
+            <field name="directory"/>  
+            <field name="user"/> 
+            <field name="password"/>  
+            <field name="tempdir"/>
+            <field name="output_type"/>
+            <field name="description"/>
+          </group>
+<!--          <button name="save_config" type="object" -->
+<!--            string="Save" class="oe_highlight" /> -->
+<!--          <br/>-->
+<!--          <br/>-->
+
+          <notebook>
+              <page string="General Information">
+                  <group name="production_status" string="Production status" col="2">
+                      <field name="latest_run"        readonly="1" widget="html"/>
+                      <field name="latest_status"     readonly="1" widget="html"/>
+                  </group>
+                  <br/>
+                  <br/>
+
+                  <group name="manual_send" string="Manual send" >
+
+                    <div colspan="2">
+                      <p>Press "Send" to initiate File Transfer of exported SQL Result </p>
+                    </div>
+                    <group>
+                    </group>
+                  </group>
+                  <button string="Send" name="do_send" type="object" class="oe_highlight"/>
+                  <br/>
+                  <br/>
+                  <group name="documentation" string="Summary" col="1">
+                      <p>SQL Extracts export to External Location via FTP Transfer</p>
+                      <p>This interfaces collects the result from SQL Export and ships this information. Automated runs use the current day. </p>
+                      <p>Shipping can be done manually using the Send-button above, or automatically via scheduled actions calling the automated_run method of this object.</p>
+                      <p/>
+                  </group>
+              </page>
+              <page string="SQL Exports">
+                  <field name="sql_export_ids" domain="[('state','=', 'sql_valid')]"/>
+              </page>
+          </notebook>
+
+      </form>
+    </field>
+  </record>
+
+
+   <record id="view_tree_ftp_connector" model="ir.ui.view">
+       <field name="name">FTP connector</field>
+       <field name="model">ftp.config</field>
+       <field name="arch" type="xml">
+       <tree string="FTP connector" decoration-muted="not active">
+            <field name="server"/>
+            <field name="user"/>
+            <field name="description"/>
+            <field name="active" invisible="1"/>
+       </tree>
+       </field>
+  </record>
+
+
+   <record id="view_search_ftp_connector" model="ir.ui.view">
+       <field name="name">FTP connector</field>
+       <field name="model">ftp.config</field>
+       <field name="arch" type="xml">
+       <search string="FTP connector" >
+            <field name="server"/>
+            <field name="user"/>
+            <field name="active" />
+            <separator/>
+            <filter string="Archived" name="archived" domain="[('active','=',False)]"/>
+       </search>
+       </field>
+  </record>
+
+  <record id="view_tree_ftp_connector" model="ir.ui.view">
+    <field name="name">FTP connector</field>
+    <field name="model">ftp.config</field>
+    <field name="arch" type="xml">
+      <tree string="FTP connector" decoration-muted="not active">
+        <field name="server"/>
+        <field name="user"/>
+        <field name="description"/>
+        <field name="active" invisible="1"/>
+      </tree>
+    </field>
+  </record>
+
+<!--  &lt;!&ndash; Connection info via server action and submenu&ndash;&gt;-->
+<!--  <record id="ftp_connector_action" model="ir.actions.server">-->
+<!--    <field name="name">FTP connector</field>-->
+<!--    <field name="model_id" ref="model_ftp_config"/>-->
+<!--    <field name="code">-->
+<!--      action = model.default_view()-->
+<!--    </field>-->
+<!--  </record>-->
+
+
+  <record id="action_ftp_connector" model="ir.actions.act_window">
+      <field name="name">FTP connector</field>
+      <field name="res_model">ftp.config</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_id" ref="view_tree_ftp_connector"/>
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          Click to configure new FTP Connector.
+        </p><p>
+          SQL Extracts export to External Location via FTP Transfer
+        </p>
+      </field>
+  </record>
+
+  <!-- Menu item to open Magnus FTP connector -->
+  <menuitem id="menu_ftp_connector_settings"
+    name="FTP Connector"
+    parent="base.menu_administration"
+    sequence="20"
+     />
+  <menuitem id="ftp_connector_menuitem"
+    name="FTP Connector"
+    action="action_ftp_connector"
+    parent="menu_ftp_connector_settings"
+    sequence="1"
+     /> 
+
+
+</odoo>

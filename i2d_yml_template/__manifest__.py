@@ -50,11 +50,12 @@ To use this module, you need to:
 * Go to accounting/...../yml templates
 * Give template a name
 * Load an example PDF; this will trigger text parsing. The result will be shown.
-* Use the output of the parsed pdf to create the regex expressions
-* Implement the regex expressions in the yml template
+* Use the parsed pdf to create the regex expressions by copying it to key fields, using the regex button and shifting the left and right parenthesis
+* If all info is available you then compose the yml template by the associatted button
 * Don't forget to connect to an existing partner, identified with its vat number
 * Save and export yml template
 * Possibly test the template using this module or accounting/.../import vendor bills
+* The test will warn you if you made a template on a PDF for which there is already another template
 * Enjoy
 
 Known issues / Roadmap

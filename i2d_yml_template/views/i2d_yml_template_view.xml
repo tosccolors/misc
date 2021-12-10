@@ -103,6 +103,8 @@
                                 style="background-color:#f2f2f2;"
                                 attrs="{'invisible': [('hide_pdf', '=', True)]}"/>
                     </div>
+
+                    
                     <div colspan="2" class="mt16">
                                 <button name="show_test_output" string="Show test output" attrs="{'invisible':[('hide_output','=',False)]}" type="object" class="oe_highlight"/>
                                 <button name="hide_test_output" string="Hide test output" attrs="{'invisible':[('hide_output','=',True)]}" type="object" class="oe_highlight"/>
@@ -120,7 +122,7 @@
                         <tree string="Partners for this Template" editable="top">
                             <field name="partner_id" required="1"/>
                             <field name="partner_vat" invisible="0"/>
-                            <field name="invoice_import_ids" invisible="0"/>
+                            <field name="invoice_import_id" invisible="0"/>
                             <field name="company_id" invisible="0"/>
                         </tree>
                     </field>
@@ -130,6 +132,7 @@
                     <button name="hide_regex_configurator" string="Hide configurator" attrs="{'invisible':[('regexr_iframe','=',False)]}" type="object" class="oe_highlight mb16"/>
                     <field name="regexr_iframe" invisible="1" string="Show regexr"/>
                     <iframe marginheight="0" marginwidth="0" frameborder="0" src="https://regexr.com/" width="100%" height="1000" attrs="{'invisible': [('regexr_iframe', '=', False)]}"/>
+
             </form>
         </field>
     </record>

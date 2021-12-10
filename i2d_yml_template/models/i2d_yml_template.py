@@ -126,6 +126,7 @@ options:\n\
 
     @api.multi
     def test_yml_template(self):
+        #initial checks
         if not self.state == 'saved' :
             raise UserError(_("Please save template in external system first")) 
             self.test_output=""
@@ -137,35 +138,41 @@ options:\n\
         if len(self.example_pdf)>1 :
             raise UserError(_("Testing only possible with one and only one pdf. Remove excess attachments in example pdf."))
             return 
-        #all ok
+        #prepare temporary file to check
         data = b64decode(self.example_pdf.datas)
         fd, pdf_file = tempfile.mkstemp(suffix="pdf")
         os.write(fd, data)
         os.close(fd)
+        #check versus available templates
         local_templates_dir = config.get('invoice2data_templates_dir', False)
         if local_templates_dir :
-            process = Popen (['invoice2data', '--debug', '--template-folder', local_templates_dir, pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
+            process = Popen (['invoice2data', '--debug', '--exclude-built-in-templates', '--template-folder', local_templates_dir, pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
         else :
-            rocess = Popen (['invoice2data', '--debug', pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
+            process = Popen (['invoice2data', '--debug', pdf_file], shell=False, stdout=PIPE, stderr=PIPE)
         stdout, stderr = process.communicate()
         if not local_templates_dir :
             stderr += "Templates directory not found, check odoo.cfg and directories for correct \'invoice2data_templates_dir\'"
         self.test_output = stdout+'\n'+stderr
+        self.test_output = self.test_output.replace('DEBUG:root:field=','\nDEBUG:root:field=')
+        self.test_output = self.test_output.replace('DEBUG:root:{','\nDDEBUG:root:{')
         #test if current pdf delivers desired keyword
         keyword_found = re.search("DEBUG:root:keywords=\['(.*)'\]", self.test_output)
+        self.onchange_keyword() #force update of keyword result
         if keyword_found and self.keyword_result :
             if keyword_found.group(1) != self.keyword_result :
                 #keep result by commit before user warning
                 self.env.cr.commit()
-                raise Warning(_("PDF matches other template than you are working on!\n"
-                                +"Your template uses %s and the template found uses %s." % (self.keyword_result, keyword_found.group(1))))
+                template_found = re.search("DEBUG:root:Matched template\s+(.*)\n", self.test_output)
+                if template_found :
+                    template_found = ' ('+ template_found.group(1) + ') '
+                else :
+                    template_found = ' '
+                raise Warning(_("PDF matches other template than you are working on!\n\n"
+                                +"Current template uses \"%s\" as keyword.\nThe template found%suses \"%s\"." % (self.keyword_result, template_found, keyword_found.group(1))))
         return
 
     @api.multi
     def compose_yml_template(self):
-        if not self.state == 'saved' :
-            raise UserError(_("Please save template in external system first")) 
-            return
         if not self.keyword and not self.amount and not self.amount_untaxed and not self.date and not self.invoice_number and not self.description :
             raise UserError(_("No regex formulas entered. Nothing to compose with."))
             return 
@@ -176,7 +183,7 @@ options:\n\
         name = self.partner_ids[0].partner_id.name
         self.yml_content="# -*- coding: utf-8 -*-\n\
 issuer: "+name+" \n\
-fields: \n"
+fields:\n"
         if self.amount :
             self.yml_content += "  amount: "+self.amount+"\n"
         if self.amount_untaxed : 
@@ -198,8 +205,11 @@ options:\n\
   date_formats:\n\
     - '%d-%m-%Y'\n\
   languages:\n\
-    - nl\n\
-  decimal_separator: ','"
+    - nl\n"
+        if re.search(r'\d{0,3}\,{0,1}\d{1,3}.\d{2}', self.amount ):
+            self.yml_content += "decimal_separator: '.'"
+        else :
+            self.yml_content += "decimal_separator: ','"
         return
 
 
@@ -235,8 +245,9 @@ options:\n\
         if not self.parsed_pdf or not key:
             result = ""
             return
-        if key.find('(') == -1 or key.find(')') == -1 or key.find('(')>key.find(')') :
-            return "brackets? '(..)'"
+        key2=key.replace(r"\(","").replace(r"\)","")
+        if key2.count('(') != 1 or key2.count(')') != 1 or key.find('(')>key.find(')') :
+            return "missing or unbalanced parenthesis '(...)'"
         match = re.search(key, self.parsed_pdf)
         if match :
             return match.group(1)
@@ -251,7 +262,8 @@ options:\n\
             return
         keyword = self.keyword
         if keyword.startswith('(') and keyword.endswith(')') :
-            keyword = re.search("'(.*)")  #strip bounding quotes
+            keyword = re.search(r"\((.*)\)", self.keyword).group(1) or ""  #strip bounding quotes
+            self.keyword=keyword
         self.keyword_result = self.onchange_searchfield('('+keyword+')')
         return
 
@@ -287,25 +299,36 @@ options:\n\
 
     @api.multi
     def convert2regex(self, string2convert):
+        #return if no string
+        if not string2convert :
+            return ""
         #escape the special meaning characters (this is incomplete but sufficient to start with)
         replacements =[ ('\\', '\\\\' ), 
                         (r'*', r'\*'),
-                      ]
+                        #(r':', r'\x3A'), #not necessary, makes it less readable
+                      ] #note: solution needed for point char
         for replacement in replacements :
                 string2convert=string2convert.replace(replacement[0], replacement[1])
         #find the substrings and replace by a regex
-        keys = [r'\s+',                             #first white space
-                r'\d{0,3}\.{0,1}\d{1,3},\d{2}',     #amounts have a comma
-                r'\d{1,2}-\d{1,2}-\d{4}',           #specific date type can be distinguished from long numbers
-                r'\d{1,2}\.\d{1,2}\.\d{4}',         #date with a point
-                r'\d{5,10}',                        #remaining long numbers
+        keys = [(r'\s+',                             r'\s+'),                             #first white space
+                (r'\d{1,2}-\d{1,2}-\d{4}',           r'\d{1,2}-\d{1,2}-\d{4}'),           #specific date type can be distinguished from long numbers
+                (r'\d{1,2}\.\d{1,2}\.\d{4}',         r'\d{1,2}\.\d{1,2}\.\d{4}'),         #date with points distinguish from amounts
+                (r'\d{0,3}\.{0,1}\d{1,3}\,\d{2}',    r'\d{0,3}\.{0,1}\d{1,3}\,\d{2}'),    #amounts having one comma
+                (r'\d{0,3}\,{0,1}\d{1,3}\.\d{2}',    r'\d{0,3}\,{0,1}\d{1,3}\.\d{2}'),    #or possible comma as thousand separator and one point as decimal separator 
+                (r'\d{5,10}',                        r'\d{5,10}'),                        #remaining long numbers
+                (r'\(',                              r'\('),                              #distinguish from catch group
+                (r'\)',                              r'\)'),                              #distinguish from catch group
                 ]
         for key in keys :
-            string2convert = re.sub(key, key, string2convert)
-        #remove all brackets and place on set on begin and end
-        string2convert.replace( '(', '')
-        string2convert.replace( ')', '')
-        string2convert = '('+ string2convert + ')'
+            string2convert = re.sub(key[0], key[1], string2convert)
+        #add catch group, with some intelligence (guessed start and end)
+        start_catch = string2convert.find(r'\d{')
+        if start_catch==-1 :
+            start_catch = 0
+        end_catch   = string2convert.rfind(r'}') or len(string2convert)
+        if end_catch==-1 :
+            end_catch = len(string2convert)
+        string2convert = string2convert[0:start_catch]+'('+string2convert[start_catch:end_catch+1]+')'+string2convert[end_catch+1:len(string2convert)]
         return string2convert
 
     @api.multi
@@ -420,6 +443,6 @@ class YmlTemplatePartner(models.Model):
     partner_id = fields.Many2one('res.partner', string='Vendor',
                                  domain=[('supplier', '=', True), ('is_company', '=', True)])
     partner_vat = fields.Char(related='partner_id.vat', string='VAT of Vendor')
-    invoice_import_ids = fields.One2many('account.invoice.import.config',
-                                        related='partner_id.invoice_import_ids', )
+    invoice_import_id = fields.Many2one('account.invoice.import.config',
+                                        related='partner_id.invoice_import_id', )
     company_id = fields.Many2one('res.company', related='partner_id.company_id', string='Partner Company')
