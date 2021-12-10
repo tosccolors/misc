@@ -187,8 +187,10 @@ class FTPConfig(models.Model):
     @api.multi
     def automated_run(self):
         configurations = self.search([])
+        _logger.info('Calling RUN found ....> %s '%(configurations.ids))
         for config in configurations:
             try:
+                _logger.info('Try Starting on [%s]'%(config.description))
                 config.do_send()
             except Exception, e:
                 _logger.exception("Cannot start automated_run. %s"%(e))
