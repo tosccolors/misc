@@ -34,32 +34,6 @@ class FTPConfig(models.Model):
     sql_export_ids = fields.Many2many('sql.export', 'sql_export_ftp_rel', 'lead_id', 'sql_export_id',
                                       string='SQL Exports')
 
-    # show only first record to configure, no options to create an additional one
-    # @api.multi
-    # def default_view(self):
-    #     configurations = self.search([])
-    #     if not configurations:
-    #         server = "bdu.nl"
-    #         self.write({'server': server})
-    #         configuration = self.id
-    #         _logger.info("configuration created")
-    #     else:
-    #         configuration = configurations[0].id
-    #     action = {
-    #         "type": "ir.actions.act_window",
-    #         "res_model": "ftp.config",
-    #         "view_type": "form",
-    #         "view_mode": "form",
-    #         "res_id": configuration,
-    #         "target": "inline",
-    #     }
-    #     return action
-
-
-    # @api.multi
-    # def save_config(self):
-    #     self.write({})
-    #     return True
 
     @api.multi
     def name_get(self):
@@ -76,44 +50,6 @@ class FTPConfig(models.Model):
                 config.latest_status += str('\n ') + msg + final_msg
             # config.write({})
         return
-
-    # def ship_file(self, msg, data, filename):
-    #     for config in self:
-    #         path = config.tempdir + "/"
-    #
-    #         # JSON
-    #         if isinstance(data, dict):
-    #             with open(path + filename, 'a') as f:
-    #                 json.dump(data, f)
-    #         else:
-    #             f = open(path + filename, "w")
-    #             f.write(data)
-    #
-    #         f = None  # to force releasing the file handle
-    #
-    #         # Initiate File Transfer Connection
-    #         try:
-    #             port_session_factory = ftputil.session.session_factory(port=21, use_passive_mode=True)
-    #             ftp = ftputil.FTPHost(config.server, config.user, config.password, session_factory=port_session_factory)
-    #         except Exception, e:
-    #             config.log_exception(msg, "Invalid FTP configuration")
-    #             continue
-    #
-    #         try:
-    #             _logger.info("Transferring " + filename)
-    #             if config.directory:
-    #                 target = str(config.directory) + '/' + filename
-    #             else:
-    #                 target = '/' + filename
-    #             source = config.tempdir + '/' + filename
-    #             ftp.upload(source, target)
-    #         except Exception, e:
-    #             config.log_exception(msg, "Transfer failed, quiting....")
-    #             continue
-    #
-    #         ftp.close()
-    #
-    #     return True
 
     def ship_file(self, msg, data, filename):
         for config in self:
@@ -172,28 +108,15 @@ class FTPConfig(models.Model):
 
         return True
 
-    # @api.multi
-    # def automated_run(self):
-    #     configurations = self.search([])
-    #     if not configurations:
-    #         # cannot use local method because there is no record
-    #         _logger.exception("Cannot start automated_run. Need a valid configuration")
-    #         return False
-    #     else:
-    #         # start with previous end
-    #         # self = configurations[0]
-    #         return self.do_send()
 
     @api.multi
     def automated_run(self):
         configurations = self.search([])
-        _logger.info('Calling RUN found ....> %s '%(configurations.ids))
         for config in configurations:
             try:
-                _logger.info('Try Starting on [%s]'%(config.description))
                 config.do_send()
             except Exception, e:
-                _logger.exception("Cannot start automated_run. %s"%(e))
+                pass
 
     @api.multi
     def do_send(self):
@@ -262,28 +185,6 @@ class FTPConfig(models.Model):
         return True
 
 
-    # def do_send(self):
-    #
-    #     for config in self:
-    #         print ("Transferring to =====", config.server)
-    #         import ftplib
-    #         ftp_server = ftplib.FTP(config.server, config.user, config.password)
-    #         ftp_server.encoding = "utf-8"
-    #         filename = '2_Accounts.xml'
-    #         sourcepath = '/home/deep/Downloads/'
-    #         destpath = '/odoo'
-    #         # with open(sourcepath + filename, "rb") as file:
-    #         #     # Command for Uploading the file "STOR filename"
-    #         #     ftp_server.storbinary("STOR %s"%(filename), fp=file)
-    #
-    #         file = open(sourcepath + filename, "rb")
-    #         ftp_server.cwd(destpath)
-    #         ftp_server.storbinary('STOR ' + filename, file)
-    #         ftp_server.quit()
-    #         ftp_server.close()
-
-
-
     @api.multi
     def export_sql(self, sqlExport):
         self.ensure_one()
@@ -293,9 +194,6 @@ class FTPConfig(models.Model):
 
         # Manage Params
         variable_dict = {}
-        # today = datetime.datetime.now()
-        # today_tz = fields.Datetime.context_timestamp(
-        #     sql_export, today)
 
         if sql_export.field_ids:
             for field in sql_export.field_ids:
