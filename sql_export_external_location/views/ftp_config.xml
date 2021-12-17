@@ -26,10 +26,6 @@
             <field name="output_type"/>
             <field name="description"/>
           </group>
-<!--          <button name="save_config" type="object" -->
-<!--            string="Save" class="oe_highlight" /> -->
-<!--          <br/>-->
-<!--          <br/>-->
 
           <notebook>
               <page string="General Information">
@@ -108,15 +104,6 @@
       </tree>
     </field>
   </record>
-
-<!--  &lt;!&ndash; Connection info via server action and submenu&ndash;&gt;-->
-<!--  <record id="ftp_connector_action" model="ir.actions.server">-->
-<!--    <field name="name">FTP connector</field>-->
-<!--    <field name="model_id" ref="model_ftp_config"/>-->
-<!--    <field name="code">-->
-<!--      action = model.default_view()-->
-<!--    </field>-->
-<!--  </record>-->
 
 
   <record id="action_ftp_connector" model="ir.actions.act_window">
