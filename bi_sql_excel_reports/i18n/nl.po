@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-27 11:15+0000\n"
-"PO-Revision-Date: 2021-09-27 11:15+0000\n"
+"POT-Creation-Date: 2021-12-18 09:17+0000\n"
+"PO-Revision-Date: 2021-12-18 09:17+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -112,6 +112,11 @@ msgstr "<strong>Mac</strong>"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "<strong>Odoo Json to CSV</strong>"
+msgstr "<strong>Odoo Json naar CSV</strong>"
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
 msgid "<strong>Windows</strong>"
 msgstr "<strong>Windows</strong>"
 
@@ -123,11 +128,11 @@ msgstr "Actief"
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_filter_on_user
 msgid "Add a filter on query field x_user_id to equal to the current user_id"
-msgstr "Add a filter on query field x_user_id to equal to the current user_id"
+msgstr "Gebruik een filter op het query-veld x_user_id dat gelijk moet zijn aan de user_id"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "Add-in file ready for download"
+msgid "Add-in files ready for download"
 msgstr "Add-in bestand gereed om te downloaden"
 
 #. module: bi_sql_excel_reports
@@ -141,9 +146,14 @@ msgid "Bar of Pie"
 msgstr "Bar of Pie"
 
 #. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_search
+msgid "CSV Downloads"
+msgstr "CSV Downloads"
+
+#. module: bi_sql_excel_reports
 #: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_subtotal
 msgid "Calculate sub total for this field in the pivot table"
-msgstr "Calculate sub total for this field in the pivot table"
+msgstr "Bereken subtotaal voor sit veld in de draaitabel"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
@@ -173,17 +183,17 @@ msgstr "Grafiek hoogte"
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_chart_left
 msgid "Chart position (points): left"
-msgstr "Chart position (points): left"
+msgstr "Grafiek positie (points): links"
 
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_chart_top
 msgid "Chart position (points): top"
-msgstr "Chart position (points): top"
+msgstr "Grafiek positie (points): bovenkant"
 
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_chart_width
 msgid "Chart position (points): width"
-msgstr "Chart position (points): width"
+msgstr "Grafiek positie (points): breedte"
 
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_chart_top
@@ -203,12 +213,12 @@ msgstr "Grafiek y-schaal"
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_chart_scale
 msgid "Chart y-scale max value (1 = 100%), not applicable when zero"
-msgstr "Chart y-scale max value (1 = 100%), not applicable when zero"
+msgstr "Grafiek y-schaal max waarde (1 = 100%), n.v.t. wanneer nul"
 
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_classic_pivot_table
 msgid "Classic layout"
-msgstr "Classic layout"
+msgstr "Klassieke layout"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
@@ -217,8 +227,10 @@ msgstr "Klik eerst op Download voorbereiden, download daarna het bestand"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "Click to download:"
-msgstr "Klik om te downloaden:"
+msgid "Click to download. Choose Odoo-reports.xlam and select either the OdooJsonToCsvWin.exe (Windows)\n"
+"                        or OdooJsonToCsvMac.exe (Apple Mac) version:"
+msgstr "Klik om te downloaden. Kies Odoo-reports.xlam en selecteer uit de OdooJsonToCsvWin.exe (Windows)\n"
+"                        of OdooJsonToCsvMac.exe (Apple Mac) versies:"
 
 #. module: bi_sql_excel_reports
 #: selection:bi.sql.excel.report,chart_type:0
@@ -262,7 +274,7 @@ msgstr "Aangemaakt op"
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_has_data
 msgid "Data loaded"
-msgstr "Data gela"
+msgstr "Data geladen"
 
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_sequence
@@ -292,9 +304,29 @@ msgid "Download Excel Add-in for SQL Excel Reports"
 msgstr "Download Excel Add-in for SQL Excel Reports"
 
 #. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_json_csv_mac_data
+msgid "Download Json to CSV (Mac) executable"
+msgstr "Download Json to CSV (Mac) executable"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_json_csv_win_data
+msgid "Download Json to CSV (Windows) executable"
+msgstr "Download Json to CSV (Windows) executable"
+
+#. module: bi_sql_excel_reports
 #: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_global_filter
 msgid "Enter index (short name) from which a selection is required, for example: Projects"
 msgstr "Enter index (short name) from which a selection is required, for example: Projects"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_addin_data
+msgid "Excel Add-in file data"
+msgstr "Excel Add-in file data"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_addin_file_name
+msgid "Excel Add-in file name"
+msgstr "Excel Add-in file name"
 
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_chart_type
@@ -372,19 +404,9 @@ msgid "Fields"
 msgstr "Velden"
 
 #. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_addin_data
-msgid "File data"
-msgstr "File data"
-
-#. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
 msgid "File download"
 msgstr "Bestand download"
-
-#. module: bi_sql_excel_reports
-#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_file_name
-msgid "File name"
-msgstr "Bestandsnaam"
 
 #. module: bi_sql_excel_reports
 #: selection:bi.sql.excel.report,chart_type:0
@@ -419,11 +441,6 @@ msgstr "Groep niveau"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_search
-msgid "Has only a pivot table"
-msgstr "Heeft alleen een draaitabel"
-
-#. module: bi_sql_excel_reports
-#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_search
 msgid "Having queries"
 msgstr "Heeft een querie"
 
@@ -441,13 +458,13 @@ msgstr "ID"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "In Excel, from the Odoo menu click <strong>Settings</strong>.\n"
-"                        Check the settings and enter your password. Click Test to validate and click OK to save.\n"
+msgid "In Excel, from the Odoo menu click <strong>Settings</strong>. Check the settings,\n"
+"                        verify your username and enter your password. Click Test to validate and click OK to save.\n"
 "                        Now click <strong>Get Index</strong> to get an overview of available reports. Select reports\n"
 "                        by marking them in column B with a character (x for example). You may need to select the scope\n"
 "                        for some reports, for example select the relevant projects when the report is about projects.\n"
 "                        Then click <strong>Get Reports</strong> to get the reports which will appear on\n"
-"                        separate worsksheets."
+"                        separate worksheets."
 msgstr "In Excel, vanuit het Odoo menu kies <strong>Settings</strong>.\n"
 "                        Controleer de instellingen en geef het wachtwoord in. Klik op Test om te controleren en klik OK om te bewaren.\n"
 "                        Kies vervolgens <strong>Get Index</strong> om een overzicht van beschikbare rapporten op te halen. Kies rapporten\n"
@@ -492,6 +509,11 @@ msgid "Installing the Add-in"
 msgstr "Add-in installeren"
 
 #. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_is_csv_download
+msgid "Is CSV Download"
+msgstr "Is CSV Download"
+
+#. module: bi_sql_excel_reports
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_is_group
 msgid "Is Group"
 msgstr "Is Groep"
@@ -505,6 +527,31 @@ msgstr "Is Selectie Index"
 #: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_is_select_index
 msgid "Is a selection index to use as global filter in reports"
 msgstr "Is a selection index to use as global filter in reports"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_is_csv_download
+msgid "Is data to be downloaded to a CSV file, not a report in Excel"
+msgstr "Is data to be downloaded to a CSV file, not a report in Excel"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_json_csv_mac_data
+msgid "Json to CSV (Mac) executable file data"
+msgstr "Json to CSV (Mac) executable file data"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_json_csv_mac_file_name
+msgid "Json to CSV (Mac) executable file name"
+msgstr "Json to CSV (Mac) executable file name"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_json_csv_win_data
+msgid "Json to CSV (Windows) executable file data"
+msgstr "Json to CSV (Windows) executable file data"
+
+#. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_json_csv_win_file_name
+msgid "Json to CSV (Windows) executable file name"
+msgstr "Json to CSV (Windows) executable file name"
 
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard___last_update
@@ -614,6 +661,11 @@ msgid "Reference to the report SQL View ID"
 msgstr "Reference to the report SQL View ID"
 
 #. module: bi_sql_excel_reports
+#: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_report_is_csvd
+msgid "Reference to the report field is_csv_download"
+msgstr "Reference to the report field is_csv_download"
+
+#. module: bi_sql_excel_reports
 #: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_report_is_index
 msgid "Reference to the report field is_select_index"
 msgstr "Reference to the report field is_select_index"
@@ -659,6 +711,11 @@ msgid "Rows or Axis"
 msgstr "Rijen of X-as"
 
 #. module: bi_sql_excel_reports
+#: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_report_is_csvd
+msgid "Rpt CSV download"
+msgstr "Rpt CSV download"
+
+#. module: bi_sql_excel_reports
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_report_query_id
 msgid "Rpt Query ID"
 msgstr "Rpt Query ID"
@@ -671,7 +728,7 @@ msgstr "Rpt Selectie index"
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_form
 msgid "SQL Excel Report"
-msgstr "SQL Excel Report"
+msgstr "SQL Excel Rapport"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.menu,name:bi_sql_excel_reports.menu_bi_sql_excel_reports_main
@@ -715,14 +772,14 @@ msgstr "SQL View which is the data source for the Excel report"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "Save the Excel Add-in file to your Downloads folder. Get the file info and uncheck the\n"
+msgid "Save the files to your Downloads folder. Get the file info and uncheck the\n"
 "                        <i>Locked</i> indicator when it is set. Then <strong>quit</strong> Excel.\n"
-"                        Now move the file to a folder of choice or the official folder for Add-ins\n"
+"                        Now move only the file Odoo-reports.xlam to a folder of choice or the official folder for Add-ins\n"
 "                        /Users/&lt;username&gt;/Library/Group Containers/UBF8T346G9.Office/User Content/Add-ins.\n"
 "                        Note that 'Library' and 'User Content' is language dependent. The Library folder (under Users)\n"
 "                        is a hidden folder. To make it visible in the Finder, type Shift + Command + dot.\n"
 "                        Use the 'Go' menu option and choose Computer, then Macintosh HD. Now you should see the\n"
-"                        Users folder. Follow the path as descibed above."
+"                        Users folder. Follow the path as descibed above. Leave the .exe file in the Downloads folder."
 msgstr "Bewaar de Excel Add-in in de Downloads map. Ga naar de bestandsinformatie en schakel de\n"
 "                        <i>Locked</i> indicator uit wanneer die aan staat. Dan Excel <strong>quitten</strong>.\n"
 "                        Verplaats nu de Add-in file naar een map naar eigen keuze of naar de officiële map voor Add-ins\n"
@@ -734,19 +791,25 @@ msgstr "Bewaar de Excel Add-in in de Downloads map. Ga naar de bestandsinformati
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "Save the Excel Add-in file to your Downloads folder. Open the Properties of the\n"
-"                        file and uncheck the <i>Blocked</i> indicator when it is set. Close Excel if it is opened.\n"
-"                        Now move the file to a folder of choice or the official folder for Add-ins\n"
+msgid "Save the files to your Downloads folder. Open the Properties of the\n"
+"                        files and uncheck the <i>Blocked</i> indicator when it is set. Close Excel if it is opened.\n"
+"                        Now move only the file Odoo-reports.xlam to a folder of choice or the official folder for Add-ins\n"
 "                        C:\\Users\\&lt;username&gt;\\AppData\\Roaming\\Microsoft\\AddIns.\n"
 "                        The AppData folder is a hidden folder. To make it visible in the File Explorer,\n"
-"                        select View in the menu and enable the Hidden Items option."
-msgstr "Bewaar de Excel Add-in in de Downloads map. Open de Properties (Eigenschappen) van het\n"
-"                        bestand en schakel de <i>Blocked</i> indicator uit wanneer die aan staat.\n"
-"                        Dan Excel afsluiten wanneer die is geopend.\n"
-"                        Verplaats nu de Add-in file naar een map naar eigen keuze of naar de officiële map voor Add-ins\n"
+"                        select View in the menu and enable the Hidden Items option.\n"
+"                        Leave the .exe file in the Downloads folder."
+msgstr "Bewaar de bestanden in de Downloads map. Open de 'Eigenschappen' van de\n"
+"                        bestanden en schakel de <i>Geblokkeerd</i> indicator uit wanneer die aan staat. Sluit Excel wanneer deze is geopend.\n"
+"                        Verplaats dan alleen het bestand Odoo-reports.xlam naar een map naar eigen keuze of naar de officiële map voor Add-ins\n"
 "                        C:\\Users\\&lt;username&gt;\\AppData\\Roaming\\Microsoft\\AddIns.\n"
-"                        De AppData map is een onzichtbare map. Om deze zichtbaar te maken in de File Explorer,\n"
-"                        selecteer View in het menu en kies daar voor het zichtbaar maken van onzichbare mappen."
+"                        The AppData map is een onzichtbare map. Om deze zichtbaar te maken in de File Explorer,\n"
+"                        kies View (Beeld) in het menu and selecteer de Hidden Items optie.\n"
+"                        Laat het .exe bestand in the Downloads map staan."
+
+#. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_search
+msgid "Search Reports"
+msgstr "Search Reports"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_view_search
@@ -757,7 +820,7 @@ msgstr "Selectie Indexen"
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_field_sequence
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_sequence
 msgid "Sequence"
-msgstr "Volgnummer"
+msgstr "Reeks"
 
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_filter_value
@@ -878,6 +941,15 @@ msgid "Table top-left row"
 msgstr "Tabel linksboven rij"
 
 #. module: bi_sql_excel_reports
+#: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
+msgid "The OdooJsonToCsv executable is a tool to convert data received from Odoo (in Json format)\n"
+"                        to a CSV format which can be loaded by Excel. It can do this much faster than the Excel Add-in itself.\n"
+"                        Leave this file in the Downloads folder, the Add-in will pick it up from there."
+msgstr "Het OdooJsonToCsv programma is a tool om gegevens van Odoo in (in Json format)\n"
+"                        te converteren naar CSV format dat kan worden ingelezen door Excel. Dit programma kan dit veel sneller doen dan de Excel Add-in zelf.\n"
+"                        Laat dit bestand in de Downloads map staan, de Add-in pakt het bestand van hier op."
+
+#. module: bi_sql_excel_reports
 #: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_index_info
 msgid "The field is displayed as an information field on an index page"
 msgstr "The field is displayed as an information field on an index page"
@@ -951,6 +1023,11 @@ msgstr "Values:StDevp"
 #: selection:bi.sql.excel.report.field,pivot_area:0
 msgid "Values:Sum"
 msgstr "Values:Sum"
+
+#. module: bi_sql_excel_reports
+#: selection:bi.sql.excel.report.field,pivot_area:0
+msgid "Values:Sum Cumulative"
+msgstr "Values:Sum Cumulative"
 
 #. module: bi_sql_excel_reports
 #: selection:bi.sql.excel.report.field,pivot_area:0
