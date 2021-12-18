@@ -16,6 +16,10 @@ class BiSqlExcelReportField(models.Model):
         return self.env.context.get('parent_report_is_select_index', False)
 
     @api.model
+    def _get_default_is_csv_download(self):
+        return self.env.context.get('parent_report_is_csv_download', False)
+
+    @api.model
     def _get_default_sequence(self):  # only works on records saved to the database ..
         new_seq = 1
         report_id = self.env.context.get('parent_report_id', False)
@@ -55,6 +59,13 @@ class BiSqlExcelReportField(models.Model):
         related='report_id.is_select_index',
         default=_get_default_is_select_index,
         help="Reference to the report field is_select_index")
+
+    report_is_csvd = fields.Boolean(
+        string='Rpt CSV download',
+        copy=True,
+        related='report_id.is_csv_download',
+        default=_get_default_is_csv_download,
+        help="Reference to the report field is_csv_download")
 
     sequence = fields.Integer(
         string='Sequence',
