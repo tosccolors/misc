@@ -8,7 +8,7 @@ try:
     import ftputil.session
 except ImportError:
     pass
-import ftplib
+# import ftplib
 
 _logger = logging.getLogger(__name__)
 
@@ -135,7 +135,6 @@ class FTPConfig(models.Model):
                                    "Program not started. <br>Please provide a valid server/user/password/tempdir configuration")
                 continue
 
-            # sqlExports = self.env['sql.export'].search([('state','=', 'sql_valid')], order='id')
             sqlExports = config.sql_export_ids.filtered(lambda s: s.state == 'sql_valid')
 
             if not len(sqlExports.ids):
@@ -154,7 +153,7 @@ class FTPConfig(models.Model):
                         cursor.execute(query)
                         res = cursor.fetchall()
                         res = res[0][0]
-                        filename = str(se.id) + '_' + str(se.name) + '.xml'
+                        filename = str(se.name) + '.xml'
                         GoON = config.ship_file(msg, res, filename)
                         if not GoON: return False
 
@@ -168,7 +167,7 @@ class FTPConfig(models.Model):
                         cursor.execute(se.query)
                         res = cursor.dictfetchall()
                         data = {'0': res}
-                        filename = str(se.id) + '_' + str(se.name) + '.json'
+                        filename = str(se.name) + '.json'
                         GoON = config.ship_file(msg, data, filename)
                         if not GoON: return False
 
@@ -212,6 +211,6 @@ class FTPConfig(models.Model):
 
         wiz.write({
             'binary_file': res,
-            'file_name': str(sql_export.id) + '_' + sql_export.name + '.csv'
+            'file_name': sql_export.name + '.csv'
         })
         return wiz
