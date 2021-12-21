@@ -2,7 +2,7 @@
 <odoo>
 
   <!--  Form view for accountant info collection and shipping --> 
-  <record id="view_form_ftp_connector" model="ir.ui.view">
+    <record id="view_form_ftp_connector" model="ir.ui.view">
     <field name="name">FTP connector</field>
     <field name="model">ftp.config</field>
     <field name="arch" type="xml">
@@ -64,7 +64,7 @@
   </record>
 
 
-   <record id="view_tree_ftp_connector" model="ir.ui.view">
+    <record id="view_tree_ftp_connector" model="ir.ui.view">
        <field name="name">FTP connector</field>
        <field name="model">ftp.config</field>
        <field name="arch" type="xml">
@@ -78,7 +78,7 @@
   </record>
 
 
-   <record id="view_search_ftp_connector" model="ir.ui.view">
+    <record id="view_search_ftp_connector" model="ir.ui.view">
        <field name="name">FTP connector</field>
        <field name="model">ftp.config</field>
        <field name="arch" type="xml">
@@ -90,9 +90,9 @@
             <filter string="Archived" name="archived" domain="[('active','=',False)]"/>
        </search>
        </field>
-  </record>
+    </record>
 
-  <record id="view_tree_ftp_connector" model="ir.ui.view">
+    <record id="view_tree_ftp_connector" model="ir.ui.view">
     <field name="name">FTP connector</field>
     <field name="model">ftp.config</field>
     <field name="arch" type="xml">
@@ -106,7 +106,7 @@
   </record>
 
 
-  <record id="action_ftp_connector" model="ir.actions.act_window">
+    <record id="action_ftp_connector" model="ir.actions.act_window">
       <field name="name">FTP connector</field>
       <field name="res_model">ftp.config</field>
       <field name="view_type">form</field>
@@ -122,12 +122,12 @@
   </record>
 
   <!-- Menu item to open Magnus FTP connector -->
-  <menuitem id="menu_ftp_connector_settings"
+    <menuitem id="menu_ftp_connector_settings"
     name="FTP Connector"
     parent="base.menu_administration"
     sequence="20"
      />
-  <menuitem id="ftp_connector_menuitem"
+    <menuitem id="ftp_connector_menuitem"
     name="FTP Connector"
     action="action_ftp_connector"
     parent="menu_ftp_connector_settings"
