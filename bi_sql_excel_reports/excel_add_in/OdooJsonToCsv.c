@@ -92,7 +92,7 @@ void help_info()
     printf("OPTIONS\n");
     printf("\t--utf8\tOutput non-ascii characters in UTF-8, this is the default for non-Windows machines.\n");
     printf("\t--tab\tUse tab characters instead of commas to separate values.\n");
-    printf("\t--semi\tUse semicolon characters instead of commas to separate values.\n");
+    printf("\t--semi\tUse semicolon characters instead of commas and replace decimal dot by decimal comma.\n");
     printf("\t--unquoted\tRemove double-quote characters around string values.\n");
 }
 

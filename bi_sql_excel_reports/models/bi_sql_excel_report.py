@@ -8,6 +8,8 @@ import logging
 from collections import OrderedDict
 from odoo import fields, models, api
 from odoo import SUPERUSER_ID
+from odoo.osv import expression
+from odoo.tools.safe_eval import safe_eval
 # from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -18,7 +20,7 @@ class BiSqlExcelReport(models.Model):
     _order = 'sequence, id'
     auth = None                              # reference to authorization object
     add_in_latest_ver = 0.70                 # the latest Excel Add-in version
-    add_in_incompatible_ver = 0.69           # Add-in version (or older) incompatible with Odoo module
+    add_in_incompatible_ver = 0.68           # Add-in version (or older) incompatible with Odoo module
 
     @api.model
     def _get_default_sequence(self):
@@ -304,7 +306,7 @@ class BiSqlExcelReport(models.Model):
         if add_in_ver < self.add_in_latest_ver:
             result['upgrade_available'] = True
             result['message'] = ' '.join((upd_msg_b, upd_msg_c))
-        if add_in_ver < self.add_in_incompatible_ver:
+        if add_in_ver <= self.add_in_incompatible_ver:
             result['upgrade_required'] = True
             result['message'] = ' '.join((upd_msg_a, upd_msg_c))
         return result
@@ -464,67 +466,11 @@ class ReportAuthorization:
         """ True when the logged-on user is a super user """
         return self.parent_object.env.user.id == SUPERUSER_ID
 
-    def _object_attribute_value(self, obj, attr_stack):
-        """ Get the attribute value of the object which may be an attribute of an underlying object
-            when the field_stack list contains more than one attribute name. Works left to right within attr_stack. """
-        if len(attr_stack) > 1:
-            obj = getattr(obj, attr_stack[0])
-            return self._object_attribute_value(obj, attr_stack[1:])
-        return getattr(obj, attr_stack[0])
-
-    def _user_params(self, user_model_attr):
-        """ Pass a string value for user_model_attr after 'user.' as in the domain string,
-            returns the actual user parameter value(s) """
-        user_model = self.parent_object.env['res.users']
-        user_record = user_model.search([('id', '=', self.parent_object.env.user.id)])
-        attr_stack = user_model_attr.split('.')
-        return self._object_attribute_value(user_record, attr_stack)
-
-    def _convert_domain_tpl(self, tuple_str):
-        """ Convert a domain-tuple as a string to a tuple object and handle references to the user object """
-        lst = tuple_str.split(',')
-        assert len(lst) == 3
-        look_for = 'user.'
-        start_position = lst[2].find(look_for)
-        if -1 < start_position < 2:
-            attributes = lst[2][start_position + len(look_for):-1]
-            if lst[2][:1] == '[':
-                lst[2] = [self._user_params(attributes)]
-            elif lst[2][:1] == '(':
-                lst[2] = tuple(self._user_params(attributes))
-            else:
-                lst[2] = self._user_params(attributes)
-        return tuple(lst)
-
     def _convert_domain_str(self, domain_str):
-        """ Convert a domain as a string to a Python list with strings and tuples """
-        domain_str = domain_str.replace("'", '')
-        domain_lst = []
-        if not (domain_str[:1] == '[' and domain_str[-1:] == ']'):
-            return domain_lst
-        parts = domain_str.split(',')
-        parts[0] = parts[0][1:]
-        parts[-1] = parts[-1][:-1]
-        for seq, part in enumerate(parts):
-            parts[seq] = parts[seq].strip()
-        within_tuple = False
-        tuple_str = ''
-        for part in parts:
-            if not within_tuple:
-                if part[:1] == '(':
-                    tuple_str = part[1:]
-                    within_tuple = True
-                else:
-                    domain_lst.append(part)
-            else:
-                if part[-1:] == ')':
-                    tuple_str = ','.join((tuple_str, part[:-1]))
-                    domain_lst.append(self._convert_domain_tpl(tuple_str))
-                    tuple_str = ''
-                    within_tuple = False
-                else:
-                    tuple_str = ','.join((tuple_str, part))
-        return domain_lst
+        """ Convert a domain as a string to a Python list with strings and tuples having (user) values """
+        # see class IrRule, method _force_domain
+        eval_context = {'user': self.parent_object.env.user}
+        return expression.normalize_domain(safe_eval(domain_str, eval_context))
 
     @staticmethod
     def _valid_domain_fields(column_names, domain, model_name):
@@ -548,7 +494,7 @@ class ReportAuthorization:
         technical_name = self._query_techical_name_suffix(model_name)
         bi_sql_view_model = self.parent_object.env['bi.sql.view']
         sql_views = bi_sql_view_model.sudo().search([('technical_name', '=', technical_name)])
-        model_domain = []
+        model_domain = ''
         if len(sql_views) == 1:
             assert model_name == sql_views[0].model_name
             model_domain = sql_views[0].domain_force
@@ -563,7 +509,7 @@ class ReportAuthorization:
             return auth_filter_list
 
         sql_domain = self._convert_domain_str(self._get_authorization_domain(model_name))
-        if not sql_domain:
+        if not sql_domain or sql_domain == [(1, '=', 1)]:
             return ''
         if not self._valid_domain_fields(column_names, sql_domain, model_name):
             return 'false'

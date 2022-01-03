@@ -43,7 +43,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                             <field name="query" attrs="{'invisible':[('is_group', '=', True)]}"/>
                             <field name="is_group"/>
                             <field name="group_level" attrs="{'invisible':[('is_group', '=', False)]}"/>
-                            <field name="filter_on_user" attrs="{'invisible':['|', ('is_group', '=', True), ('is_select_index', '=', True)]}"/>
+                            <field name="filter_on_user" attrs="{'invisible':[('is_group', '=', True)]}"/>
                             <field name="is_select_index" attrs="{'invisible':['|', ('is_group', '=', True), ('is_csv_download', '=', True)]}"/>
                             <field name="is_csv_download" attrs="{'invisible':['|', ('is_group', '=', True), ('is_select_index', '=', True)]}"/>
                             <field name="active"/>
