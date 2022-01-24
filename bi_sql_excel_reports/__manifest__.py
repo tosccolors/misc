@@ -5,7 +5,7 @@
 {
     "name": "BI SQL Excel Reports",
     "summary": "Pull SQL reports defined in Odoo from within Excel, using the Excel add-in and this module",
-    "version": "10.0.1.2.0",
+    "version": "10.0.0.7.4",
     "author": "Magnus",
     "website": "https://www.magnus.nl/",
     "license": "AGPL-3",
