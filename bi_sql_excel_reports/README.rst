@@ -79,7 +79,7 @@ Next, the ``Get Reports`` option will get the report data and format the pivot t
 
 Technical info::
 
-  The Excel add-in uses cURL (https://curl.se) to connect to Odoo. The Odoo jsonrpc request
+  The Excel add-in uses curl (https://curl.se) to connect to Odoo. The Odoo jsonrpc request
   format is used. Received data is temporarily saved to disk before it is loaded into Excel.
   Official Add-in directories used on a Windows and Apple Macintosh are respectively:
 

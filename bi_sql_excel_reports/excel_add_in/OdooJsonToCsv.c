@@ -6,8 +6,9 @@
     Converts a json file to a comma separated file compatible with Microsoft Excel.
     The json is expected to contain a list of lists as the value of the key "result".
     The first list (or row) is expected to contain the header with column names.
-    Brackets within a text are expected to be enclosed in single quotes to separate
-    them from list delimiters.
+    Brackets within a text enclosed in single quotes (to separate them from list
+    delimiters in the Visual Basic for Applications logic) will be stripped from
+    their single quotes.
 */
 
 // Compiler directives are used to compile on different platforms
@@ -44,7 +45,7 @@ struct options_type {                  // command line options
     bool unquoted;                     // use no quotes around strings
 };
 struct file_globals_type {             // file related variables
-    char *path;                        // path
+    char *path;                        // path derived from the input path & filename
     char *inp_filename;                // input filename
     char *out_filename;                // output filename
     char *stat_filename;               // statistics output filename
@@ -78,7 +79,7 @@ void help_info()
     printf("\tOdooJsonToCsv\n\n");
     printf("DESCRIPTION\n");
     printf("\tThis utility program converts a JSON file to a CSV file. The JSON must contain a key \"result\".\n");
-    printf("\tThe value for this key must be a single list which contains many lists (one nesting level).\n");
+    printf("\tThe value for this key must be a single list which contains many lists (single nesting level).\n");
     printf("\tEach of these lists holds a number of values, with all lists the same # of values. The first \n");
     printf("\tlist usually holds the column names. It has the response JSON format from an Odoo application.\n\n");
     printf("OUTPUT\n");
@@ -98,14 +99,10 @@ void help_info()
 
 
 void copy_n_string(char *Destination, char const *Source, rsize_t MaxCount)
-// Copy source to destination string with indicated maximum characters
-// Compiler directive for Apple Mac library usage
+// Copy source to destination string with indicated maximum characters, make sure Destination is Null terminated
 {
-#if __MACH__
-    strlcpy(Destination, Source, MaxCount);
-#else
-    strncpy_s(Destination, strlen(Source) + 1, Source, MaxCount);
-#endif
+    memcpy(Destination, Source, MaxCount);
+    if (Destination[MaxCount] != '\0') { Destination[MaxCount] = '\0'; }
 }
 
 
@@ -139,7 +136,7 @@ bool init_path_and_filename(int arg_count, char *arguments[])
     fglob.out_filename = malloc(1024);
     fglob.stat_filename = malloc(1024);
     fglob.path_and_name = malloc(2048);
-    unsigned int i, p, ext_len;
+    unsigned int i, p, offset, ext_len;
     if (arg_count > 0) {
         // set stat_filename
         p = path_end(arguments[0]);
@@ -159,23 +156,19 @@ bool init_path_and_filename(int arg_count, char *arguments[])
             // set path and filename
             fglob.path[0] = '\0';
             p = path_end(arguments[1]);
-            if (p) {
-                i = 0;
-                while (i <= p) {
-                    fglob.path[i] = arguments[1][i];
-                    i += 1;
-                }
-                fglob.path[i] = '\0';
-                p += 1;
-            }
+            if (p) { copy_n_string(fglob.path, arguments[1], p+1); }
             i = p;
+            offset = (p>0) ? 1: 0;
             while (i < strlen(arguments[1])) {
-                fglob.inp_filename[i - p] = arguments[1][i];
+                fglob.inp_filename[i - p] = arguments[1][i+offset];
                 i += 1;
             }
             fglob.inp_filename[i - p] = '\0';
-            copy_n_string(fglob.out_filename, fglob.inp_filename, strlen(fglob.inp_filename) - 3);
-            concat_n_string(fglob.out_filename, "csv", strlen(fglob.out_filename) + 4);
+            i = strlen(fglob.inp_filename);
+            while (i > 1 && fglob.inp_filename[i] != '.') { i -= 1; }
+            if (fglob.inp_filename[i] != '.') { i = strlen(fglob.inp_filename); }
+            copy_n_string(fglob.out_filename, fglob.inp_filename, i);
+            concat_n_string(fglob.out_filename, ".csv", strlen(fglob.out_filename) + 5);
             result = true;
         }
     }
@@ -194,16 +187,18 @@ void command_line_options(int arg_count, char *arguments[])
     opt.use_semi = false;
     opt.use_tab = false;
     opt.unquoted = false;
-    for(i=2; i < arg_count; i++) {
-        if (strcmp(arguments[i], "-utf8") == 0 || strcmp(arguments[i], "--utf8") == 0) { opt.use_utf8 = true; }
-        if (strcmp(arguments[i], "-tab") == 0 || strcmp(arguments[i], "--tab") == 0) { opt.use_tab = true; }
-        if (strcmp(arguments[i], "-semi") == 0 || strcmp(arguments[i], "--semi") == 0) { opt.use_semi = true; }
-        if (strcmp(arguments[i], "-unquoted") == 0 || strcmp(arguments[i], "--unquoted") == 0) { opt.unquoted = true; }
+    for (i=2; i < arg_count; i++) {
+        if (strcmp(arguments[i], "-utf8") == 0 || strcmp(arguments[i], "--utf8") == 0)  opt.use_utf8 = true;
+        if (strcmp(arguments[i], "-tab") == 0 || strcmp(arguments[i], "--tab") == 0)  opt.use_tab = true;
+        if (strcmp(arguments[i], "-semi") == 0 || strcmp(arguments[i], "--semi") == 0)  opt.use_semi = true;
+        if (strcmp(arguments[i], "-unquoted") == 0 || strcmp(arguments[i], "--unquoted") == 0)  opt.unquoted = true;
     }
-    if (opt.use_utf8) { printf("Output in UTF-8\n"); }
-    if (opt.use_tab) { printf("Output with Tab separators\n"); }
-    if (opt.use_semi) { printf("Output with Semicolon separators\n"); }
-    if (opt.unquoted) { printf("Output with unquoted strings\n"); }
+    if (opt.use_tab && opt.use_semi) {opt.use_semi = false; }
+    if (opt.use_utf8)  printf("Output in UTF-8\n");
+    if (opt.use_tab)   printf("Output with Tab separators\n");
+    if (opt.use_semi)  printf("Output with Semicolon separators\n");
+    if (opt.unquoted)  printf("Output with unquoted strings\n");
+    if (!opt.use_tab && !opt.use_semi && opt.unquoted) printf("Commas in strings will be replaced by spaces\n");
 }
 
 
@@ -458,6 +453,11 @@ long convert_line(char *p_inp, int line_len, char *p_outp)
                 p_outp -= 1; converted = true;
                 skip_char += 5;
                 line_char_seq += 4;
+            }
+            // replace comma by space when delimiter is comma and strings are unquoted
+            else if (*(p_work) == ',' && !opt.use_tab && !opt.use_semi && opt.unquoted) {
+                conv_ch[0] = ' '; conv_ch[1] = '\0';
+                converted = true;
             }
         }
         else {
