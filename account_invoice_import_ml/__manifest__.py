@@ -15,7 +15,12 @@
         "data/ir_config_parameter.xml",
         "data/product_product.xml",
         "data/res_partner.xml",
+        "views/account_config_settings.xml",
         "views/account_invoice.xml",
         "views/res_partner.xml",
+        "views/templates.xml",
     ],
+    "qweb": [
+        "static/src/xml/account_invoice_import_ml.xml",
+    ]
 }

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bi_sql_excel_report_manager,access_bi_sql_excel_report_manager,model_bi_sql_excel_report,sql_request_abstract.group_sql_request_manager,1,1,1,1
+access_bi_sql_excel_report_field_manager,access_bi_sql_excel_report_field_manager,model_bi_sql_excel_report_field,sql_request_abstract.group_sql_request_manager,1,1,1,1

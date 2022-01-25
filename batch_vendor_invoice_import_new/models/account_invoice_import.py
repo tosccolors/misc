@@ -194,4 +194,6 @@ class BusinessDocumentImport(models.AbstractModel):
         if partner_dict.get('default_supplier') and partner_dict['default_supplier'] == True :
             partner = rpo.search([('default_supplier', '=', True)])
             return partner
-        return False
+        return super(BusinessDocumentImport, self)._hook_match_partner(
+            partner_dict, chatter_msg, domain, partner_type_label,
+        )

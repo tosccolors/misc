@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2021 - Today: Magnus (http://www.magnus.nl)
+@author: Vincent Verheul (v.verheul@magnus.nl)
+License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+-->
+
+<odoo>
+    <act_window
+        id="open_bi_sql_excel_reports_addin_download"
+        name="SQL Excel Reports Add-in download"
+        res_model="bi.sql.excel.addinfile.wizard"
+        view_mode="form"
+        target="new" />
+
+    <menuitem id="menu_bi_sql_excel_reports_addin"
+        name="SQL Excel Reports Add-in"
+        parent="base.menu_board_root"
+        action="open_bi_sql_excel_reports_addin_download"
+        sequence="10"/>
+</odoo>

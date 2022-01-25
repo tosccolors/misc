@@ -21,7 +21,6 @@ class AccountAssetAsset(models.Model):
 class AccountAssetDepreciationLine(models.Model):
     _inherit = 'account.asset.depreciation.line'
 
-
     @api.multi
     def create_move(self, post_move=True):
         created_moves = self.env['account.move']
