@@ -23,12 +23,13 @@ On invoice validation the operating_unit_id is copied to account.asset.asset fro
 
     # any module necessary for this one to work correctly
     'depends': ['base',
-                'account_asset', 'operating_unit', 'account_operating_unit'],
+                # 'account_asset',
+                 'operating_unit', 'account_operating_unit'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/account_asset_views.xml',
+        # 'views/account_asset_views.xml',
         # 'views/templates.xml',
     ],
     # only loaded in demonstration mode

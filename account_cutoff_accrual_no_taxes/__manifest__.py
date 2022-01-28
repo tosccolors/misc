@@ -24,7 +24,7 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/account_config_settings.xml',
+        # 'views/account_config_settings.xml',
     ],
     # only loaded in demonstration mode
     # 'demo': [

@@ -5,7 +5,7 @@ from odoo import models, fields, api
 
 class AgedPartnerBalanceReport(models.TransientModel):
 
-    _inherit = 'report_aged_partner_balance_qweb'
+    _inherit = 'report_aged_partner_balance'
 
     operating_unit_id = fields.Many2one(comodel_name='operating.unit')
 
@@ -14,7 +14,7 @@ class AgedPartnerBalanceReportCompute(models.TransientModel):
     For class fields, go more top at this file.
     """
 
-    _inherit = 'report_aged_partner_balance_qweb'
+    _inherit = 'report_aged_partner_balance'
 
     def _prepare_report_open_items(self):
         res = super(AgedPartnerBalanceReportCompute, self)._prepare_report_open_items()

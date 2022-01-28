@@ -12,7 +12,7 @@ class TestComputeWorkdays(TransactionCase):
     def setUp(self):
         super(TestComputeWorkdays, self).setUp()
 
-        self.timesheet_sheet = self.env['hr_timesheet_sheet.sheet']
+        self.timesheet_sheet = self.env['hr_timesheet.sheet']
         self.project_2 = self.env.ref('project.project_project_2')
         self.dept = self.env.ref('hr.dep_management')
         self.dept_1 = self.env.ref('hr.dep_rd')

@@ -1,1 +1,1 @@
-import account_report_template
+from . import account_report_template

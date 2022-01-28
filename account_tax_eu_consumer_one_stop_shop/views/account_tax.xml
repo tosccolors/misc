@@ -12,17 +12,17 @@
                 </field>
             </field>
         </record>
-        <record id="view_account_tax_search" model="ir.ui.view">
+        <record id="view_account_tax_search_inherited" model="ir.ui.view">
             <field name="name">account.tax.search</field>
             <field name="model">account.tax</field>
             <field name="inherit_id" ref="account.view_account_tax_search"/>
             <field name="arch" type="xml">
-                    <field name="company_id" position="after">
-                        <field name="country_id" />
-                    </field>
-                    <xpath expr="//search/group/filter[1]"  position="after">
-                            <filter string="Country" domain="[]" context="{'group_by':'country_id'}" />
-                    </xpath>
+                <field name="company_id" position="after">
+                    <field name="country_id" />
+                </field>
+                <xpath expr="//search/group/filter[1]"  position="after">
+                        <filter string="Country" domain="[]" name="country" context="{'group_by':'country_id'}" />
+                </xpath>
             </field>
         </record>
         <record id="view_tax_form" model="ir.ui.view">

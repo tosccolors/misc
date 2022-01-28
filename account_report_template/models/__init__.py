@@ -1,1 +1,1 @@
-import template
+from . import template

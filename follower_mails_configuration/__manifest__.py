@@ -37,8 +37,8 @@
     'website': 'http://www.magnus.nl',
     'depends': ['mail'],
     'data': [
-            'security/ir.model.access.csv',
-            'views/mail_followers_config_view.xml'
+            # 'security/ir.model.access.csv',
+            # 'views/mail_followers_config_view.xml'
     ],
     'demo': [
     ],

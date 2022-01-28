@@ -15,7 +15,8 @@ _logger = logging.getLogger(__name__)
 
 
 class IrAttachmentMetadata(models.Model):
-    _inherit = ['ir.attachment.metadata']
+    # _inherit = ['ir.attachment.metadata']
+    _inherit = ['attachment.queue']
 
     operating_unit_id = fields.Many2one(
         'operating.unit',
@@ -52,7 +53,7 @@ class IrAttachmentMetadata(models.Model):
                     attach = attachment.with_env(new_env)
                     try:
                         attach._run()
-                    except Exception, e:
+                    except Exception as e:
                         attach.env.cr.rollback()
                         _logger.exception(e)
                         attach.write(

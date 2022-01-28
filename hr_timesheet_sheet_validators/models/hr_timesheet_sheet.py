@@ -8,7 +8,7 @@ from odoo.exceptions import UserError
 
 
 class HrTimesheetSheet(models.Model):
-    _inherit = "hr_timesheet_sheet.sheet"
+    _inherit = "hr_timesheet.sheet"
 
     @api.model
     def _default_department(self):

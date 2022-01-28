@@ -188,7 +188,7 @@ class AccountMove(models.Model):
     def create_reversal_via_job_queue(self, date, journal, move_prefix, line_prefix, reconcile):
         try:
             return self.create_reversals(date, journal, move_prefix, line_prefix, reconcile)
-        except Exception, e:
+        except Exception:
             raise FailedJobError(
                 _("The details of the error:'%s'") % (unicode(e)))
 
@@ -211,6 +211,6 @@ class AccountMove(models.Model):
                     self.move_reverse_reconcile()
             return moves
 
-        except Exception, e:
+        except Exception:
             raise FailedJobError(
                 _("The details of the error:'%s'") % (unicode(e)))

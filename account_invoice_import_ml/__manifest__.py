@@ -10,12 +10,13 @@
     "license": "AGPL-3",
     "depends": [
         "account_invoice_import",
+        'account',
     ],
     "data": [
         "data/ir_config_parameter.xml",
         "data/product_product.xml",
         "data/res_partner.xml",
-        "views/account_config_settings.xml",
+        # "views/account_config_settings.xml",
         "views/account_invoice.xml",
         "views/res_partner.xml",
         "views/templates.xml",

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-   	<record id="view_partner_form_inherit_new" model="ir.ui.view">
+   	<!-- <record id="view_partner_form_inherit_new" model="ir.ui.view">
          <field name="name">res.partner.vat.inherit</field>
          <field name="model">res.partner</field>
          <field name="inherit_id" ref="base_vat.view_partner_form"/>
@@ -9,7 +9,7 @@
              <field name="vat" position="replace">
              </field>
          </field>
-     </record>
+     </record> -->
 
 
     <record id="view_partner_property_form_inherit_replace_property_field" model="ir.ui.view">

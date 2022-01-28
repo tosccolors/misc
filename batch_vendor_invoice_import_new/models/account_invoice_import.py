@@ -131,7 +131,7 @@ class AccountInvoiceImport(models.TransientModel):
                 invoice2data_res = extract_data(file_name, templates=templates)
                 log_contents = log_capture_string.getvalue()
 #                log_capture_string.close()
-            except Exception, e:
+            except Exception as e:
                 raise UserError(_(
                     "PDF Invoice parsing failed. Error message: %s") % e)
             if not invoice2data_res:
@@ -194,6 +194,4 @@ class BusinessDocumentImport(models.AbstractModel):
         if partner_dict.get('default_supplier') and partner_dict['default_supplier'] == True :
             partner = rpo.search([('default_supplier', '=', True)])
             return partner
-        return super(BusinessDocumentImport, self)._hook_match_partner(
-            partner_dict, chatter_msg, domain, partner_type_label,
-        )
+        return False

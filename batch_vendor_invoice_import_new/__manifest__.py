@@ -116,7 +116,9 @@ To contribute to this module, please visit https://odoo-community.org.
 """,
 
     # any module necessary for this one to work correctly
-    'depends': ['external_file_location',
+    'depends': [
+    # 'external_file_location',
+                'attachment_queue',
                 'account_operating_unit',
                 'account_invoice_import_invoice2data'
     ],
@@ -126,7 +128,7 @@ To contribute to this module, please visit https://odoo-community.org.
 
     # always loaded
     'data': [
-            'data/external_file_location.xml',
+            # 'data/external_file_location.xml',
             'views/account_invoice_import_config_view.xml',
             'views/task_view.xml',
             'views/attachment_view.xml',

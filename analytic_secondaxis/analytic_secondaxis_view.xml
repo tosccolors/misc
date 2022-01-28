@@ -122,7 +122,7 @@
             </field>
         </record>
         
-        <record id="view_account_analytic_line_filter" model="ir.ui.view">
+        <record id="view_account_analytic_line_filter_inherited" model="ir.ui.view">
             <field name="name">account.analytic.line.select</field>
             <field name="model">account.analytic.line</field>
             <field name="inherit_id" ref="analytic.view_account_analytic_line_filter" />
@@ -131,7 +131,7 @@
 
                 <xpath expr="." position="inside">
                     <field name="activity" />
-                    <filter string="Activity" context="{'group_by':'activity'}" groups="base.group_extended" icon="terp-folder-green"/>
+                    <filter string="Activity" name="activity" context="{'group_by':'activity'}" groups="base.group_extended" icon="terp-folder-green"/>
                 </xpath>
 
             </field>
@@ -171,14 +171,14 @@
             <field name="domain">[('activity', 'child_of', [active_id])]</field>
             <field name="context">{'activity':active_id}</field>
         </record>
-
+<!-- 
         <record id="ir_analytic_line_open" model="ir.values">
             <field eval=" 'tree_but_open'" name="key2"/>
             <field eval="'project.activity_al'" name="model"/>
             <field name="name">View activity's lines</field>
             <field eval="'ir.actions.act_window,'+str(dblc_activitiy)" name="value"/>
             <field eval="True" name="object"/>
-        </record>
+        </record> -->
 
     </data>
 </openerp>

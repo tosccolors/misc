@@ -1,4 +1,4 @@
-import models
-import wizard
-import report
-import controllers
+from . import models
+from . import wizard
+from . import report
+from . import controllers

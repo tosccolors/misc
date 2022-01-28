@@ -4,7 +4,7 @@ from odoo import models, fields, api
 
 class ReportJournalQweb(models.TransientModel):
 
-    _inherit = 'report_journal_qweb'
+    _inherit = 'report_journal_ledger'
 
     operating_unit_id = fields.Many2one(comodel_name='operating.unit')
 

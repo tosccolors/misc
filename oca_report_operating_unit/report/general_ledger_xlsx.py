@@ -52,6 +52,6 @@ class GeneralLedgerXslx(abstract_report_xlsx.AbstractReportXslx):
 GeneralLedgerXslx(
     'report.oca_report_operating_unit.report_general_ledger_xlsx',
     # 'report.account_financial_report_qweb.report_general_ledger_xlsx',
-    'report_general_ledger_qweb',
+    'report_general_ledger',
     parser=report_sxw.rml_parse
 )

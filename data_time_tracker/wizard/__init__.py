@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-import tracker_wizard
+from . import tracker_wizard

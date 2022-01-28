@@ -76,7 +76,7 @@ class AccountInvoiceAuthor(models.TransientModel):
 
         for inv in InvObj.browse(context.get('active_ids',[])):
             # -- deep: Allow Supplier Invoice only
-            if inv.type <> 'in_invoice': continue
+            if inv.type != 'in_invoice': continue
 
             if inv.state != 'open':
                 raise UserError(_("Selected invoice(s) cannot be authorized as they are not in 'Open' state."))
@@ -101,7 +101,7 @@ class AccountInvoiceVerifier(models.TransientModel):
 
         for inv in InvObj.browse(context.get('active_ids',[])):
             # -- deep: Allow Supplier Invoice only
-            if inv.type <> 'in_invoice': continue
+            if inv.type != 'in_invoice': continue
 
             if inv.state != 'auth':
                 raise UserError(_("Selected invoice(s) cannot be verified as they are not in 'Authorized' state."))

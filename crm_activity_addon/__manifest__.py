@@ -34,4 +34,5 @@
     'external_dependencies': {
         'python': ['bs4'],
     },
+    'installable':False,
 }

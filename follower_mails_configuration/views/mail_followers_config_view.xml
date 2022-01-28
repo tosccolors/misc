@@ -9,7 +9,7 @@
                 <sheet>
                     <group>
                         <group>
-                            <label string="Notify following customers by e-mail?"/>
+                            <label for="value" string="Notify following customers by e-mail?"/>
                             <field name="value" nolabel="1" attrs="{'readonly':[('complete_stop', '=', True)]}"/>
                         </group>
                          <group>
@@ -17,11 +17,11 @@
                             <field name="company_id" required="1"/>
                         </group>
                         <group>
-                            <label string="Disable all emails notifications?"/>
+                            <label for="complete_stop" string="Disable all emails notifications?"/>
                             <field name="complete_stop"  nolabel="1"/>
                         </group>
                         <group>
-                            <label string="Disable emails including tracking visibiltiy?"/>
+                            <label for="stop_track_visibility" string="Disable emails including tracking visibiltiy?"/>
                             <field name="stop_track_visibility" nolabel="1"/>
                         </group>
                     </group>

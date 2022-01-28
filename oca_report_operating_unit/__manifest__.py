@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['account_financial_report_qweb'],
+    'depends': ['account_financial_report'],
 
     # always loaded
     'data': [

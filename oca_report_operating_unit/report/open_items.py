@@ -5,7 +5,7 @@ from odoo import models, fields, api, _
 
 class OpenItemsReport(models.TransientModel):
 
-    _inherit = 'report_open_items_qweb'
+    _inherit = 'report_open_items'
 
     operating_unit_id = fields.Many2one(comodel_name='operating.unit')
 
@@ -14,7 +14,7 @@ class OpenItemsReportCompute(models.TransientModel):
     For class fields, go more top at this file.
     """
 
-    _inherit = 'report_open_items_qweb'
+    _inherit = 'report_open_items'
 
     # @api.multi
     # def print_report(self, report_type):

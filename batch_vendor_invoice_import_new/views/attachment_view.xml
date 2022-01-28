@@ -2,8 +2,8 @@
 <odoo>
 
     <record id="view_attachment_improved_form" model="ir.ui.view">
-        <field name="model">ir.attachment.metadata</field>
-        <field name="inherit_id" ref="base.view_attachment_form" />
+        <field name="model">attachment.queue</field>
+        <field name="inherit_id" ref="attachment_queue.view_attachment_queue_form" />
         <field name="arch" type="xml">
             <field name="company_id" position="after">
                 <field name="operating_unit_id"/>
@@ -14,9 +14,9 @@
         </field>
     </record>
 
-     <record id="view_external_attachment_tree" model="ir.ui.view">
-        <field name="model">ir.attachment.metadata</field>
-        <field name="inherit_id" ref="attachment_base_synchronize.view_external_attachment_tree" />
+     <record id="view_attachment_queue_tree" model="ir.ui.view">
+        <field name="model">attachment.queue</field>
+        <field name="inherit_id" ref="attachment_queue.view_attachment_queue_tree" />
         <field name="arch" type="xml">
             <field name="create_date" position="after">
                     <field name="company_id" />
@@ -26,9 +26,9 @@
         </field>
     </record>
 
-    <record id="view_external_attachment_search" model="ir.ui.view">
-        <field name="model">ir.attachment.metadata</field>
-        <field name="inherit_id" ref="attachment_base_synchronize.view_external_attachment_search" />
+    <record id="view_attachment_queue_search" model="ir.ui.view">
+        <field name="model">attachment.queue</field>
+        <field name="inherit_id" ref="attachment_queue.view_attachment_queue_search" />
         <field name="arch" type="xml">
                 <filter name="my_documents_filter" position="after">
                     <filter name="import_invoices" string="Import Invoices"

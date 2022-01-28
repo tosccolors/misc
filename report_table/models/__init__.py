@@ -1,1 +1,1 @@
-import json_table
+from . import json_table

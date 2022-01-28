@@ -24,7 +24,11 @@ from odoo import _, api, fields, models
 from odoo import tools
 
 import email
-import xmlrpclib
+try:
+    from xmlrpc import client as xmlrpclib
+except ImportError:
+    import xmlrpclib
+# import xmlrpclib
 
 class MailThread(models.AbstractModel):
     _inherit = 'mail.thread'

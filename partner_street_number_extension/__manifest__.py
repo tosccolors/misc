@@ -28,11 +28,11 @@
     'depends': [
         'base',
         'web',
-        'partner_street_number'
+        # 'partner_street_number'
         ],
     'data': [
         'views/res_partner.xml',
-        'views/assets.xml',
+        # 'views/assets.xml',
         ],
     'installable': True,
     'license': 'AGPL-3',

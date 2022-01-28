@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
-import mail_compose_message
-import account_invoice
+from . import mail_compose_message
+from . import account_invoice

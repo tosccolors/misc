@@ -8,7 +8,7 @@ from random import random
 from odoo import _, api, models
 from odoo.exceptions import UserError
 from odoo.tools import float_round
-from odoo.addons.base.res.res_bank import sanitize_account_number
+from odoo.addons.base.models.res_bank import sanitize_account_number
 
 
 _logger = logging.getLogger(__name__)

@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <template id="operating_unit_report_layout.report_assets_common" name="operating_unit_report_layout report assets common" inherit_id="report.assets_common">
+        <template id="operating_unit_report_layout.report_assets_common" name="operating_unit_report_layout report assets common" inherit_id="web.report_assets_common">
             <xpath expr="." position="inside">
                 <link href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;subset=latin-ext" rel="stylesheet"/>
             </xpath>

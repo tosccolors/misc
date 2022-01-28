@@ -65,7 +65,7 @@ class FTPConfig(models.Model):
                     f.write(data)
                 f = None  # to force releasing the file handle
 
-            except Exception, e:
+            except Exception:
                 config.log_exception(msg, "Invalid Directory, quiting...")
                 continue
 
@@ -77,7 +77,7 @@ class FTPConfig(models.Model):
                 port_session_factory = ftputil.session.session_factory(port=21, use_passive_mode=True)
                 ftpServer = ftputil.FTPHost(config.server, config.user, config.password, session_factory=port_session_factory)
 
-            except Exception, e:
+            except Exception:
                 config.log_exception(msg, "Invalid FTP configuration, quiting...")
                 return False
 
@@ -99,7 +99,7 @@ class FTPConfig(models.Model):
 
                 ftpServer.upload(source + filename, target + filename)
 
-            except Exception, e:
+            except Exception:
                 config.log_exception(msg, "Transfer failed, quiting....%s"%(e))
                 ftpServer.close()
                 return False
@@ -115,7 +115,7 @@ class FTPConfig(models.Model):
         for config in configurations:
             try:
                 config.do_send()
-            except Exception, e:
+            except Exception:
                 pass
 
     @api.multi
@@ -173,7 +173,7 @@ class FTPConfig(models.Model):
 
                     OkFiles += 1
 
-                except Exception, e:
+                except Exception:
                     ErrFiles += 1
                     config.log_exception(msg, "Error executing SQL (%s) :: %s"%(se.name, e))
                     continue

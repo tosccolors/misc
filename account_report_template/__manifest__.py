@@ -1,7 +1,7 @@
 {
     "name": "Accounting Reports Template Engine",
     "version": "0.3a",
-    "depends": ["report_table", "account"],
+    "depends": [ "account"],
     "author": "University of Namur",
     "category": "Accounting",
     "description": """
@@ -13,10 +13,10 @@
     """,
     'demo': [],
     'data': [
-        'views/template.xml',
-        'views/web_less.xml',
-        'report/account_report_template.xml',
-        'wizard/print_template.xml'
+        # 'views/template.xml',
+        # 'views/web_less.xml',
+        # 'report/account_report_template.xml',
+        # 'wizard/print_template.xml'
     ],
     'qweb': [
     ],

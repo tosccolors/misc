@@ -6,7 +6,7 @@ from odoo import models, fields, api, _
 
 
 class GeneralLedgerReport(models.TransientModel):
-    _inherit = 'report_general_ledger_qweb'
+    _inherit = 'report_general_ledger'
 
     operating_unit_id = fields.Many2one(comodel_name='operating.unit')
 
@@ -15,7 +15,7 @@ class GeneralLedgerReportCompute(models.TransientModel):
     For class fields, go more top at this file.
     """
 
-    _inherit = 'report_general_ledger_qweb'
+    _inherit = 'report_general_ledger'
 
     def _get_account_sub_subquery_sum_amounts(
             self, include_initial_balance, date_included):

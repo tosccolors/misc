@@ -7,7 +7,7 @@
         <field name="model">account.analytic.account</field>
         <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
         <field name="arch" type="xml">
-            <field name="tag_ids" position="after">
+            <field name="partner_id" position="after">
                 <field name="linked_operating_unit" groups="operating_unit.group_multi_operating_unit"/>
             </field>
         </field>
@@ -30,13 +30,16 @@
         <field name="inherit_id" ref="account.invoice_supplier_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_analytic_id']" position="attributes">
-                <attribute name="domain">[('company_id', '=', parent.company_id), '|','|', ('operating_unit_ids', 'in', [operating_unit]),
-                                            ('operating_unit_ids', '=', False),('linked_operating_unit', '=', True)]</attribute>
+<!--   +++++++++ In odoo12 [operating_unit] is not supporting its not in view account_invoice model++++++++ -->
+<!--                <attribute name="domain">[('company_id', '=', parent.company_id), '|','|', ('operating_unit_ids', 'in', [operating_unit]),-->
+<!--                                            ('operating_unit_ids', '=', False),('linked_operating_unit', '=', True)]</attribute>-->
+            <attribute name="domain">[('company_id', '=', parent.company_id), '|','|',('operating_unit_ids', '=', False),('linked_operating_unit', '=', True)]</attribute>
             </xpath>
             <xpath expr="//field[@name='tax_line_ids']/tree/field[@name='account_analytic_id']"
                    position="attributes">
-                <attribute name="domain">[('company_id', '=', parent.company_id), '|','|', ('operating_unit_ids', 'in', [operating_unit]),
-                                            ('operating_unit_ids', '=', False),('linked_operating_unit', '=', True)]</attribute>
+<!--                <attribute name="domain">[('company_id', '=', parent.company_id), '|','|', ('operating_unit_ids', 'in', [operating_unit]),-->
+<!--                                            ('operating_unit_ids', '=', False),('linked_operating_unit', '=', True)]</attribute>-->
+            <attribute name="domain">[('company_id', '=', parent.company_id), '|','|',('operating_unit_ids', '=', False),('linked_operating_unit', '=', True)]</attribute>
             </xpath>
         </field>
     </record>
@@ -50,8 +53,10 @@
                 <field name="operating_unit_id"/>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_analytic_id']" position="attributes">
-                <attribute name="domain">[('company_id', '=', parent.company_id), '|','|', ('operating_unit_ids', 'in', [operating_unit]),
-                                            ('operating_unit_ids', '=', False),('linked_operating_unit', '=', True)]</attribute>
+<!--                <attribute name="domain">[('company_id', '=', parent.company_id), '|','|', ('operating_unit_ids', 'in', [operating_unit]),-->
+<!--                                            ('operating_unit_ids', '=', False),('linked_operating_unit', '=', True)]</attribute>-->
+                            <attribute name="domain">[('company_id', '=', parent.company_id), '|','|',('operating_unit_ids', '=', False),('linked_operating_unit', '=', True)]</attribute>
+
             </xpath>
         </field>
     </record>

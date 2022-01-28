@@ -27,7 +27,8 @@
 #
 ##############################################################################
 #
-from openerp.osv import orm, fields
+# from openerp.osv import orm, fields
+from odoo import fields, models,_
 
 # -- deep: Object is crm.team: company field already exists
 # class crm_case_section(orm.Model):

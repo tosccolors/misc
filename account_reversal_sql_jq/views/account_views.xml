@@ -3,10 +3,10 @@
 
     <record id="view_account_config_settings" model="ir.ui.view">
         <field name="name">reversal.account.config.settings.form</field>
-        <field name="model">account.config.settings</field>
-        <field name="inherit_id" ref="account.view_account_config_settings" />
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form" />
         <field name="arch" type="xml">
-            <group name="accounting" position="after">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
                 <group name="reversal" string="Reversal-By-SQL/JQ">
                     <field name="reversal_via_sql"
                        attrs="{'invisible': ['|', ('perform_reversal_by_line_jq', '=', True), ('reversal_via_jq', '=', True)]}"/>
@@ -15,7 +15,7 @@
                     <field name="reversal_via_jq"
                        attrs="{'invisible': ['|', ('perform_reversal_by_line_jq', '=', True), ('reversal_via_sql', '=', True)]}"/>
                 </group>
-            </group>
+            </xpath>
         </field>
     </record>
 

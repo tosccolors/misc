@@ -18,6 +18,8 @@
     'depends': ['crm'],
 
     'data': [
-        'views/base_partner_merge_improve_view.xml',
+        # 'views/base_partner_merge_improve_view.xml',
+        # wizard removed in odoo12
     ],
+    'installable':False
 }

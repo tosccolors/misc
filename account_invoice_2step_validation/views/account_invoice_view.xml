@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
 	<!-- color definition for supplier invoice tree status 'auth' -->
         <record id="invoice_tree_auth" model="ir.ui.view">
@@ -85,25 +85,25 @@
 	        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
             <field name="arch" type="xml">
                 <data>
-		            <xpath expr="//search/filter[@name='invoices']" position="replace">
-                        <filter name="auth2" string="to be Verified" domain="[('state','=','auth'),('verif_tresh_exceeded','=', True)]" help="Authorized Invoices greater than Verification treshold"/>
-                        <filter name="verif" string="Verified" domain="[('state','=','verified')]" help="Verified Invoices"/>
-			            <filter name="invoices" string="Posted Invoices" domain="[('state','not in',['draft', 'start_wf','cancel'])]" help="Proforma/Open/Authorized/Paid Invoices"/>
-                    </xpath>
-		            <xpath expr="//search/filter[@name='unpaid']" position="replace">
-			            <filter name="unpaid" string="Unpaid" domain="[('state','in',['start_wf','open','auth','verified'])]" help="Unpaid Invoices"/>
-		            </xpath>
-                    <xpath expr="//search/filter[@name='draft']" position="after">
-                        <filter name="start_wf" string="Start Workflow" domain="[('state','=','start_wf')]" help="Invoices that were started in the workflow by accounting"/>
-			            <filter name="open" string="Open Invoices" domain="[('state','=','open')]" help="Open Invoices"/>
-                        <filter name="auth" string="Authorized" domain="[('state','=','auth')]" help="Authorized Invoices"/>
-                    </xpath>
-		            <xpath expr="//search/filter[@name='unpaid']" position="after">
-			            <filter name="paid" string="Paid" domain="[('state','=',['paid'])]" help="Paid Invoices"/>
-		            </xpath>
+<!--		            <xpath expr="//search/filter[@name='invoices']" position="replace">-->
+<!--                        <filter name="auth2" string="to be Verified" domain="[('state','=','auth'),('verif_tresh_exceeded','=', True)]" help="Authorized Invoices greater than Verification treshold"/>-->
+<!--                        <filter name="verif" string="Verified" domain="[('state','=','verified')]" help="Verified Invoices"/>-->
+<!--			            <filter name="invoices" string="Posted Invoices" domain="[('state','not in',['draft', 'start_wf','cancel'])]" help="Proforma/Open/Authorized/Paid Invoices"/>-->
+<!--                    </xpath>-->
+<!--		            <xpath expr="//search/filter[@name='unpaid']" position="replace">-->
+<!--			            <filter name="unpaid" string="Unpaid" domain="[('state','in',['start_wf','open','auth','verified'])]" help="Unpaid Invoices"/>-->
+<!--		            </xpath>-->
+<!--                    <xpath expr="//search/filter[@name='draft']" position="after">-->
+<!--                        <filter name="start_wf" string="Start Workflow" domain="[('state','=','start_wf')]" help="Invoices that were started in the workflow by accounting"/>-->
+<!--			            <filter name="open" string="Open Invoices" domain="[('state','=','open')]" help="Open Invoices"/>-->
+<!--                        <filter name="auth" string="Authorized" domain="[('state','=','auth')]" help="Authorized Invoices"/>-->
+<!--                    </xpath>-->
+<!--		            <xpath expr="//search/filter[@name='unpaid']" position="after">-->
+<!--			            <filter name="paid" string="Paid" domain="[('state','=',['paid'])]" help="Paid Invoices"/>-->
+<!--		            </xpath>-->
 		        </data>
             </field>
         </record>
 
     </data>
-</openerp>
+</odoo>

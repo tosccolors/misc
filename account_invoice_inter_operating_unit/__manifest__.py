@@ -14,7 +14,7 @@
     'license': 'AGPL-3',
     'installable': True,
     'depends': [
-        'account_accountant',
+        # 'account_accountant', moved to enterprise
         'onchange_helper',
         'account_operating_unit',
         'account_invoice_2step_validation',
