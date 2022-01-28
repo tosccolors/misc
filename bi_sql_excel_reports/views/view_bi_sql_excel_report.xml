@@ -65,11 +65,11 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                                 <group>
                                     <separator string="Pivot Chart" colspan="2"/>
                                     <field name="chart_type"/>
-                                    <field name="chart_left" attrs="{'invisible':[('chart_type', '=', False)]}"/>
-                                    <field name="chart_top" attrs="{'invisible':[('chart_type', '=', False)]}"/>
-                                    <field name="chart_width" attrs="{'invisible':[('chart_type', '=', False)]}"/>
-                                    <field name="chart_height" attrs="{'invisible':[('chart_type', '=', False)]}"/>
-                                    <field name="chart_scale" attrs="{'invisible':[('chart_type', '=', False)]}"/>
+                                    <field name="chart_left" attrs="{'invisible':['|', ('chart_type', '=', False), ('chart_type', '=', 0)]}"/>
+                                    <field name="chart_top" attrs="{'invisible':['|', ('chart_type', '=', False), ('chart_type', '=', 0)]}"/>
+                                    <field name="chart_width" attrs="{'invisible':['|', ('chart_type', '=', False), ('chart_type', '=', 0)]}"/>
+                                    <field name="chart_height" attrs="{'invisible':['|', ('chart_type', '=', False), ('chart_type', '=', 0)]}"/>
+                                    <field name="chart_scale" attrs="{'invisible':['|', ('chart_type', '=', False), ('chart_type', '=', 0)]}"/>
                                 </group>
                             </group>
                         </page>
