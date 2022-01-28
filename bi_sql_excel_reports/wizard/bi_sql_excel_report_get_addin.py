@@ -20,17 +20,17 @@ class GetAddInFile(models.TransientModel):
         default='',
         help="Operating system of the user's computer")
     addin_win_file_name = fields.Char(
-        string='Excel Add-in file name',
+        string='Excel Add-in file name for Windows',
         readonly=True)
     addin_win_data = fields.Binary(
-        string='Excel Add-in file data',
+        string='Excel Add-in file data for Windows',
         readonly=True,
         help='Download Excel Add-in for SQL Excel Reports')
     addin_mac_file_name = fields.Char(
-        string='Excel Add-in file name',
+        string='Excel Add-in file name for Mac',
         readonly=True)
     addin_mac_data = fields.Binary(
-        string='Excel Add-in file data',
+        string='Excel Add-in file data for Mac',
         readonly=True,
         help='Download Excel Add-in for SQL Excel Reports')
     json_csv_win_file_name = fields.Char(
@@ -73,7 +73,8 @@ class GetAddInFile(models.TransientModel):
                 """, (self.env.uid, record_type, self._cr.dbname, __name__, level, message, path, line, func))
 
     def _write_record(self):
-        """ Write data to wizard table, depending on selected user system """
+        """ Write data to the wizard table, depending on selected user system: must be separate fields, even when the
+            contents is the same since a field cannot be displayed more than once in a form """
         self.excel_add_in_vers = BiSqlExcelReport.add_in_latest_ver
         addin_data = self._get_addin_binary(self.excel_add_in_name)
         usys = self.user_sys_code[self.user_sys]
