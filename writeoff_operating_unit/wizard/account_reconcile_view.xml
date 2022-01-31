@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account_move_line_reconcile_writeoff" model="ir.ui.view">
+            <field name="name">account.move.line.reconcile.writeoff.form</field>
+            <field name="model">account.move.line.reconcile.writeoff</field>
+            <field name="inherit_id" ref="account.account_move_line_reconcile_writeoff"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='analytic_id']" position="after">
+                    <field name="operating_unit_id" options="{'no_create_edit': True, 'no_create': True}" readonly="1"/>
+                </xpath>
+            </field>
+        </record>
+</odoo>
