@@ -18,7 +18,9 @@ class AccountCutoff(models.Model):
 
     def _prepare_provision_line(self, cutoff_line):
         result = super(AccountCutoff, self)._prepare_provision_line(cutoff_line)
-        result['account_move_ref'] = cutoff_line.move_line_id.display_name
+        result['account_move_ref'] = cutoff_line.move_line_id.display_name if not \
+                self.env.user.company_id.use_description_as_reference else \
+                cutoff_line.name
         return result
 
     def _merge_provision_lines(self, provision_lines):
@@ -33,9 +35,8 @@ class AccountCutoff(models.Model):
             analytic_account_id = dict['analytic_account_id']
             operating_unit_id = dict['operating_unit_id']
             account_id = dict['account_id']
-            move_label = self.move_label + " " + dict['account_move_ref']
+            move_label = move_label + " " + dict['account_move_ref']
             amount = self.company_currency_id.round(amount)
-
             movelines_to_create.append((0, 0, {
                 'account_id': account_id,
                 'name': move_label,
