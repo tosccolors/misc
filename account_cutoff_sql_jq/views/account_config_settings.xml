@@ -15,8 +15,9 @@
 <!--                <field name="perform_posting_by_line"-->
 <!--                       attrs="{'invisible': [('perform_posting_by_line_jq', '=', True)]}"/>-->
                 <field name="use_description_as_reference"/>
-                <field name="perform_posting_by_line_jq"
-                       attrs="{'invisible': [('perform_posting_by_line', '=', True)]}"/>
+<!--                <field name="perform_posting_by_line_jq"-->
+<!--                       attrs="{'invisible': [('perform_posting_by_line', '=', True)]}"/>-->
+                <field name="perform_posting_by_line_jq"/>
             </field>
         </field>
     </record>
