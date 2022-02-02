@@ -36,5 +36,7 @@ On invoice validation the operating_unit_id is copied to account.asset.asset fro
     'demo': [
         # 'demo/demo.xml',
     ],
-    'installable': True
+    'installable': False,
+    'application': False,
+    'active': False,
 }
