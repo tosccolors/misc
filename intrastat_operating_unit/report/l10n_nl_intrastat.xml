@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="intrastat_operating_unit.report_nl_intrastat_OU_filters" inherit_id="l10n_nl_intrastat.report_nl_intrastat_filters">
+        <xpath expr="//div[@class='nl_intra_act_as_row labels']/div[last()]" position="before">
+            <div t-if="o.operating_unit_id" class="nl_intra_act_as_cell">Operating Unit</div>
+        </xpath>
+        <xpath expr="//div[@class='nl_intra_act_as_table nl_intra_data_table']/div[last()]/
+                        div[@class='nl_intra_act_as_cell'][last()]" position="before">
+            <div t-if="o.operating_unit_id" class="nl_intra_act_as_cell">
+                <span t-field="o.operating_unit_id"/>
+            </div>
+        </xpath>
+
+    </template>
+
+</odoo>

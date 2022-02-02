@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="i2d_yml_template" model="external.file.location">
+            <field name="name">Default export location for i2d yml templates</field>
+            <field name="protocol" >file_store</field>
+        </record>
+        <record id="i2d_yml_template_task" model="external.file.task">
+            <field name="name">Default export Task for i2d yml templates</field>
+            <field name="location_id" ref="i2d_yml_template.i2d_yml_template"/>
+            <field name="method_type" >export</field>
+            <field name="filepath" >invoice2data_local_templates</field>
+            <field name="filename" >*.yml</field>
+        </record>
+   </data>
+</odoo>

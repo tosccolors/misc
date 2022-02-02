@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="batch_invoice_import_location" model="external.file.location">
+            <field name="name">Import Vendor Invoices</field>
+            <field name="protocol" >ftp</field>
+        </record>
+   </data>
+</odoo>

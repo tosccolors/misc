@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<odoo>
+    <!--Model: Tree View-->
+    <record id="view_data_tracker_config_tree" model="ir.ui.view">
+        <field name="name">data.tracker.config.tree</field>
+        <field name="model">data.tracker.config</field>
+        <field name="arch" type="xml">
+            <tree string="Time Dependent">
+                <field name="model_id"/>
+                <field name="relation_model"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--Model: Form View-->
+    <record id="view_data_tracker_config_form" model="ir.ui.view">
+        <field name="name">data.tracker.config.form</field>
+        <field name="model">data.tracker.config</field>
+        <field name="arch" type="xml">
+            <form string="Tracker Config">
+                <sheet>
+                    <group>
+                        <field name="model_id" options='{"no_open": True, "no_create": True}'/>
+                        <field name="field_id" options='{"no_open": True, "no_create": True}' domain="[('model_id', '=', model_id), ('ttype','in',['many2one','many2many'])]" />
+                        <field name="relation_model" readonly="True"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--Model: Action-->
+    <record id="action_data_tracker_config" model="ir.actions.act_window">
+        <field name="name">Tracking Configuration</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">data.tracker.config</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create data tracking configuration for model and it's fields.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="data_time_main_menu" name="Data Time Tracking" parent="base.menu_custom" />
+    <menuitem id="data_time_config" parent="data_time_main_menu" action="action_data_tracker_config" />
+
+
+    <!--Time Faced: Tree View-->
+    <record id="view_data_time_tracker_tree" model="ir.ui.view">
+        <field name="name">data.time.tracker.tree</field>
+        <field name="model">data.time.tracker</field>
+        <field name="arch" type="xml">
+            <tree string="Data Tracker">
+                <field name="model_name" invisible="context.get('relation_ref', False)"/>
+                <field name="relation_model_name" invisible="not context.get('relation_ref', False)"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--Time Faced: Form View-->
+    <record id="view_data_time_tracker_form" model="ir.ui.view">
+        <field name="name">data_time_tracker.form</field>
+        <field name="model">data.time.tracker</field>
+        <field name="arch" type="xml">
+            <form string="Data Tracker">
+                <header>
+                    <button name="%(action_tracker_wizard_config)d" type="action" string="Update" class="oe_highlight" />
+                    <button name="remove" type="object" string="Remove" class="oe_highlight" />
+                </header>
+                <sheet>
+                    <div>
+                        <label for="model_name" invisible="context.get('relation_ref', False)"/>
+                        <button class="oe_link" name="action_open_view" type="object" invisible="context.get('relation_ref', False)">
+                            <field string="" name="model_name" />
+                        </button>
+                        <label for="relation_model_name" invisible="not context.get('relation_ref', False)"/>
+                        <button class="oe_link" name="action_open_view" type="object" invisible="not context.get('relation_ref', False)">
+                            <field string="" name="relation_model_name" />
+                        </button>
+                    </div>
+                    <group col="4">
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

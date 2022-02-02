@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="oca_report_operating_unit.report_general_ledger_filters_inherit"
+              inherit_id="account_financial_report.report_general_ledger_filters">
+        <xpath expr="//div[@class='act_as_row labels']/div[@class='act_as_cell'][last()]" position="after">
+            <div t-if="o.operating_unit_id" class="act_as_cell">Operating Unit</div>
+        </xpath>
+        <xpath expr="//div[@class='act_as_row']/div[@class='act_as_cell'][last()]" position="after">
+            <div t-if="o.operating_unit_id" class="act_as_cell">
+                    <span t-field="o.operating_unit_id"/>
+                </div>
+        </xpath>
+
+    </template>
+
+
+</odoo>

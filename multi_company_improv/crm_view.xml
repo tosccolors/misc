@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <!-- Case Sections Form View
+            Now: Sales Team Form -->
+
+        <!--<record id="crm_case_section_view_form_multi" model="ir.ui.view">-->
+            <!--<field name="name">crm.case.section.form.multi</field>-->
+            <!--<field name="model">crm.case.section</field>-->
+            <!--&lt;!&ndash;<field name="inherit_id" ref="crm.crm_case_section_view_form" />&ndash;&gt;-->
+            <!--<field name="inherit_id" ref="sales_team.crm_case_section_view_form" />-->
+            <!--<field name="arch" type="xml">-->
+                <!--<field name="code" position="after">-->
+                    <!--<field name="company_id"/>-->
+                <!--</field>-->
+            <!--</field>-->
+        <!--</record>-->
+
+        <!-- Company alread exists in Form -->
+
+        <!-- Case Sections Tree View -->
+
+        <!--<record id="crm_case_section_view_tree_multi" model="ir.ui.view">-->
+            <!--<field name="name">crm.case.section.tree.multi</field>-->
+            <!--<field name="model">crm.case.section</field>-->
+            <!--&lt;!&ndash;<field name="inherit_id" ref="crm.crm_case_section_view_tree" />&ndash;&gt;-->
+            <!--<field name="inherit_id" ref="sales_team.crm_case_section_view_tree" />-->
+            <!--<field name="arch" type="xml">-->
+                    <!--<field name="code" position="after">-->
+                        <!--<field name="company_id"/>-->
+                    <!--</field>-->
+            <!--</field>-->
+        <!--</record>-->
+
+        <record id="crm_team_view_tree_multi" model="ir.ui.view">
+            <field name="name">crm_team_view_tree.multi</field>
+            <field name="model">crm.team</field>
+            <field name="inherit_id" ref="sales_team.crm_team_view_tree" />
+            <field name="arch" type="xml">
+                    <field name="name" position="after">
+                        <field name="company_id"/>
+                    </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

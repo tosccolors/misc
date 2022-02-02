@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<odoo>
+    <record model="ir.ui.view" id="view_operating_unit_inter_change_inherit_form">
+        <field name="inherit_id" ref="operating_unit.view_operating_unit_form"/>
+        <field name="model">operating.unit</field>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="invoice_auto_validation"/>
+            </field>
+        </field>
+    </record>
+</odoo>

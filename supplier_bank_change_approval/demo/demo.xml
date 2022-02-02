@@ -1,0 +1,8 @@
+<odoo>
+    <data>
+        <record id="bank_account_manager" model="res.groups">
+            <field name="name">Bank Account Manager</field>
+            <field name="category_id" ref="base.module_category_accounting_and_finance"/>
+        </record>
+    </data>
+</odoo>

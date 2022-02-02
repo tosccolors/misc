@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2021 - Today: Magnus (http://www.magnus.nl)
+@author: Vincent Verheul (v.verheul@magnus.nl)
+License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+-->
+
+<odoo>
+    <record id="save_addin_file_wizard_view" model="ir.ui.view">
+        <field name="name">bi.sql.excel.addinfile.form</field>
+        <field name="model">bi.sql.excel.addinfile.wizard</field>
+        <field name="arch" type="xml">
+            <form string="File download">
+                <field name="has_data" invisible="1"/>
+                <field name="user_sys" invisible="1"/>
+
+                <group cols="1" attrs="{'invisible': [('has_data', '=', True)]}">
+                    <p>Please, select if your computer is a Windows machine or an Apple Mac</p>
+                    <br/>
+                    <button name="prepare_addin_file_win" string="Windows"
+                            type="object" class="oe_highlight" icon="fa-arrow-right text-success"/>
+                    <button name="prepare_addin_file_mac" string="Apple Mac"
+                            type="object" class="oe_highlight" icon="fa-arrow-right text-success"/>
+                    <br/>
+                </group>
+
+                <group cols="2" attrs="{'invisible': ['|', ('has_data', '=', False), ('user_sys', '!=', 'Windows')]}">
+                    <separator string="Windows Add-in files ready for download" colspan="2"/>
+                    <p colspan="2">Download Odoo-reports.xlam and optionally OdooJsonToCsv.exe</p>
+                    <field name="addin_win_file_name" invisible="1"/>
+                    <field name="json_csv_win_file_name" invisible="1"/>
+                    <field name="addin_win_data" filename="addin_win_file_name" nolabel="1" colspan="2"/>
+                    <field name="json_csv_win_data" filename="json_csv_win_file_name" nolabel="1" colspan="2"/>
+                    <br/><br/>
+                    <separator string="Installing the Add-in" colspan="2"/>
+                    <strong>Excel Add-in</strong>
+                    <p colspan="2">
+                        Save the files to your Downloads folder. Open the Properties of the files and
+                        uncheck the <i>Blocked</i> indicator when it is set. Close Excel if it is opened.
+                        Now move only the file Odoo-reports.xlam to a folder of choice or the official folder for Add-ins
+                        C:\Users\%USERNAME%\AppData\Roaming\Microsoft\AddIns.
+                        The AppData folder is a hidden folder. To make it visible in the File Explorer,
+                        select View in the menu and enable the Hidden Items option.
+                        Leave the .exe file in the Downloads folder.
+                    </p>
+                    <p colspan="2">
+                        Start Excel when the Add-in file is in the designated folder.
+                        In Excel choose File - Options - Add-ins. At the bottom you will
+                        see 'Manage: Excel Add-ins'. Select 'Excel Add-ins' when not already selected and
+                        click 'Go...'. You should see Odoo-Reports in the list (or use Browse...); select it to activate.
+                        Now you should see an Odoo section in the ribbon (within 'Home').
+                    </p>
+                    <strong>Odoo Json to CSV</strong>
+                    <p colspan="2">
+                        The OdooJsonToCsv executable is a tool to convert data received from Odoo (in Json format)
+                        to a CSV format which can be loaded by Excel. It can do this much faster than the Excel Add-in itself.
+                        Leave this file in the Downloads folder, the Add-in will pick it up from there.
+                    </p>
+                </group>
+
+                <group cols="2" attrs="{'invisible': ['|', ('has_data', '=', False), ('user_sys', '!=', 'MacOS')]}">
+                    <separator string="Mac Add-in files ready for download" colspan="2"/>
+                    <p colspan="2">Download Odoo-reports.xlam and optionally OdooJsonToCsv</p>
+                    <field name="addin_mac_file_name" invisible="1"/>
+                    <field name="json_csv_mac_file_name" invisible="1"/>
+                    <field name="addin_mac_data" filename="addin_mac_file_name" nolabel="1" colspan="2"/>
+                    <field name="json_csv_mac_data" filename="json_csv_mac_file_name" nolabel="1" colspan="2"/>
+                    <separator string="Installing the Add-in" colspan="2"/>
+                    <strong>Excel Add-in</strong>
+                    <p colspan="2">
+                        Save the files to your Downloads folder. Get the file info and uncheck the
+                        <i>Locked</i> indicator when it is set.
+                        Within Excel choose Tools - Add-ins. Un-select the Odoo-Reports Add-in first when you are updating
+                        to the latest version. Then use Browse... and select the Add-in file.
+                        Excel will then copy the file to a hidden folder. Now you should see Odoo-Reports being selected.
+                        In the Home ribbon you should see three buttons: 'Get Index', 'Get Reports' and 'Settings'.
+                    </p>
+                </group>
+
+                <group cols="2" attrs="{'invisible': [('has_data', '=', False)]}">
+                    <separator string="Configure the Excel Add-in" colspan="2"/>
+                    <p colspan="2">
+                        In Excel, from the Odoo menu click <strong>Settings</strong>. Check the settings,
+                        verify your username and enter your password. Click Test to validate and click OK to save.
+                        Now click <strong>Get Index</strong> to get an overview of available reports. Select reports
+                        by marking them in column B with a character (x for example). You may need to select the scope
+                        for some reports, for example select the relevant projects when the report is about projects.
+                        Then click <strong>Get Reports</strong> to get the reports which will appear on
+                        separate worksheets.
+                    </p>
+                </group>
+
+                <group cols="2" attrs="{'invisible': ['|', ('has_data', '=', False), ('user_sys', '!=', 'MacOS')]}">
+                    <separator string="Optional: Odoo Json to CSV" colspan="2"/>
+                    <p colspan="2">
+                        The OdooJsonToCsv executable is a tool to convert data received from Odoo (in Json format)
+                        to a CSV format which can be loaded by Excel. It can do this much faster than the Excel Add-in itself.
+                        Because of security measures the executable can't be called directly from the Add-in.
+                        You must create a Mac Script using the Script Editor (in the Applications - Utilities folder).
+                        Create a script with the name <strong>OdooJsonToCsvScript</strong>.
+                        Put the following code into the script and save it:
+                    </p>
+                    <pre>
+on OdooJsonToCsvHandler(ParamString)
+    do shell script "~/Downloads/OdooJsonToCsv " &amp; ParamString
+    return "Handler completed"
+end OdooJsonToCsvHandler</pre>
+                    <p colspan="2">
+                        Next, you need to set the 'executable' indicator of the file. Open a Terminal session and
+                        change your working directory to ~/Downloads. Enter the command: <b>chmod +x OdooJsonToCsv</b>.
+                        As this program is not registered by Apple you must allow execution via the 'Gatekeeper'.
+                        Enter the command: <b>spctl – add /Users/&lt;username&gt;/Downloads/OdooJsonToCsv</b>.
+                        Replace &lt;username&gt; by your own username. You will see a pop-up where you must enter
+                        you Mac user's password to confirm. After these steps you can close your terminal session
+                        and start using the Excel Add-in.
+                    </p>
+                </group>
+
+                <footer>
+                    <button special="cancel" string="Cancel" type="object" icon="fa-times"
+                        attrs="{'invisible': [('has_data', '=', True)]}"/>
+                    <button special="cancel" string="OK" type="object"
+                        attrs="{'invisible': [('has_data', '=', False)]}"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

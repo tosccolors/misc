@@ -1,0 +1,59 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <!--
+    <record model="ir.ui.view" id="supplier_iban_ignore_bank_statement_update.list">
+      <field name="name">supplier_iban_ignore_bank_statement_update list</field>
+      <field name="model">supplier_iban_ignore_bank_statement_update.supplier_iban_ignore_bank_statement_update</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+    -->
+
+    <!-- actions opening views on models -->
+    <!--
+    <record model="ir.actions.act_window" id="supplier_iban_ignore_bank_statement_update.action_window">
+      <field name="name">supplier_iban_ignore_bank_statement_update window</field>
+      <field name="res_model">supplier_iban_ignore_bank_statement_update.supplier_iban_ignore_bank_statement_update</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    -->
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="supplier_iban_ignore_bank_statement_update.action_server">
+      <field name="name">supplier_iban_ignore_bank_statement_update server</field>
+      <field name="model_id" ref="model_supplier_iban_ignore_bank_statement_update_supplier_iban_ignore_bank_statement_update"/>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": self._name,
+        }
+      </field>
+    </record>
+    -->
+
+    <!-- Top menu item -->
+    <!--
+    <menuitem name="supplier_iban_ignore_bank_statement_update" id="supplier_iban_ignore_bank_statement_update.menu_root"/>
+    -->
+    <!-- menu categories -->
+    <!--
+    <menuitem name="Menu 1" id="supplier_iban_ignore_bank_statement_update.menu_1" parent="supplier_iban_ignore_bank_statement_update.menu_root"/>
+    <menuitem name="Menu 2" id="supplier_iban_ignore_bank_statement_update.menu_2" parent="supplier_iban_ignore_bank_statement_update.menu_root"/>
+    -->
+    <!-- actions -->
+    <!--
+    <menuitem name="List" id="supplier_iban_ignore_bank_statement_update.menu_1_list" parent="supplier_iban_ignore_bank_statement_update.menu_1"
+              action="supplier_iban_ignore_bank_statement_update.action_window"/>
+    <menuitem name="Server to list" id="supplier_iban_ignore_bank_statement_update" parent="supplier_iban_ignore_bank_statement_update.menu_2"
+              action="supplier_iban_ignore_bank_statement_update.action_server"/>
+    -->
+  </data>
+</odoo>

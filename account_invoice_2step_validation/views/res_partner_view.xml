@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partners_form_2_step" model="ir.ui.view">
+        <field name="name">partner.2step.validation</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales_purchases']/group/group/field[@name='supplier']" position="after">
+                <field name="vendor_owner" attrs="{'required': [('is_company','=',True),('supplier','=', True)],
+                                                   'invisible': [('supplier','!=', True)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_partner_filter" model="ir.ui.view">
+            <field name="name">res.partner.select</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                   <field name="name" position="attributes" >
+                       <attribute name="filter_domain" >['|','|','|',('zip','ilike',self),('display_name','ilike',self),
+                                                                     ('ref','=',self),('email','ilike',self)]</attribute>
+                   </field>
+                   <filter name="filter_my_partners" position="attributes" >
+                       <attribute name="help" >My Sales Partners</attribute>
+                   </filter>
+                   <filter name="filter_my_partners" position="after" >
+                       <filter string="My Vendors" name="my_vendors" domain="[('vendor_owner','=',uid)]"/>
+                   </filter>
+                   <field name="user_id" position="after">
+                       <field name="vendor_owner" />
+                   </field>
+                   <filter name="salesperson" position="after" >
+                       <filter name="vendor_owner" string="Vendor Manager" domain="[]" context="{'group_by' : 'vendor_owner'}" />
+                   </filter>
+            </field>
+        </record>
+
+</odoo>

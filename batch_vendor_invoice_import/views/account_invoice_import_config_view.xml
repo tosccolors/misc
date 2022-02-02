@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<odoo>
+    <!-- TODO: put here a reminder on what to do at the first edition -->
+    <record id="view_account_invoice_import_config_form" model="ir.ui.view">
+        <field name="name">view.account.invoice.import.config.form</field>
+        <field name="model">account.invoice.import.config</field>
+        <field name="view_type">form</field>
+        <field name="inherit_id" ref="account_invoice_import.account_invoice_import_config_form"/>
+        <field name="arch" type="xml">
+          <field name="company_id" position="after">
+              <field name="operating_unit_id"/>
+          </field>
+        </field>
+    </record>
+</odoo>

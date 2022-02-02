@@ -1,0 +1,17 @@
+<odoo>
+    <data>
+        <template id="assets_backend" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script
+                    type="text/javascript"
+                    src="/account_invoice_import_ml/static/src/js/account_invoice_import_ml.js"
+                />
+                <link
+                    rel="stylesheet"
+                    type="text/css"
+                    href="/account_invoice_import_ml/static/src/css/account_invoice_import_ml.css"
+                />
+            </xpath>
+        </template>
+    </data>
+</odoo>
