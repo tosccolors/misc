@@ -35,4 +35,5 @@
         'python': ['bs4'],
     },
     'installable':False,
+    # this feature is deprecated in odoo 12
 }

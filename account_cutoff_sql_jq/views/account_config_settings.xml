@@ -6,12 +6,12 @@
 
 <odoo>
 
-    <record id="view_account_config_settings_improv" model="ir.ui.view">
-        <field name="name">account.prepaid.cutoff.config.improv.form</field>
-        <field name="model">account.config.settings</field>
-        <field name="inherit_id" ref="account_cutoff_prepaid.view_account_config_settings"/>
+    <record id="view_res_config_settings_improv" model="ir.ui.view">
+        <field name="name">res.prepaid.cutoff.config.improv.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account_cutoff_prepaid.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-            <field name="default_prepaid_expense_account_id" position="after">
+            <field name="dft_prepaid_expense_account_id" position="after">
                 <field name="perform_posting_by_line"
                        attrs="{'invisible': [('perform_posting_by_line_jq', '=', True)]}"/>
                 <field name="use_description_as_reference"
@@ -31,5 +31,4 @@
             </field>
         </field>
     </record>
-
 </odoo>

@@ -30,10 +30,6 @@
         <field name="model">attachment.queue</field>
         <field name="inherit_id" ref="attachment_queue.view_attachment_queue_search" />
         <field name="arch" type="xml">
-                <filter name="my_documents_filter" position="after">
-                    <filter name="import_invoices" string="Import Invoices"
-                            domain="[('location_id', '=', %(batch_vendor_invoice_import_new.batch_invoice_import_location)d)]"/>
-                </filter>
                 <field name="type" position="after">
                     <field name="task_id" />
                     <field name="location_id" />

@@ -69,7 +69,7 @@
         <field name="name">Export filestore Task</field>
     </record>
 
-    <record id="ir_attachment_export_file_sftp" model="ir.attachment.metadata">
+    <record id="ir_attachment_export_file_sftp" model="attachment.queue">
         <field name="name">Sftp text export file</field>
         <field name="datas">dGVzdCBzZnRwIGZpbGUgZXhwb3J0</field>
         <field name="datas_fname">sftp_test_export.txt</field>
@@ -77,7 +77,7 @@
         <field name="file_type">export_external_location</field>
     </record>
 
-    <record id="ir_attachment_export_file_ftp" model="ir.attachment.metadata">
+    <record id="ir_attachment_export_file_ftp" model="attachment.queue">
         <field name="name">ftp text export file</field>
         <field name="datas">dGVzdCBmdHAgZmlsZSBleHBvcnQ=</field>
         <field name="datas_fname">ftp_test_export.txt</field>
@@ -85,7 +85,7 @@
         <field name="file_type">export_external_location</field>
     </record>
 
-    <record id="ir_attachment_export_file_filestore" model="ir.attachment.metadata">
+    <record id="ir_attachment_export_file_filestore" model="attachment.queue">
         <field name="name">filestore text export file</field>
         <field name="datas">dGVzdCBmaWxlc3RvcmUgZmlsZSBleHBvcnQ=</field>
         <field name="datas_fname">filestore_test_export.txt</field>

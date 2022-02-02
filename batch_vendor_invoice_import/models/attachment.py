@@ -15,7 +15,8 @@ _logger = logging.getLogger(__name__)
 
 
 class IrAttachmentMetadata(models.Model):
-    _inherit = ['ir.attachment.metadata']
+    # _inherit = ['attachment.queue']
+    _inherit = ['attachment.queue']
 
     operating_unit_id = fields.Many2one(
         'operating.unit',
@@ -24,7 +25,7 @@ class IrAttachmentMetadata(models.Model):
         translate=False,
         readonly=True
     )
-    paired_id = fields.Many2one('ir.attachment.metadata', string='Paired Exported Attachment')
+    paired_id = fields.Many2one('attachment.queue', string='Paired Exported Attachment')
     user_id = fields.Many2one(related='task_id.user_id', relation='res.users', string='User from Task')
     parsed_invoice_text = fields.Text('Parsed Invoice Text')
 
@@ -55,7 +56,7 @@ class IrAttachmentMetadata(models.Model):
                     attach = attachment.with_env(new_env)
                     try:
                         attach._run()
-                    except Exception, e:
+                    except Exception:
                         attach.env.cr.rollback()
                         _logger.exception(e)
                         attach.write(

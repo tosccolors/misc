@@ -25,7 +25,7 @@
 from odoo import api, fields, models, _, SUPERUSER_ID
 
 class MassObject(models.Model):
-    _inherit = "mass.object"
+    _inherit = "mass.editing"
 
     # Overridden:
     @api.multi

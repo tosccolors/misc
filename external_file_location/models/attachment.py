@@ -8,7 +8,8 @@ import os
 
 
 class IrAttachmentMetadata(models.Model):
-    _inherit = 'ir.attachment.metadata'
+    # _inherit = 'attachment.queue'
+    _inherit = 'attachment.queue'
 
     task_id = fields.Many2one('external.file.task', string='Task')
     location_id = fields.Many2one(

@@ -36,7 +36,7 @@ class I2dYmlTemplate(models.Model):
             ('saved', 'In File System'),
             ('deleted', 'Deleted from File System'),
         ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='new')
-    attach_meta_id = fields.Many2one('ir.attachment.metadata', string='Attachment Meta ID')
+    attach_meta_id = fields.Many2one('attachment.queue', string='Attachment Meta ID')
     regexr_iframe = fields.Boolean('iFrame with regexpr hulp')
     partner_ids = fields.One2many('yml.template.partner', 'template_id', string='Template Vendors', copy=True)
 
@@ -69,10 +69,10 @@ class I2dYmlTemplate(models.Model):
             'mimetype': 'text/plain',
         }
         if self.state == 'new':
-            res = self.env['ir.attachment.metadata'].create(vals)
+            res = self.env['attachment.queue'].create(vals)
             self.attach_meta_id = res.id
         if self.state in ['saved','deleted']:
-            res = self.env['ir.attachment.metadata'].search([('id','=', self.attach_meta_id.id)])
+            res = self.env['attachment.queue'].search([('id','=', self.attach_meta_id.id)])
             res.write(vals)
         self._cr.commit()
         res.run()
@@ -90,7 +90,7 @@ class I2dYmlTemplate(models.Model):
                 'mimetype': 'text/plain',
             }
             if self.state == 'saved':
-                res = self.env['ir.attachment.metadata'].search([('id', '=', self.attach_meta_id.id)])
+                res = self.env['attachment.queue'].search([('id', '=', self.attach_meta_id.id)])
                 res.write(vals)
                 self._cr.commit()
                 res.run()

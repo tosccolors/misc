@@ -4,7 +4,7 @@ from odoo import models, fields
 
 class InterCompanyRulesAccountConfig(models.TransientModel):
 
-    _inherit = 'account.config.settings'
+    _inherit = 'res.config.settings'
 
     invoice_auto_validation = fields.Boolean(
         related='operating_unit_id.invoice_auto_validation',

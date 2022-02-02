@@ -27,4 +27,7 @@
     'demo': [
         # 'demo/demo.xml',
     ],
+    'installable':False,
+
+    # l10n_nl_intrastat is not available in odoo12
 }

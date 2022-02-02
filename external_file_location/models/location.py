@@ -5,7 +5,7 @@
 from odoo import models, fields, api
 from ..tasks.filestore import FileStoreTask
 from ..tasks.ftp import FtpTask
-from ..tasks.sftp import SftpTask
+# from ..tasks.sftp import SftpTask
 
 
 class Location(models.Model):
@@ -13,7 +13,7 @@ class Location(models.Model):
     _description = 'Location'
 
     name = fields.Char(string='Name', required=True)
-    protocol = fields.Selection(selection='_get_protocol', required=True)
+    protocol = fields.Selection(selection='_get_protocol', required=False)
     address = fields.Char(
         string='Address')
     filestore_rootpath = fields.Char(
@@ -36,7 +36,7 @@ class Location(models.Model):
         "surcharge this method to add new protocols"
         return {
             'ftp': ('FTP', FtpTask),
-            'sftp': ('SFTP', SftpTask),
+            # 'sftp': ('SFTP', SftpTask),
             'file_store': ('File Store', FileStoreTask),
         }
 
@@ -44,8 +44,9 @@ class Location(models.Model):
     def _get_protocol(self):
         protocols = self._get_classes()
         selection = []
-        for key, val in protocols.iteritems():
-            selection.append((key, val[0]))
+        # commented coz of sftp issue.  need to check and uncomment this
+        # for key, val in protocols.iteritems():
+        #     selection.append((key, val[0]))
         return selection
 
     @api.onchange('protocol')

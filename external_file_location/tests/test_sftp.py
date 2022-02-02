@@ -28,7 +28,7 @@ class TestSftpConnection(TestConnection):
                 {'open': self.test_file_sftp,
                  'listdir': [task.filename]}):
             task.run_import()
-        search_file = self.env['ir.attachment.metadata'].search(
+        search_file = self.env['attachment.queue'].search(
             [('name', '=', task.filename)])
         self.assertEqual(len(search_file), 1)
         self.assertEqual(b64decode(search_file[0].datas), 'import sftp')
@@ -61,7 +61,7 @@ class TestSftpConnection(TestConnection):
                     0: self.test_file_sftp}),
                  'listdir': [task.filename]}) as FakeSFTP:
             task.run_import()
-            search_file = self.env['ir.attachment.metadata'].search(
+            search_file = self.env['attachment.queue'].search(
                 (('name', '=', task.filename),))
             self.assertEqual(len(search_file), 1)
             self.assertEqual(b64decode(search_file[0].datas),

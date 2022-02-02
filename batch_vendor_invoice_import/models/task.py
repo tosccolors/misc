@@ -47,7 +47,7 @@ class Task(models.Model):
             ## pairing with files sent to OCR
             extension = self.filename.replace('*', '')
             name = unidecode(filename.replace(extension, ''))
-            attach_ocr = self.env['ir.attachment.metadata'].search([('internal_hash', '=', name),
+            attach_ocr = self.env['attachment.queue'].search([('internal_hash', '=', name),
                         ('location_id', '=', self.env.ref('batch_vendor_invoice_import.batch_invoice_import_export_location').id)])
             if not len(attach_ocr) == 1:
                 raise ValidationError(_(

@@ -18,9 +18,13 @@
         'category': 'Others',
         'version': '0.1',
         'depends': ['mail',
-        # 'attachment_base_synchronize',
+        # 'attachment_queue',
         'attachment_queue',
-        'fetchmail','operating_unit','fetchmail_attach_from_folder'],
-        'data': ['views/fetchmail_server_view.xml', 'views/attachment_view.xml'],
+        'fetchmail','operating_unit',
+        # 'fetchmail_attach_from_folder'
+        ],
+        'data': [
+        # 'views/fetchmail_server_view.xml',
+         'views/attachment_view.xml'],
         'demo': [],
     }

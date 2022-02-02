@@ -15,7 +15,7 @@ _logger = logging.getLogger(__name__)
 
 
 class IrAttachmentMetadata(models.Model):
-    _inherit = ['ir.attachment.metadata']
+    _inherit = ['attachment.queue']
 
     file_type = fields.Selection(
         selection_add=[

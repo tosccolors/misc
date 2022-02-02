@@ -28,7 +28,7 @@ class TestFtpConnection(TestConnection):
                 {'open': self.test_file_ftp,
                  'listdir': ['test-import-ftp.txt']}):
             self.task.run_import()
-        search_file = self.env['ir.attachment.metadata'].search(
+        search_file = self.env['attachment.queue'].search(
             [('name', '=', 'test-import-ftp.txt')])
         self.assertEqual(len(search_file), 1)
         self.assertEqual(b64decode(search_file[0].datas), 'import ftp')
@@ -62,7 +62,7 @@ class TestFtpConnection(TestConnection):
                     0: self.test_file_ftp}),
                  'listdir': [task.filename]}) as Fakeftp:
             task.run_import()
-            search_file = self.env['ir.attachment.metadata'].search(
+            search_file = self.env['attachment.queue'].search(
                 (('name', '=', task.filename),))
             self.assertEqual(len(search_file), 1)
             self.assertEqual(b64decode(search_file[0].datas),

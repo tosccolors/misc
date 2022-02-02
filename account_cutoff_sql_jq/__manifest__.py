@@ -12,6 +12,7 @@
     'author': 'Magnus',
     'website': 'http://www.magnus.nl',
     'depends': [
+    'account',
         'account_cutoff_base_operating_unit',
         'queue_job'
         ],

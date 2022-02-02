@@ -17,8 +17,7 @@
         <field name="arch" type="xml">
             <field name="company_id" position="after">
                 <field name="location_id" invisible="1" />
-                <field name="user_id"
-                       attrs="{'required': [('location_id','=', %(batch_vendor_invoice_import.batch_invoice_import_export_location)d)]}"/>
+                <field name="user_id"/>
                 <field name="operating_unit_id"/>
             </field>
         </field>

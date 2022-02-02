@@ -160,7 +160,7 @@ To contribute to this module, please visit https://odoo-community.org.
 
     # always loaded
     'data': ['security/ir.model.access.csv',
-             'data/external_file_location.xml',
+             # 'data/external_file_location.xml',
              'views/i2d_yml_template_view.xml',
              'views/attachment_view.xml'
     ],

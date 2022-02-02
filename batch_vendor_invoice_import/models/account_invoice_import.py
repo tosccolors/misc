@@ -30,7 +30,7 @@ class AccountInvoiceImport(models.TransientModel):
     task_id = fields.Many2one('external.file.task', string="Import Task", readonly=True)
     company_id = fields.Many2one('res.company', )
     operating_unit_id = fields.Many2one('operating.unit', )
-    paired_id = fields.Many2one('ir.attachment.metadata', string='Paired Exported Attachment')
+    paired_id = fields.Many2one('attachment.queue', string='Paired Exported Attachment')
     user_id = fields.Many2one(related='task_id.user_id',)
 
     @api.multi
@@ -93,7 +93,7 @@ class AccountInvoiceImport(models.TransientModel):
                 invoice2data_res = extract_data(file_name, templates=templates)
                 log_contents = log_capture_string.getvalue()
 #                log_capture_string.close()
-            except Exception, e:
+            except Exception:
                 raise UserError(_(
                     "PDF Invoice parsing failed. Error message: %s") % e)
             if not invoice2data_res:
@@ -120,7 +120,7 @@ class AccountInvoiceImport(models.TransientModel):
             if invoice2data_res.get('pdf_failed', False) and self.paired_id and not self.env.context.get('second',False):
                 file_data_2 = self.paired_id.datas.decode('base64')
                 invoice2data_res = self.with_context(second=True).invoice2data_parse_invoice(file_data_2)
-        self.env['ir.attachment.metadata'].search([('id','=', self.paired_id.id)]).write({'parsed_invoice_text': log_contents})
+        self.env['attachment.queue'].search([('id','=', self.paired_id.id)]).write({'parsed_invoice_text': log_contents})
         return self.invoice2data_to_parsed_inv(invoice2data_res)    
 
     '''@api.model

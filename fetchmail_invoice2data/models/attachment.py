@@ -33,7 +33,7 @@ class Message(models.Model):
         return res
 
 class IrAttachmentMetadata(models.Model):
-    _inherit = ['ir.attachment.metadata']
+    _inherit = ['attachment.queue']
 
     attachment_ids = fields.Many2many('ir.attachment', help="Link to ir.attachment models ")
     email_from = fields.Char('From', related='mail_message_id.email_from')

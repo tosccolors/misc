@@ -42,7 +42,7 @@ try:
         'max': max,
         'sum': sum,
         'filter': filter,
-        'reduce': reduce,
+        # 'reduce': reduce,
         'map': map,
         'round': round,
     })
@@ -70,7 +70,7 @@ class Task(models.Model):
     export_extension = fields.Char(help='Extension for export files when unique_name id true'
                                         'You can use extension pattern like .txt'
                                         'to export as .txt files')
-    attachment_ids = fields.One2many('ir.attachment.metadata', 'task_id',
+    attachment_ids = fields.One2many('attachment.queue', 'task_id',
                                      string='Attachment')
     move_path = fields.Char(string='Move Path',
                             help='Imported File will be moved to this path')
@@ -105,7 +105,7 @@ class Task(models.Model):
     def _existing_hash(self, datas):
         self.ensure_one()
         hash = hashlib.md5(datas).hexdigest()
-        if len(self.env['ir.attachment.metadata'].search([('internal_hash','=',hash),('location_id','=',self.location_id.id)])) > 0:
+        if len(self.env['attachment.queue'].search([('internal_hash','=',hash),('location_id','=',self.location_id.id)])) > 0:
             return True
         return False
 
@@ -159,7 +159,7 @@ class Task(models.Model):
         self.ensure_one()
         protocols = self.env['external.file.location']._get_classes()
         cls = protocols.get(self.location_id.protocol)[1]
-        attach_obj = self.env['ir.attachment.metadata']
+        attach_obj = self.env['attachment.queue']
         impex = self.env.context.get('impexp')
         try:
             connection = cls.connect(self.location_id)
@@ -216,7 +216,7 @@ class Task(models.Model):
                                 conn.remove(full_path)
                                 if self.md5_check:
                                     conn.remove(full_path + '.md5')
-                        except Exception, e:
+                        except Exception:
                             _logger.error('Error importing file %s '
                                           'from %s: %s',
                                           file_name,
@@ -239,7 +239,7 @@ class Task(models.Model):
     @api.multi
     def run_export(self):
         self.ensure_one()
-        attachment_obj = self.env['ir.attachment.metadata']
+        attachment_obj = self.env['attachment.queue']
         attachments = attachment_obj.search(
             [('task_id', '=', self.id), ('state', '!=', 'done')])
         for attachment in attachments:

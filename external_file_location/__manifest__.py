@@ -11,7 +11,8 @@
     'license': 'AGPL-3',
     'category': 'Generic Modules',
     'depends': [
-        'attachment_base_synchronize',
+        # 'attachment_queue',
+        'attachment_queue'
     ],
     'external_dependencies': {
         'python': [

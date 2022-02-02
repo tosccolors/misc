@@ -48,7 +48,7 @@ class FetchmailServerFolder(models.Model):
                 attachment = self.env['ir.attachment'].create(data_attach)
                 attachments.append(attachment)
 
-                ir_attachment_metadata = self.env['ir.attachment.metadata']
+                ir_attachment_metadata = self.env['attachment.queue']
                 if metadata_attachment == 'multiple_metadata':
                     ir_attachment_metadata.create({'attachment_id': attachment.id, 'operating_unit_id': operating_unit_id, 'metadata_attachment': metadata_attachment})
 

@@ -15,7 +15,7 @@ _logger = logging.getLogger(__name__)
 
 
 class IrAttachmentMetadata(models.Model):
-    # _inherit = ['ir.attachment.metadata']
+    # _inherit = ['attachment.queue']
     _inherit = ['attachment.queue']
 
     operating_unit_id = fields.Many2one(

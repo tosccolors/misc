@@ -335,7 +335,7 @@ class AccountCutoff(models.Model):
             move_id=acc_move.id
             acc_move.post()
             self.write({'move_id': move_id, 'state': 'done'})
-        except Exception, e:
+        except Exception:
             raise FailedJobError(
                 _("The details of the error:'%s'") % (unicode(e)))
 
