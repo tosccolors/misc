@@ -1,19 +1,21 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* bi_sql_excel_reports
+# 	* bi_sql_excel_reports
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-24 06:58+0000\n"
-"PO-Revision-Date: 2022-01-24 06:58+0000\n"
+"POT-Creation-Date: 2022-01-26 08:13+0000\n"
+"PO-Revision-Date: 2022-01-26 09:26+0100\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: Poedit 3.0.1\n"
 
 #. module: bi_sql_excel_reports
 #: selection:bi.sql.excel.report,chart_type:0
@@ -257,7 +259,7 @@ msgstr "Aangemaakt op"
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_has_data
 msgid "Data loaded"
-msgstr "Data gela"
+msgstr "Data geladen"
 
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,help:bi_sql_excel_reports.field_bi_sql_excel_report_field_sequence
@@ -314,15 +316,23 @@ msgstr "Enter index (short name) from which a selection is required, for example
 
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_addin_mac_data
+msgid "Excel Add-in file data for Mac"
+msgstr "Excel Add-in file data for Mac"
+
+#. module: bi_sql_excel_reports
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_addin_win_data
-msgid "Excel Add-in file data"
-msgstr "Excel Add-in file data"
+msgid "Excel Add-in file data for Windows"
+msgstr "Excel Add-in file data for Windows"
 
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_addin_mac_file_name
+msgid "Excel Add-in file name for Mac"
+msgstr "Excel Add-in file name for Mac"
+
+#. module: bi_sql_excel_reports
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_addinfile_wizard_addin_win_file_name
-msgid "Excel Add-in file name"
-msgstr "Excel Add-in file name"
+msgid "Excel Add-in file name for Windows"
+msgstr "Excel Add-in file name for Windows"
 
 #. module: bi_sql_excel_reports
 #: model:ir.model.fields,field_description:bi_sql_excel_reports.field_bi_sql_excel_report_chart_type
@@ -454,20 +464,22 @@ msgstr "ID"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "In Excel, from the Odoo menu click <strong>Settings</strong>. Check the settings,\n"
+msgid ""
+"In Excel, from the Odoo menu click <strong>Settings</strong>. Check the settings,\n"
 "                        verify your username and enter your password. Click Test to validate and click OK to save.\n"
 "                        Now click <strong>Get Index</strong> to get an overview of available reports. Select reports\n"
 "                        by marking them in column B with a character (x for example). You may need to select the scope\n"
 "                        for some reports, for example select the relevant projects when the report is about projects.\n"
 "                        Then click <strong>Get Reports</strong> to get the reports which will appear on\n"
 "                        separate worksheets."
-msgstr "In Excel, vanuit het Odoo menu kies <strong>Settings</strong>.\n"
+msgstr ""
+"In Excel, vanuit het Odoo menu kies <strong>Settings</strong>.\n"
 "                        Controleer de instellingen en geef het wachtwoord in. Klik op Test om te controleren en klik OK om te bewaren.\n"
 "                        Kies vervolgens <strong>Get Index</strong> om een overzicht van beschikbare rapporten op te halen. Kies rapporten\n"
 "                        door deze in kolom B te markeren met een karakter (bijvoorbeeld een x). Voor bepaalde rapporten is het nodig om eerst\n"
 "                        een selectie te maken, wanneer een rapport over projecten gaat bijvoorbeeld.\n"
 "                        Kies daarna <strong>Get Reports</strong> om de rapporten op te halen. Deze verschijnen op\n"
-"                        afzondelijke tabbladen."
+"                        afzonderlijke tabbladen."
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.bi_sql_excel_report_field_view_form
@@ -593,16 +605,18 @@ msgstr "N/A"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "Next, you need to set the 'executable' indicator of the file. Open a Terminal session and\n"
+msgid ""
+"Next, you need to set the 'executable' indicator of the file. Open a Terminal session and\n"
 "                        change your working directory to ~/Downloads. Enter the command: <b>chmod +x OdooJsonToCsv</b>.\n"
 "                        As this program is not registered by Apple you must allow execution via the 'Gatekeeper'.\n"
 "                        Enter the command: <b>spctl – add /Users/&lt;username&gt;/Downloads/OdooJsonToCsv</b>.\n"
 "                        Replace &lt;username&gt; by your own username. You will see a pop-up where you must enter\n"
 "                        you Mac user's password to confirm. After these steps you can close your terminal session\n"
 "                        and start using the Excel Add-in."
-msgstr "Hierna moet de 'executable' indicator van het bestand worden gezet. Open een Terminal sessie en\n"
+msgstr ""
+"Hierna moet de 'executable' indicator van de file worden gezet. Open een Terminal sessie en\n"
 "                        wijzig de werk-directory naar ~/Downloads. Geef dan het commando: <b>chmod +x OdooJsonToCsv</b>.\n"
-"                        Omdat dit programma niet is geregistreerd bij Apple, moet toestemmig worden gegeven om het uit te voeren via de 'Gatekeeper'.\n"
+"                        Omdat dit programma niet is geregistreerd bij Apple, moet toestemmig worden gegeveb om het uit te voeren via de 'Gatekeeper'.\n"
 "                        Geef het commando: <b>spctl – add /Users/&lt;username&gt;/Downloads/OdooJsonToCsv</b>.\n"
 "                        Vervang &lt;username&gt; door de eigen gebruikersnaam. Er verschijnt een pop-up waarin het\n"
 "                        wachtwoord (van de Mac gebruiker) wordt gevraagd als bevestiging. Na deze stappen kan de terminal sessie worden afgesloten\n"
@@ -800,29 +814,33 @@ msgstr "SQL View which is the data source for the Excel report"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "Save the files to your Downloads folder. Get the file info and uncheck the\n"
+msgid ""
+"Save the files to your Downloads folder. Get the file info and uncheck the\n"
 "                        <i>Locked</i> indicator when it is set.\n"
 "                        Within Excel choose Tools - Add-ins. Un-select the Odoo-Reports Add-in first when you are updating\n"
 "                        to the latest version. Then use Browse... and select the Add-in file.\n"
 "                        Excel will then copy the file to a hidden folder. Now you should see Odoo-Reports being selected.\n"
 "                        In the Home ribbon you should see three buttons: 'Get Index', 'Get Reports' and 'Settings'."
-msgstr "Bewaar de bestanden in de Downloads map. Open de 'Eigenschappen' van de\n"
+msgstr ""
+"Bewaar de bestanden in de Downloads map. Open de 'Eigenschappen' van de\n"
 "                        bestanden en schakel de <i>Geblokkeerd</i> indicator uit wanneer die aan staat.\n"
 "                        In Excel, kies Tools - Add-ins. De-selecteer de Odoo-Reports Add-in eerst wanneer je een update\n"
 "                        naar de laatste versie uitvoert. Kies dan Bladeren... en selecteer de Add-in file.\n"
-"                        Excel kopieert dan het bestand naar een (onzichtbare) map voor Add-in's. Nu moet de Odoo-Reports Add-in geselecteerd zijn.\n"
+"                        Excel kopieert dan de file naar een (onzichtbare) map voor Add-in's. Nu moet de Odoo-Reports Add-in geselecteerd zijn.\n"
 "                        In het Home menu moeten nu drie knoppen zijn verschenen: 'Get Index', 'Get Reports' en 'Settings'."
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "Save the files to your Downloads folder. Open the Properties of the files and\n"
+msgid ""
+"Save the files to your Downloads folder. Open the Properties of the files and\n"
 "                        uncheck the <i>Blocked</i> indicator when it is set. Close Excel if it is opened.\n"
 "                        Now move only the file Odoo-reports.xlam to a folder of choice or the official folder for Add-ins\n"
 "                        C:\\Users\\%USERNAME%\\AppData\\Roaming\\Microsoft\\AddIns.\n"
 "                        The AppData folder is a hidden folder. To make it visible in the File Explorer,\n"
 "                        select View in the menu and enable the Hidden Items option.\n"
 "                        Leave the .exe file in the Downloads folder."
-msgstr "Bewaar de bestanden in de Downloads map. Open de 'Eigenschappen' van de\n"
+msgstr ""
+"Bewaar de bestanden in de Downloads map. Open de 'Eigenschappen' van de\n"
 "                        bestanden en schakel de <i>Geblokkeerd</i> indicator uit wanneer die aan staat. Sluit Excel wanneer deze is geopend.\n"
 "                        Verplaats dan alleen het bestand Odoo-reports.xlam naar een map naar eigen keuze of naar de officiële map voor Add-ins\n"
 "                        C:\\Users\\%USERNAME%\\AppData\\Roaming\\Microsoft\\AddIns.\n"
@@ -919,12 +937,14 @@ msgstr "Stacked Line with Markers"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "Start Excel when the Add-in file is in the designated folder.\n"
+msgid ""
+"Start Excel when the Add-in file is in the designated folder.\n"
 "                        In Excel choose File - Options - Add-ins. At the bottom you will\n"
 "                        see 'Manage: Excel Add-ins'. Select 'Excel Add-ins' when not already selected and\n"
 "                        click 'Go...'. You should see Odoo-Reports in the list (or use Browse...); select it to activate.\n"
 "                        Now you should see an Odoo section in the ribbon (within 'Home')."
-msgstr "Start Excel wanneer het Add-in bestand op de juiste plek staat.\n"
+msgstr ""
+"Start Excel wanneer het Add-in bestand op de juiste plek staat.\n"
 "                        In Excel kies File - Options - Add-ins. Onderaan staat\n"
 "                        'Manage: Excel Add-ins'. Selecteer 'Excel Add-ins' als deze nog niet standaard is gekozen en\n"
 "                        klik op 'Go...'. Nu moet Odoo-Reports in de lijst staan (of gebruik Browse...); selecteer deze om te activeren.\n"
@@ -957,13 +977,15 @@ msgstr "Tabel linksboven rij"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "The OdooJsonToCsv executable is a tool to convert data received from Odoo (in Json format)\n"
+msgid ""
+"The OdooJsonToCsv executable is a tool to convert data received from Odoo (in Json format)\n"
 "                        to a CSV format which can be loaded by Excel. It can do this much faster than the Excel Add-in itself.\n"
 "                        Because of security measures the executable can't be called directly from the Add-in.\n"
 "                        You must create a Mac Script using the Script Editor (in the Applications - Utilities folder).\n"
 "                        Create a script with the name <strong>OdooJsonToCsvScript</strong>.\n"
 "                        Put the following code into the script and save it:"
-msgstr "Het OdooJsonToCsv programma converteert data welke is ontvangen van Odoo (in Json format)\n"
+msgstr ""
+"Het OdooJsonToCsv programma converteert data welke is ontvangen van Odoo (in Json format)\n"
 "                        naar een CSV formaat dat kan worden ingelezen door Excel. Dit gaat veel sneller dan wanneer de Excel Add-in het zelf doet.\n"
 "                        Door de beveiligingsmaatregelen op de Mac kan het programma niet rechtstreeks door de Add-in worden gestart.\n"
 "                        Maak daarom een Mac Script aan via de Script Editor (in de Applications - Utilities folder).\n"
@@ -972,10 +994,12 @@ msgstr "Het OdooJsonToCsv programma converteert data welke is ontvangen van Odoo
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "The OdooJsonToCsv executable is a tool to convert data received from Odoo (in Json format)\n"
+msgid ""
+"The OdooJsonToCsv executable is a tool to convert data received from Odoo (in Json format)\n"
 "                        to a CSV format which can be loaded by Excel. It can do this much faster than the Excel Add-in itself.\n"
 "                        Leave this file in the Downloads folder, the Add-in will pick it up from there."
-msgstr "Het OdooJsonToCsv programma is a tool om gegevens van Odoo in (in Json format)\n"
+msgstr ""
+"Het OdooJsonToCsv programma is a tool om gegevens van Odoo in (in Json format)\n"
 "                        te converteren naar CSV format dat kan worden ingelezen door Excel. Dit programma kan dit veel sneller doen dan de Excel Add-in zelf.\n"
 "                        Laat dit bestand in de Downloads map staan, de Add-in pakt het bestand van hier op."
 
@@ -1116,12 +1140,13 @@ msgstr "bi.sql.view"
 
 #. module: bi_sql_excel_reports
 #: model:ir.ui.view,arch_db:bi_sql_excel_reports.save_addin_file_wizard_view
-msgid "on OdooJsonToCsvHandler(ParamString)\n"
+msgid ""
+"on OdooJsonToCsvHandler(ParamString)\n"
 "    do shell script \"~/Downloads/OdooJsonToCsv \" &amp; ParamString\n"
 "    return \"Handler completed\"\n"
 "end OdooJsonToCsvHandler"
-msgstr "on OdooJsonToCsvHandler(ParamString)\n"
+msgstr ""
+"on OdooJsonToCsvHandler(ParamString)\n"
 "    do shell script \"~/Downloads/OdooJsonToCsv \" &amp; ParamString\n"
 "    return \"Handler completed\"\n"
 "end OdooJsonToCsvHandler"
-

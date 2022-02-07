@@ -203,7 +203,7 @@ void command_line_options(int arg_count, char *arguments[])
 
 
 void set_path_file_name(bool is_output, bool is_stats_file)
-// Combine path and filename for input and output files into variable path_and_name
+// Combine path and filename for input and output files into variable fglob.path_and_name
 {
     copy_n_string(fglob.path_and_name, fglob.path, strlen(fglob.path) + 1);
     if (is_stats_file) {
@@ -365,7 +365,7 @@ bool convert_unicode_esc(const char *uni_esc, char *converted)
     char uni_seg[3] = {'0','0','\0'};
     char uni_hex[3] = {'0','0','\0'};
     unsigned int escval;
-    int seg_ix;
+    int seg_ix, i;
     if (!uglob.unicode_ini) { uglob.unicode_ini = unicode_init(); }
     uni_seg[0] = uni_esc[0]; uni_seg[1] = uni_esc[1];
     uni_hex[0] = uni_esc[2]; uni_hex[1] = uni_esc[3];
@@ -382,10 +382,7 @@ bool convert_unicode_esc(const char *uni_esc, char *converted)
         escval = strtoul(uni_hex, NULL, 16);
         if (escval <= unicode_map[seg_ix].ubound) {
             if (opt.use_utf8) {
-//                for (i=0; i<2; i++) { converted[i] = unicode_map[seg_ix].utf8[escval][i]; }   Wrong
-                converted[0] = unicode_map[seg_ix].utf8[escval][0];
-                converted[1] = unicode_map[seg_ix].utf8[escval][1];
-                converted[2] = unicode_map[seg_ix].utf8[escval][2];
+                for (i=0; i<3; i++) converted[i] = unicode_map[seg_ix].utf8[escval][i];
                 converted[3] = '\0';
             }
             else {
@@ -447,8 +444,7 @@ long convert_line(char *p_inp, int line_len, char *p_outp)
             }
             // convert unicode escape sequence
             else if (esc_char && *(p_work) == 'u' && line_char_seq < line_len-4) {
-                uni_esc[0] = *(p_work+1); uni_esc[1] = *(p_work+2);
-                uni_esc[2] = *(p_work+3); uni_esc[3] = *(p_work+4);
+                for (i=0; i < 4; i++) uni_esc[i] = *(p_work+i+1);
                 convert_unicode_esc(uni_esc, conv_ch);
                 p_outp -= 1; converted = true;
                 skip_char += 5;
