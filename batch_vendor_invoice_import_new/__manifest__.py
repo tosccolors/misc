@@ -117,7 +117,7 @@ To contribute to this module, please visit https://odoo-community.org.
 
     # any module necessary for this one to work correctly
     'depends': [
-    # 'external_file_location',
+    'external_file_location',
                 'attachment_queue',
                 'account_operating_unit',
                 'account_invoice_import_invoice2data'

@@ -30,7 +30,7 @@
     'license': 'AGPL-3',
     'depends': ['l10n_nl_postcodeapi'],
     'data': [
-        'data/res.country.state.csv',
+        # 'data/res.country.state.csv',
         ],
     'external_dependencies': {
     },
