@@ -8,7 +8,8 @@
 
     'description': """
         Allows you to map an external systems Gl Account, that can be used for grouping/mapping associated COA;
-        including an option to capture Trading Partner Reference in Partner.
+        including an option to capture Trading Partner Reference in Partner to identify and eliminate intercompany
+        transactions.
     """,
 
     'author'  : "Magnus",

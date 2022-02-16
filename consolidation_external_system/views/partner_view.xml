@@ -10,7 +10,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='function']" position="before">
-                <field name="trade_partner_code"/>
+                <field name="trading_partner_code"/>
             </xpath>
         </field>
     </record>
@@ -24,10 +24,10 @@
         <field name="inherit_id" ref="base.view_res_partner_filter"/>
         <field name="arch" type="xml">
                <field name="user_id" position="after">
-                   <field name="trade_partner_code" />
+                   <field name="trading_partner_code" />
                </field>
                <filter name="salesperson" position="after" >
-                   <filter name="trade_partner_code" string="Trade Partner" domain="[]" context="{'group_by' : 'trade_partner_code'}" />
+                   <filter name="trading_partner_code" string="Trading Partner" domain="[]" context="{'group_by' : 'trading_partner_code'}" />
                </filter>
         </field>
     </record>
