@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Partner: (Form)
+    -->
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='function']" position="before">
+                <field name="trade_partner_code"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--
+        Partner: (Search)
+    -->
+    <record id="view_res_partner_filter" model="ir.ui.view">
+        <field name="name">res.partner.select</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+               <field name="user_id" position="after">
+                   <field name="trade_partner_code" />
+               </field>
+               <filter name="salesperson" position="after" >
+                   <filter name="trade_partner_code" string="Trade Partner" domain="[]" context="{'group_by' : 'trade_partner_code'}" />
+               </filter>
+        </field>
+    </record>
+
+</odoo>
