@@ -62,7 +62,7 @@ class AccountCutoff(models.Model):
             'journal_id': self.cutoff_journal_id.id,
             'date': self.cutoff_date,
             'to_be_reversed': True,
-            'ref': move_label,
+            # 'ref': move_label,
             'line_ids': movelines_to_create,
         }
         return res
