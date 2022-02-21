@@ -18,8 +18,9 @@ class AccountCutoff(models.Model):
 
     def _prepare_provision_line(self, cutoff_line):
         result = super(AccountCutoff, self)._prepare_provision_line(cutoff_line)
-        result['account_move_ref'] = cutoff_line.move_line_id.display_name if not \
-                self.env.user.company_id.use_description_as_reference else \
+        result['account_move_ref'] = cutoff_line.invoice_id.number
+        result['account_move_label'] = cutoff_line.move_line_id.display_name if not \
+            self.env.user.company_id.use_description_as_reference else \
                 cutoff_line.name
         return result
 
@@ -30,16 +31,19 @@ class AccountCutoff(models.Model):
         self.ensure_one()
         movelines_to_create = []
         label = self.move_label
+        ref = self.move_label
         for dict in to_provision:
             amount = dict['amount']
             analytic_account_id = dict['analytic_account_id']
             operating_unit_id = dict['operating_unit_id']
             account_id = dict['account_id']
-            move_label = label + " " + dict['account_move_ref']
+            move_label = ['account_move_label']
+            move_ref = ref + " " + dict['account_move_ref']
             amount = self.company_currency_id.round(amount)
             movelines_to_create.append((0, 0, {
                 'account_id': account_id,
                 'name': move_label,
+                'ref': move_ref,
                 'debit': amount < 0 and amount * -1 or 0,
                 'credit': amount >= 0 and amount or 0,
                 'analytic_account_id': analytic_account_id,
@@ -52,6 +56,7 @@ class AccountCutoff(models.Model):
             movelines_to_create.append((0, 0, {
                 'account_id': self.cutoff_account_id.id,
                 'name': move_label,
+                'ref': move_ref,
                 'debit': counterpart_amount < 0 and counterpart_amount * -1 or 0,
                 'credit': counterpart_amount >= 0 and counterpart_amount or 0,
                 'analytic_account_id': False,
@@ -62,7 +67,7 @@ class AccountCutoff(models.Model):
             'journal_id': self.cutoff_journal_id.id,
             'date': self.cutoff_date,
             'to_be_reversed': True,
-            # 'ref': move_label,
+            'ref': move_label,
             'line_ids': movelines_to_create,
         }
         return res
