@@ -37,7 +37,7 @@ class AccountCutoff(models.Model):
             analytic_account_id = dict['analytic_account_id']
             operating_unit_id = dict['operating_unit_id']
             account_id = dict['account_id']
-            move_label = ['account_move_label']
+            move_label = dict['account_move_label']
             move_ref = ref + " " + dict['account_move_ref']
             amount = self.company_currency_id.round(amount)
             movelines_to_create.append((0, 0, {
