@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime, ftputil, logging
+import datetime, ftputil, logging, ftplib
 from odoo import models, fields, api
 import base64
 import json
@@ -8,7 +8,7 @@ try:
     import ftputil.session
 except ImportError:
     pass
-# import ftplib
+
 
 _logger = logging.getLogger(__name__)
 
@@ -17,10 +17,10 @@ class FTPConfig(models.Model):
     _name = 'ftp.config'
     _description = 'Connection info of FTP Transfers'
 
-
-    server = fields.Char(string='Server', help="Servername, including protocol, e.g. https://prod.barneveldsekrant.nl")
+    server = fields.Char(string='Server', help="Servername, including protocol, e.g. https://prod.xxx.nl")
     directory = fields.Char(string='Server subdir', help="Directory starting with slash, e.g. /api/v1, or empty")
     tempdir = fields.Char(string='Local temp dir', help="Local temporary directory. e.g. /home/odoo")
+    sftp = fields.Boolean(string='Use SFTP', help="Enable when using SFTP instead of FTP")
     user = fields.Char(string='User')
     password = fields.Char(string='Password')
 
@@ -69,8 +69,16 @@ class FTPConfig(models.Model):
                 config.log_exception(msg, "Invalid Directory, quiting...")
                 continue
 
-
-            # Initiate File Transfer Connection
+        if FTPConfig.sftp:
+            # Initiate SFTP File Transfer Connection
+            try:
+                ftpServer = ftplib.FTP(config.server, config.user, config.password)
+                ftpServer.encoding = "utf-8"
+            except Exception, e:
+                self.log_exception(msg, "Invalid FTPs configuration/credentials")
+                return False
+        else:
+            # Initiate FTP File Transfer Connection
             try:
                 # ftpServer = ftplib.FTP(config.server, config.user, config.password)
                 # ftpServer.encoding = "utf-8"
