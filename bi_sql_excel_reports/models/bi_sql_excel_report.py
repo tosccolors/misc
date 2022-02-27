@@ -17,8 +17,8 @@ class BiSqlExcelReport(models.Model):
     _name = 'bi.sql.excel.report'
     _order = 'sequence, id'
     auth = None                              # reference to authorization object
-    add_in_latest_ver = 0.74                 # the latest Excel Add-in version
-    add_in_incompatible_ver = 0.71           # Add-in version (or older) incompatible with Odoo module
+    add_in_latest_ver = 0.75                 # the latest Excel Add-in version
+    add_in_incompatible_ver = 0.74           # Add-in version (or older) incompatible with Odoo module
 
     PROHIBITED_WORDS = [
         'delete',
