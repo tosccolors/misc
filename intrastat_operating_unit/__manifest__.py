@@ -15,7 +15,7 @@
     'category': 'Accounting',
     'version': '0.1',
 
-    'depends': ['l10n_nl_intrastat'],
+    'depends': ['l10n_nl_tax_statement_icp'],
 
     # always loaded
     'data': [
@@ -27,7 +27,7 @@
     'demo': [
         # 'demo/demo.xml',
     ],
-    'installable':False,
+    'installable':True,
 
     # l10n_nl_intrastat is not available in odoo12
 }
