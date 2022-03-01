@@ -51,14 +51,14 @@ class AccountMove(models.Model):
 
     #override post(), when first post, nothing extra. When move.name exists, it cannot be first posting. Then 'OU-balancing' lines are unlinked.
     @api.multi
-    def post(self):
+    def post(self, invoice=False):
         for move in self:
             if not move.company_id.ou_is_self_balanced or not move.name:
                 continue
             for line in move.line_ids:
                 if line.name == 'OU-Balancing':
                     line.with_context(wip=True).unlink()
-        res = super(AccountMove, self).post()
+        res = super(AccountMove, self).post(invoice=invoice)
         return res
 
 
