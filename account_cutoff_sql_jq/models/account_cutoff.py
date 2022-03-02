@@ -18,8 +18,8 @@ class AccountCutoff(models.Model):
 
     def _prepare_provision_line(self, cutoff_line):
         result = super(AccountCutoff, self)._prepare_provision_line(cutoff_line)
-        result['account_move_ref'] = cutoff_line.invoice_id.number
-        result['account_move_label'] = cutoff_line.move_line_id.display_name if not \
+        result['account_move_label'] = cutoff_line.invoice_id.number
+        result['account_move_ref'] = cutoff_line.move_line_id.display_name if not \
             self.env.user.company_id.use_description_as_reference else \
                 cutoff_line.name
         return result
