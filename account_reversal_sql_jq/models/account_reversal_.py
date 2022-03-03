@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api,_
+from odoo import api, fields, models, exceptions, _
 from datetime import date, datetime
 from odoo.addons.queue_job.job import job, related_action
 from odoo.addons.queue_job.exception import FailedJobError
 from odoo.exceptions import UserError
+from odoo.tools import exception_to_unicode
 
 
 class AccountMove(models.Model):
@@ -12,7 +13,7 @@ class AccountMove(models.Model):
 
     job_queue = fields.Many2one('queue.job', string='Job Queue', readonly=True, copy=False)
 
-    def create_reversal_moveline_with_query(self, date, journal, move_prefix):
+    def create_reversal_moveline_with_query(self, date, journal):
 
         #  Create move
         operating_unit_id = self.operating_unit_id and self.operating_unit_id.id or "NUll"
@@ -25,9 +26,9 @@ class AccountMove(models.Model):
                 _("Wrong company Journal is '%s' but we have '%s'") % (
                     journal.company_id.name, self.company_id.name))
 
-        ref = self.ref or move_prefix
-        if move_prefix and move_prefix != ref:
-            ref = ' '.join([move_prefix, ref])
+        ref = self.ref
+        # if move_prefix and move_prefix != ref:
+        #     ref = ' '.join([move_prefix, ref])
 
         data = {
             'ref': ref,
@@ -149,66 +150,64 @@ class AccountMove(models.Model):
                    self.id
                    ))
         cr.execute(sql_query)
-        move = self.browse(move_id)
-        return move
+        # move = self.browse(move_id)
+        return [move_id]
     
     @api.multi
-    def create_reversals_via_job_sql(self, date=False, journal=False, move_prefix=False,
-                         line_prefix=False, reconcile=False):
-
+    def create_reversals_via_job_sql(self, date=False, journal=False):
+        # def create_reversals_via_job_sql(self, date=False, journal
+        #                      line_prefix=False, reconcile=False):
         moves = self.env['account.move']
-
+        move_ids = []
         for orig in self:
             if self.env.user.company_id.reversal_via_sql:
                 # Create account move and lines using query
-                reversal_move = orig.create_reversal_moveline_with_query(date, journal, move_prefix)
-                moves |= reversal_move
+                reversal_move_id = orig.create_reversal_moveline_with_query(date, journal)
+                move_ids += reversal_move_id
                 orig.write({
-                    'reversal_id': reversal_move.id,
-                    'to_be_reversed': False,
+                    'reverse_entry_id': reversal_move_id[0],
                 })
             elif self.env.user.company_id.perform_reversal_by_line_jq :
                 # Create account move and lines using job queue
-                data = date, journal, move_prefix
-                jq = orig.with_delay(description='Perform reversal via SQL Job queue').create_reversal_move_job_queue(data, reconcile)
+                jq = orig.with_delay(description='Perform reversal via SQL Job queue').create_reversal_move_job_queue(date, journal)
                 job_id = self.env['queue.job'].search([('uuid', '=', jq.uuid)])
                 orig.job_queue = job_id.id
             elif self.env.user.company_id.reversal_via_jq:
-                orig.with_delay(description='Perform reversal via Job queue').create_reversal_via_job_queue(date, journal, move_prefix, line_prefix, reconcile)
-        if moves:
+                orig.with_delay(description='Perform reversal via Job queue').create_reversal_via_job_queue(date, journal)
+        if move_ids:
+            moves = moves.browse(move_ids)
+            moves.reconcile()
             moves._post_validate()
             moves.post()
-            if reconcile:
-                self.move_reverse_reconcile()
+            # if reconcile:
+            #     self.move_reverse_reconcile()
         return moves
 
 
     # reversal via job queue
     @job
-    def create_reversal_via_job_queue(self, date, journal, move_prefix, line_prefix, reconcile):
+    def create_reversal_via_job_queue(self, date, journal):
         try:
-            return self.create_reversals(date, journal, move_prefix, line_prefix, reconcile)
-        except Exception:
-            raise FailedJobError(
-                _("The details of the error:'%s'") % (unicode(e)))
+            return self.reverse_moves(date, journal)
+        except Exception as e:
+            raise Exception(_("The details of the error:'%s'") % (exception_to_unicode(e)))
 
     # Create account move and lines using job queue
     @job
-    def create_reversal_move_job_queue(self, data, reconcile):
+    def create_reversal_move_job_queue(self, date, journal):
         moves = self.env['account.move']
         try:
             for orig in self:
-                reversal_move = orig.create_reversal_moveline_with_query(data[0], data[1], data[2])
+                reversal_move_id = orig.create_reversal_moveline_with_query(date, journal)
+                reversal_move = moves.browse(reversal_move_id)
                 moves |= reversal_move
                 orig.write({
-                    'reversal_id': reversal_move.id,
-                    'to_be_reversed': False,
+                    'reverse_entry_id': reversal_move.id,
                 })
             if moves:
+                moves.reconcile()
                 moves._post_validate()
                 moves.post()
-                if reconcile:
-                    self.move_reverse_reconcile()
             return moves
 
         except Exception:
