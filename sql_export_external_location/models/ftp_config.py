@@ -76,7 +76,7 @@ class FTPConfig(models.Model):
             try:
                 ssh = paramiko.SSHClient()
                 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                ssh.connect(config.server,config.port, config.user, config.password)
+                ssh.connect(hostname=config.server, port=config.port, username=config.user, password=config.password, look_for_keys=False)
                 sftp = ssh.open_sftp()
             except Exception, e:
                 self.log_exception(msg, "Invalid FTPs configuration/credentials")
