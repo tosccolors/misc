@@ -108,17 +108,17 @@ class FTPConfig(models.Model):
                 # ftpServer.quit()
                 # # ============================
                 if FTPConfig.ftp:
-                ftpServer.upload(source + filename, target + filename)
-                ftpServer.close()
+                    ftpServer.upload(source + filename, target + filename)
+                    ftpServer.close()
 
             except Exception, e:
                 config.log_exception(msg, "Transfer failed, quiting....%s" % (e))
                 ftpServer.close()
 
                 if FTPConfig.sftp:
-                sftp.put(source + filename, target + filename)
-                sftp.close()
-                ssh.close()
+                    sftp.put(source + filename, target + filename)
+                    sftp.close()
+                    ssh.close()
 
             except Exception, e:
                 config.log_exception(msg, "Transfer failed, quiting....%s"%(e))
