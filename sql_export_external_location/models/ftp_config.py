@@ -76,11 +76,30 @@ class FTPConfig(models.Model):
             try:
                 ssh = paramiko.SSHClient()
                 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                ssh.connect(hostname=config.server, port="22", username=config.user, password=config.password, look_for_keys=False)
+                ssh.connect(hostname=config.server, port=config.port, username=config.user, password=config.password, look_for_keys=False)
                 sftp = ssh.open_sftp()
             except Exception, e:
                 self.log_exception(msg, "Invalid FTPs configuration/credentials")
                 return False
+            try:
+                _logger.info("Transferring " + filename)
+                if config.directory:
+                    target = str(config.directory)
+                else:
+                    target = '/'
+                source = config.tempdir + '/'
+                sftp.put(source + filename, target + filename)
+                sftp.close()
+                ssh.close()
+            except Exception, e:
+                config.log_exception(msg, "Transfer failed, quiting....%s" % (e))
+                sftp.close()
+                ssh.close()
+
+                return False
+
+        return True
+
         if FTPConfig.ftp:
             # Initiate FTP File Transfer Connection
             try:
@@ -108,23 +127,13 @@ class FTPConfig(models.Model):
                 #     ftpServer.storbinary("STOR %s"%(filename), fp=file)
                 # ftpServer.quit()
                 # # ============================
-                if FTPConfig.ftp:
-                    ftpServer.upload(source + filename, target + filename)
-                    ftpServer.close()
+
+                ftpServer.upload(source + filename, target + filename)
+                ftpServer.close()
 
             except Exception, e:
                 config.log_exception(msg, "Transfer failed, quiting....%s" % (e))
                 ftpServer.close()
-
-                if FTPConfig.sftp:
-                    sftp.put(source + filename, target + filename)
-                    sftp.close()
-                    ssh.close()
-
-            except Exception, e:
-                config.log_exception(msg, "Transfer failed, quiting....%s"%(e))
-                sftp.close()
-                ssh.close()
 
                 return False
 
