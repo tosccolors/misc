@@ -21,6 +21,7 @@
             <field name="server"/>
             <field name="sftp"/>
             <field name="ftp"/>
+            <field name="port"/>
             <field name="directory"/>  
             <field name="user"/> 
             <field name="password"/>  

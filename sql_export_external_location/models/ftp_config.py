@@ -22,6 +22,7 @@ class FTPConfig(models.Model):
     tempdir = fields.Char(string='Local temp dir', help="Local temporary directory. e.g. /home/odoo")
     ftp = fields.Boolean(string='Use FTP', help="Enable when using FTP")
     sftp = fields.Boolean(string='Use SFTP', help="Enable when using SFTP instead of FTP")
+    port = fields.Char(string='Port', help="For ftp use port 21, for SFT use port 22")
     user = fields.Char(string='User')
     password = fields.Char(string='Password')
 
@@ -75,7 +76,7 @@ class FTPConfig(models.Model):
             try:
                 ssh = paramiko.SSHClient()
                 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                ssh.connect(config.server, config.user, config.password)
+                ssh.connect(config.server,config.port, config.user, config.password)
                 sftp = ssh.open_sftp()
             except Exception, e:
                 self.log_exception(msg, "Invalid FTPs configuration/credentials")
@@ -85,7 +86,7 @@ class FTPConfig(models.Model):
             try:
                 # ftpServer = ftplib.FTP(config.server, config.user, config.password)
                 # ftpServer.encoding = "utf-8"
-                port_session_factory = ftputil.session.session_factory(port=21, use_passive_mode=True)
+                port_session_factory = ftputil.session.session_factory(port=config.port, use_passive_mode=True)
                 ftpServer = ftputil.FTPHost(config.server, config.user, config.password, session_factory=port_session_factory)
 
             except Exception, e:
