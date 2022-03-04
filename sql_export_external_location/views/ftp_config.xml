@@ -20,6 +20,7 @@
           <group name="connector_config" string="Connector configuration">
             <field name="server"/>
             <field name="sftp"/>
+            <field name="ftp"/>
             <field name="directory"/>  
             <field name="user"/> 
             <field name="password"/>  

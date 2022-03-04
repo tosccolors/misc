@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime, ftputil, logging, ftplib
+import datetime, ftputil, logging, ftplib, paramiko
 from odoo import models, fields, api
 import base64
 import json
@@ -20,6 +20,7 @@ class FTPConfig(models.Model):
     server = fields.Char(string='Server', help="Servername, including protocol, e.g. https://prod.xxx.nl")
     directory = fields.Char(string='Server subdir', help="Directory starting with slash, e.g. /api/v1, or empty")
     tempdir = fields.Char(string='Local temp dir', help="Local temporary directory. e.g. /home/odoo")
+    ftp = fields.Boolean(string='Use FTP', help="Enable when using FTP")
     sftp = fields.Boolean(string='Use SFTP', help="Enable when using SFTP instead of FTP")
     user = fields.Char(string='User')
     password = fields.Char(string='Password')
@@ -72,12 +73,14 @@ class FTPConfig(models.Model):
         if FTPConfig.sftp:
             # Initiate SFTP File Transfer Connection
             try:
-                ftpServer = ftplib.FTP(config.server, config.user, config.password)
-                ftpServer.encoding = "utf-8"
+                ssh = paramiko.SSHClient()
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                ssh.connect(config.server, config.user, config.password)
+                sftp = ssh.open_sftp()
             except Exception, e:
                 self.log_exception(msg, "Invalid FTPs configuration/credentials")
                 return False
-        else:
+        if FTPConfig.ftp:
             # Initiate FTP File Transfer Connection
             try:
                 # ftpServer = ftplib.FTP(config.server, config.user, config.password)
@@ -104,15 +107,25 @@ class FTPConfig(models.Model):
                 #     ftpServer.storbinary("STOR %s"%(filename), fp=file)
                 # ftpServer.quit()
                 # # ============================
-
+                if FTPConfig.ftp:
                 ftpServer.upload(source + filename, target + filename)
+                ftpServer.close()
+
+            except Exception, e:
+                config.log_exception(msg, "Transfer failed, quiting....%s" % (e))
+                ftpServer.close()
+
+                if FTPConfig.sftp:
+                sftp.put(source + filename, target + filename)
+                sftp.close()
+                ssh.close()
 
             except Exception, e:
                 config.log_exception(msg, "Transfer failed, quiting....%s"%(e))
-                ftpServer.close()
-                return False
+                sftp.close()
+                ssh.close()
 
-            ftpServer.close()
+                return False
 
         return True
 
