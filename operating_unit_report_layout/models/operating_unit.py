@@ -20,14 +20,15 @@
 
 import os
 from odoo import api, fields, models, tools, _
-
+import base64
 
 class OperatingUnit(models.Model):
     _inherit = 'operating.unit'
 
 
     def _get_logo(self):
-        return open(os.path.join(tools.config['root_path'], 'addons', 'base', 'res', 'res_company_logo.png'), 'rb') .read().encode('base64')
+        return base64.b64encode(
+            open(os.path.join(tools.config['root_path'], 'addons', 'base', 'static', 'img', 'res_company_logo.png'),'rb').read())
 
     logo = fields.Binary(related='partner_id.image', default=_get_logo)
     report_background_image1 = fields.Binary('Background Image for Report Frontpage',
