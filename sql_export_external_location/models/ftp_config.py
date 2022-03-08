@@ -70,7 +70,7 @@ class FTPConfig(models.Model):
                 config.log_exception(msg, "Invalid Directory, quiting...")
                 continue
 
-        if FTPConfig.sftp:
+        if self.sftp:
             port_int = int(config.port)
             # Initiate SFTP File Transfer Connection
             try:
@@ -98,7 +98,7 @@ class FTPConfig(models.Model):
 
                 return False
 
-        if FTPConfig.ftp:
+        elif self.ftp:
             # Initiate FTP File Transfer Connection
             try:
                 # ftpServer = ftplib.FTP(config.server, config.user, config.password)
