@@ -26,6 +26,8 @@ class FTPConfig(models.Model):
     user = fields.Char(string='User')
     password = fields.Char(string='Password')
 
+    port_int = int(port)
+
     latest_run = fields.Char(string='Latest run', help="Date of latest run of Announcement connector", copy=False)
     latest_status = fields.Char(string='Latest status', help="Log of latest run", copy=False)
     output_type = fields.Selection([('csv','CSV'), ('xml', 'XML'), ('json','JSON')], string='Output File Format', default='csv')
@@ -76,11 +78,11 @@ class FTPConfig(models.Model):
             try:
                 ssh = paramiko.SSHClient()
                 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                ssh.connect(hostname=config.server, port=config.port, username=config.user, password=config.password, look_for_keys=False)
+                ssh.connect(hostname=config.server, port=config.port_int, username=config.user, password=config.password, look_for_keys=False)
                 sftp = ssh.open_sftp()
             except Exception, e:
                 self.log_exception(msg, "Invalid FTPs configuration/credentials")
-                return False
+                return sftp
             try:
                 _logger.info("Transferring " + filename)
                 if config.directory:
@@ -98,14 +100,12 @@ class FTPConfig(models.Model):
 
                 return False
 
-        return True
-
         if FTPConfig.ftp:
             # Initiate FTP File Transfer Connection
             try:
                 # ftpServer = ftplib.FTP(config.server, config.user, config.password)
                 # ftpServer.encoding = "utf-8"
-                port_session_factory = ftputil.session.session_factory(port=config.port, use_passive_mode=True)
+                port_session_factory = ftputil.session.session_factory(port=config.port_int, use_passive_mode=True)
                 ftpServer = ftputil.FTPHost(config.server, config.user, config.password, session_factory=port_session_factory)
 
             except Exception, e:
