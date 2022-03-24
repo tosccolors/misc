@@ -80,7 +80,7 @@ class FTPConfig(models.Model):
                 sftp = ssh.open_sftp()
             except Exception, e:
                 self.log_exception(msg, "Invalid FTPs configuration/credentials")
-                return sftp
+                return False
             try:
                 _logger.info("Transferring " + filename)
                 if config.directory:
