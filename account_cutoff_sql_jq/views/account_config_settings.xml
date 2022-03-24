@@ -12,12 +12,12 @@
         <field name="inherit_id" ref="account_cutoff_prepaid.view_account_config_settings"/>
         <field name="arch" type="xml">
             <field name="default_prepaid_expense_account_id" position="after">
-                <field name="perform_posting_by_line"
-                       attrs="{'invisible': [('perform_posting_by_line_jq', '=', True)]}"/>
-                <field name="use_description_as_reference"
-                       attrs="{'invisible': [('perform_posting_by_line', '=', False)]}"/>
-                <field name="perform_posting_by_line_jq"
-                       attrs="{'invisible': [('perform_posting_by_line', '=', True)]}"/>
+<!--                <field name="perform_posting_by_line"-->
+<!--                       attrs="{'invisible': [('perform_posting_by_line_jq', '=', True)]}"/>-->
+                <field name="use_description_as_reference"/>
+<!--                <field name="perform_posting_by_line_jq"-->
+<!--                       attrs="{'invisible': [('perform_posting_by_line', '=', True)]}"/>-->
+                <field name="perform_posting_by_line_jq"/>
             </field>
         </field>
     </record>

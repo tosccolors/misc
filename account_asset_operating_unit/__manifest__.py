@@ -22,7 +22,8 @@ On invoice validation the operating_unit_id is copied to account.asset.asset fro
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'account_asset', 'operating_unit', 'account_operating_unit'],
+    'depends': ['base',
+                'account_asset', 'operating_unit', 'account_operating_unit'],
 
     # always loaded
     'data': [

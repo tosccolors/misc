@@ -11,7 +11,7 @@
     'author': 'Magnus',
     'website': 'http://www.magnus.nl',
     'depends': [
-        'account',
+        'account', 'sale'
         ],
     'data': [
         'views/product.xml',
