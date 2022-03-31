@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-extend="FormView.buttons">
+        <t t-jquery="div.o_form_buttons_view" t-operation="append">
+            <t t-if="widget.model == 'account.move' ||  widget.model == 'account.invoice'">
+                <button class="btn btn-sm btn-primary show_attachment_preview" type="button">Attachment Preview</button>
+            </t>
+        </t>
+    </t>
+
+</templates>
