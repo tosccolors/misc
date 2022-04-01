@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--add js to call preview buttons -->
+        <template id="assets_backend" name="accounting_source_document_attachment_preview assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/accounting_source_document_attachment_preview/static/src/js/preview.js"></script>
+            </xpath>
+        </template>
+
+    </data>
+</odoo>
