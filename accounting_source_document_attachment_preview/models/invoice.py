@@ -10,7 +10,6 @@ class Invoice(models.Model):
         res = super(Invoice, self).write(vals)
         if vals.get('move_id', False):
             attachment = self.env['ir.attachment']
-            attachment_ids = attachment.search([('res_model', '=', self._name), ('res_id', 'in', self.ids),
-                               ('source_res_model', '=', False), ('source_res_id', '=', False)])
+            attachment_ids = attachment.search([('res_model', '=', self._name), ('res_id', 'in', self.ids)])
             attachment_ids.write({'source_res_model':'account.move','source_res_id':vals.get('move_id', False)})
         return res
