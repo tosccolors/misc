@@ -38,7 +38,7 @@ odoo.define('accounting_source_document_attachment_preview', function (require) 
             }
             else {
                 if (dataset.model == 'account.move') {
-                    var dom = [['type', 'in', ['binary', 'url']], '|', ['res_model', '=', dataset.model], ['source_res_model', '=', dataset.model], '|', ['source_res_id', '=', model_id], ['res_id', '=', model_id] ];
+                    var dom = [['type', 'in', ['binary', 'url']],'|','&', ['res_model', '=', dataset.model], ['res_id', '=', model_id] , '&', ['source_res_model', '=', dataset.model], ['source_res_id', '=', model_id]];
                 }else{
                     var dom = [['res_model', '=', dataset.model], ['res_id', '=', model_id], ['type', 'in', ['binary', 'url']]];
 
