@@ -4,7 +4,7 @@
 {
     "name": "Odoo Disable Password",
     "summary": "Disable Password in Login Page",
-    "version": "10.0.1.0.0",
+    "version": "10.0.1.2.0",
     'category': 'Tools',
     'website' : "https://www.magnus.nl/",
     'author': 'Magnus Red',
@@ -12,6 +12,6 @@
         "auth_keycloak",
     ],
     "data": [
-        # "views/res_users.xml"
+        "views/res_users.xml"
     ],
 }
