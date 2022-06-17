@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Project -->
+  <record id="edit_project_tosc" model="ir.ui.view">
+      <field name="name">project.project.form</field>
+      <field name="model">project.project</field>
+      <field name="inherit_id" ref="project.edit_project"/>
+      <field name="arch" type="xml">
+          <xpath expr="//h1" position="replace">
+              <label for="code" class="oe_edit_only" string="Project Code and Name"/>
+              <h3>
+                  <group col="3">
+                      <field name="code" class="oe_inline" placeholder="Project Code" nolabel="1"/>
+                      <span class="oe_inline">-</span>
+                      <field name="name" class="oe_inline" placeholder="Project Name" nolabel="1"/>
+                  </group>
+              </h3>
+          </xpath>
+      </field>
+  </record>
+</odoo>
