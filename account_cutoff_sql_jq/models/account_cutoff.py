@@ -30,7 +30,7 @@ class AccountCutoff(models.Model):
     def _prepare_move(self, to_provision):
         self.ensure_one()
         movelines_to_create = []
-        ref = self.move_label
+        ref = self.move_label or ''
         for dict in to_provision:
             amount = dict['amount']
             analytic_account_id = dict['analytic_account_id']
