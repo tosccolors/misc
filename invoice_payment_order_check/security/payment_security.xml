@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="group_payment_preview_manager" model="res.groups">
+        <field name="name">Invoice Payment Order View</field>
+    </record>
+
+</odoo>
