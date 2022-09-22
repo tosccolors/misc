@@ -1,0 +1,15 @@
+<odoo>
+  <data>
+      <record id="payment_invoice_supplier_tree_inherit" model="ir.ui.view">
+            <field name="name">payment_invoice_supplier_tree_inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_tree"/>
+            <field name="group_ids" eval="[(4, ref('group_payment_preview_manager'))]" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="before">
+                    <field name="invoice_payment_order_id"/>
+                </xpath>
+            </field>
+        </record>
+  </data>
+</odoo>
