@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "invoice_payment_order_view",
+    'name': "Invoice Payment Order Check",
 
     'summary': """
         Payment Order Preview on Invoice""",
 
     'description': """
-        Payment Order Preview on Invoice
+        Module that allows the users to check the invoices that are part of a payment order.
+
     """,
 
     'author': "K.Sushma",
