@@ -24,6 +24,7 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
+        'security/payment_security.xml',
         'views/hr_expense_views.xml',
     ],
     # only loaded in demonstration mode
