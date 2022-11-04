@@ -1,0 +1,15 @@
+<odoo>
+  <data>
+      <record id="payment_hr_expense_sheet_tree_inherit" model="ir.ui.view">
+            <field name="name">payment_hr_expese_sheet_tree_inherit</field>
+            <field name="model">hr.expense.sheet</field>
+            <field name="sequence" eval="20"/>
+            <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='employee_id']" position="after">
+                    <field name="expense_payment_order_id"/>
+                </xpath>
+            </field>
+        </record>
+  </data>
+</odoo>
