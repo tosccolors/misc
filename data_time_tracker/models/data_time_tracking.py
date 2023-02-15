@@ -92,7 +92,7 @@ class DataTrackThread(models.AbstractModel):
         res_id._track_data(track_config, values, 'create')
         return res_id
 
-    @api.multi
+    # @api.multi
     def write(self, values):
         if 'timeFaceCronUpdate' in self.env.context:
             self.remove_duplicates()
@@ -148,8 +148,8 @@ class DataTrackerConfig(models.Model):
         if config:
             raise UserError(_('Configuration already define for %s and field %s')%(config.model_id.model, config.field_id.name))
         return super(DataTrackerConfig, self).create(values)
-
-    @api.multi
+    #
+    # @api.multi
     def write(self, values):
         self.ensure_one()
         model = values['model_id'] if 'model_id' in values else self.model_id.id
@@ -185,7 +185,7 @@ class DataTimeTracker(models.Model):
     relation_model_name = fields.Char(compute ='_get_reference', string="Co-model Ref#")
     type_many2many = fields.Boolean()
 
-    @api.multi
+    # @api.multi
     def action_open_view(self):
         self.ensure_one()
         active_model = self.env.context.get('active_model', '')
@@ -208,7 +208,7 @@ class DataTimeTracker(models.Model):
             }
         return True
 
-    @api.multi
+    # @api.multi
     def remove(self):
         self.ensure_one()
         ctx = self.env.context.copy()

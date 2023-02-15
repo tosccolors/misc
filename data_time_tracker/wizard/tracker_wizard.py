@@ -20,7 +20,7 @@ class TrackerWizard(models.TransientModel):
             result['date_to'] = obj.date_to
         return result
 
-    @api.multi
+    # @api.multi
     def action_update(self):
         self.ensure_one()
         ctx = self.env.context.copy()
