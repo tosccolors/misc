@@ -12,7 +12,6 @@ class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
     @api.onchange('analytic_account_id')
-    @api.multi
     def onchange_operating_unit(self):
             if self.analytic_account_id and self.analytic_account_id.linked_operating_unit:
                 self.operating_unit_id = self.analytic_account_id.operating_unit_ids.id
@@ -25,7 +24,6 @@ class AccountMoveLine(models.Model):
     )
 
 
-    @api.multi
     @api.constrains('operating_unit_id', 'analytic_account_id')
     def _check_analytic_operating_unit(self):
         for rec in self:
@@ -50,15 +48,14 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     #override post(), when first post, nothing extra. When move.name exists, it cannot be first posting. Then 'OU-balancing' lines are unlinked.
-    @api.multi
-    def post(self, invoice=False):
+    def post(self):
         for move in self:
             if not move.company_id.ou_is_self_balanced or not move.name:
                 continue
             for line in move.line_ids:
                 if line.name == 'OU-Balancing':
                     line.with_context(wip=True).unlink()
-        res = super(AccountMove, self).post(invoice=invoice)
+        res = super(AccountMove, self).post()
         return res
 
 

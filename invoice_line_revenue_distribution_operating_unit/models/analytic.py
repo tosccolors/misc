@@ -10,7 +10,6 @@ class AccountAnalyticAccount(models.Model):
 
     linked_operating_unit = fields.Boolean('Linked Operating Unit')
 
-    @api.multi
     @api.constrains('operating_unit_ids', 'linked_operating_unit')
     def _check_length_operating_units(self):
         for aa in self:
