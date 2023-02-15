@@ -19,7 +19,6 @@ class HrTimesheetSheet(models.Model):
         return False
 
 
-    @api.one
     def _check_validator(self):
         validator = False
         grpOfficer = self.env.user.has_group('hr.group_hr_user')
@@ -40,7 +39,6 @@ class HrTimesheetSheet(models.Model):
     is_validator = fields.Boolean(string="Is validator", compute='_check_validator')
 
 
-    @api.multi
     def _get_validator_user_ids(self):
         """Return the list of user_ids that can validate a given timesheet."""
         self.ensure_one()
@@ -68,14 +66,12 @@ class HrTimesheetSheet(models.Model):
                     timesheet.department_id.manager_id.user_id.id)
             return list(set(users)) if users else []
 
-    @api.multi
     def action_timesheet_confirm(self):
         for sheet in self:
             validators = sheet._get_validator_user_ids()
             sheet.write({'validator_user_ids': [(6, 0, validators)]})
         return super(HrTimesheetSheet, self).action_timesheet_confirm()
 
-    @api.multi
     def _check_authorised_validator(self):
         group_hr_manager = self.env.ref('hr.group_hr_manager')
         group_hr_user = self.env.ref('hr.group_hr_user')
@@ -92,12 +88,10 @@ class HrTimesheetSheet(models.Model):
                 raise UserError(_('You are not authorised to approve  or '
                                   'refuse this Timesheet.'))
 
-    @api.multi
     def action_timesheet_draft(self):
         self._check_authorised_validator()
         return super(HrTimesheetSheet, self).action_timesheet_draft()
 
-    @api.multi
     def action_timesheet_done(self):
         self._check_authorised_validator()
         return super(HrTimesheetSheet, self).action_timesheet_done()
