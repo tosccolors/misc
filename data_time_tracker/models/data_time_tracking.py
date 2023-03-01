@@ -136,7 +136,7 @@ class DataTrackerConfig(models.Model):
     _rec_name = 'model_id'
 
     model_id = fields.Many2one('ir.model', string='Model', ondelete='cascade', required=True, index=True)
-    field_id = fields.Many2one('ir.model.fields', string='Tracking Field', required=True, index=True)
+    field_id = fields.Many2one('ir.model.fields', ondelete='cascade', string='Tracking Field', required=True, index=True)
     relation_model = fields.Char(related='field_id.relation', string='Relational Model', required=True, index=True)
 
     def check_unique(self):
