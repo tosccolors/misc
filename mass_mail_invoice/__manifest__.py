@@ -4,8 +4,8 @@
     'summary': 'This module allows sending massive emails of invoices to customers.',
     'category': 'Accounting',
     'version': '1.0',
-    'website': 'http://www.magnus.nl',
-    'author': 'Magnus - Willem Hulshof',
+    'website': 'http://www.tosc.nl',
+    'author': 'TOSC - Willem Hulshof',
     'depends': [
         'account_invoice_transmit_method',
         'base_report_to_printer'

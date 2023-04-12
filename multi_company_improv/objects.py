@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2016 Magnus - Willem Hulshof - www.magnus.nl
+# Copyright (c) 2016 TOSC - Willem Hulshof - www.tosc.nl
 #
 # WARNING: This program as such is intended to be used by professional
 # programmers who take the whole responsability of assessing all potential

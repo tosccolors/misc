@@ -10,8 +10,8 @@
         This module makes sure that sales users can modify customer fields that are relevant for sales, but are normally positioned at the finance tab.
     """,
 
-    'author': "Magnus - DK",
-    'website': "http://www.yourcompany.com",
+    'author': "TOSC - DK",
+    'website': "http://www.tosc.nl",
 
     'category': 'Others',
     'version': '0.1',

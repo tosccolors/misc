@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # © 2013-2016 Akretion (Alexis de Lattre <alexis.delattre@akretion.com>)
-# © 2018 Magnus (Willem Hulshof <w.hulshof@magnus.nl>)
+# © 2018 TOSC (Willem Hulshof <w.hulshof@tosc.nl>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import models, fields, api, _

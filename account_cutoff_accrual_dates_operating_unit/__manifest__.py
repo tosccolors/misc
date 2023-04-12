@@ -9,7 +9,7 @@
     'category': 'Accounting & Finance',
     'license': 'AGPL-3',
     'summary': 'OU adaptation Accrual Expense, Accrual Revenue',
-    'author': 'Magnus,Odoo Community Association (OCA)',
+    'author': 'TOSC,Odoo Community Association (OCA)',
     'website': 'http://www.akretion.com',
     'depends': [
         'account_cutoff_accrual_dates',

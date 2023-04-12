@@ -10,7 +10,7 @@
     """,
 
     'author': "K.Sushma",
-    'website': "http://www.magnus.nl",
+    'website': "http://www.tosc.nl",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/10.0/odoo/addons/base/module/module_data.xml
