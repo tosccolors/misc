@@ -26,8 +26,8 @@
     'description': """
     Keyportal adaptation 
     """,
-    'author': 'Magnus',
-    'website': 'http://www.magnus.nl',
+    'author': 'TOSC',
+    'website': 'http://www.tosc.nl',
     'depends': ['auth_signup'],
     'data': [],
     'demo': [],

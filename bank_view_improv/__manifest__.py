@@ -34,8 +34,8 @@ This module adds BIC code and Owner to tree of res.partner.bank
 
 
 """,
-    'author': "Magnus",
-    'website': 'http://www.magnus.nl/',
+    'author': "TOSC",
+    'website': 'http://www.tosc.nl/',
     'depends': ['base'
     ],
     'data': ['bank_view.xml',

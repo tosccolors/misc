@@ -9,7 +9,7 @@
     'category': 'Product Management',
     'license': 'AGPL-3',
     'author': 'Agile Business Group, Magnus, Odoo Community Association (OCA)',
-    'website': 'https://www.magnus.nl/',
+    'website': 'https://www.tosc.nl/',
     'depends': [
         'hr_expense', 'delivery',
     ],

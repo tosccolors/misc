@@ -22,7 +22,7 @@
     'name': 'Street name, number and extension',
     'summary': 'Introduces separate field for extension after street and number.',
     'version': '10.0.1.0.0',
-    'author': 'Magnus,Odoo Community Association (OCA)',
+    'author': 'TOSC,Odoo Community Association (OCA)',
     'website': 'https://github.com/magnuscolors/misc',
     'category': 'Tools',
     'depends': [

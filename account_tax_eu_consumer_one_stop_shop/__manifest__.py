@@ -8,8 +8,8 @@
     'category': 'Accounting & Finance',
     'license': 'AGPL-3',
     'summary': 'tax configuration for inter-EU consumer trade and the one stop shop tax ....',
-    'author': 'Magnus',
-    'website': 'http://www.magnus.nl',
+    'author': 'TOSC',
+    'website': 'http://www.tosc.nl',
     'depends': [
         'account', 'sale'
         ],

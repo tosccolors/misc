@@ -10,8 +10,8 @@
         Sends Report exported from SQL Extract Module via FTP Server
     """,
 
-    'author'  : "Magnus",
-    'website' : "https://www.magnus.nl/",
+    'author'  : "TOSC",
+    'website' : "https://www.tosc.nl/",
     'license' : "LGPL-3", 
     'category': 'SQL Export',
     'version' : '10.0',
