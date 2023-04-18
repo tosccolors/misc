@@ -9,8 +9,8 @@
         Prohibit approval of own expenses
     """,
 
-    'author': "Magnus - Willem Hulshof",
-    'website': "http://www.magnus.nl",
+    'author': "TOSC - Willem Hulshof",
+    'website': "http://www.tosc.nl",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml

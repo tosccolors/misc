@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2013 - 2018 Magnus - Willem Hulshof - www.magnus.nl
+# Copyright (c) 2013 - 2018 TOSC - Willem Hulshof - www.tosc.nl
 #
 #
 ##############################################################################
@@ -19,8 +19,8 @@ Enchanced to add
 * Verification status on the Invoice
 
     """,
-    'author'  : 'Magnus - Willem Hulshof',
-    'website' : 'http://www.magnus.nl',
+    'author'  : 'TOSC - Willem Hulshof',
+    'website' : 'http://www.tosc.nl',
     'depends' : ['account',
 		         'account_cancel',
 		         'account_voucher',

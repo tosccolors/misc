@@ -12,8 +12,8 @@
         transactions.
     """,
 
-    'author'  : "Magnus",
-    'website' : "https://www.magnus.nl/",
+    'author'  : "TOSC",
+    'website' : "https://www.tosc.nl/",
     'license' : "LGPL-3", 
     'category': 'Accounts',
     'version' : '12.0',

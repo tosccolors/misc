@@ -24,7 +24,7 @@
     'images': [],
     'summary': 'Import Provinces used by PostcodeApi.nu',
     'version': '10.0.0.1.0',
-    'author': 'Magnus',
+    'author': 'TOSC',
     'category': 'Localization',
     'website': 'https://github.com/magnuscolors/misc',
     'license': 'AGPL-3',

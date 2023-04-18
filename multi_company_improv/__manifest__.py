@@ -2,8 +2,8 @@
 ##############################################################################
 #
 #    Multi-Company improvement module for OpenERP
-#    Copyright (C) 2016 Magnus (http://www.magnus.nl). All Rights Reserved
-#    @author Willem Hulshof <w.hulshof@magnus.nl>
+#    Copyright (C) 2016 TOSC (http://www.tosc.nl). All Rights Reserved
+#    @author Willem Hulshof <w.hulshof@tosc.nl>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -35,8 +35,8 @@ that the user only sees the entries of his/her company
 
 
 """,
-    'author': "Magnus",
-    'website': 'http://www.magnus.nl/',
+    'author': "TOSC",
+    'website': 'http://www.tosc.nl/',
     'depends': ['crm',
                 'account_banking_sepa_credit_transfer',
                 # 'account_banking'

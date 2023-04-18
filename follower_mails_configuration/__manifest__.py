@@ -33,8 +33,8 @@
     'description': """
  This module prevents adding partners/customers as followers of the document while including them as recipient of a message send via "Send a message" feature in records.
     """,
-    'author': 'Magnus - Willem Hulshof',
-    'website': 'http://www.magnus.nl',
+    'author': 'TOSC - Willem Hulshof',
+    'website': 'http://www.tosc.nl',
     'depends': ['mail'],
     'data': [
             'security/ir.model.access.csv',

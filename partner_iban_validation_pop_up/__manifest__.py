@@ -9,8 +9,8 @@
         Pop-up a message whenever user enters bank account number if not valid IBAN.
     """,
 
-    'author': "Magnus-Sushma",
-    'website': "http://www.magnus.nl",
+    'author': "TOSC-Sushma",
+    'website': "http://www.tosc.nl",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml

@@ -10,7 +10,7 @@
     """,
 
     'author': "Willem Hulshof",
-    'website': "www.magnus.nl",
+    'website': "www.tosc.nl",
 
     'category': 'Accounting',
     'version': '0.1',

@@ -9,7 +9,7 @@
     'category': 'Accounting & Finance',
     'license': 'AGPL-3',
     'summary': 'OU adaptation Prepaid Expense, Prepaid Revenue',
-    'author': 'Magnus,Odoo Community Association (OCA)',
+    'author': 'TOSC,Odoo Community Association (OCA)',
     'website': 'http://www.akretion.com',
     'depends': [
         'account_cutoff_prepaid',

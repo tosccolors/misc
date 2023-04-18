@@ -10,8 +10,8 @@
         
     """,
 
-    'author': "Magnus - DK",
-    'website': "http://www.yourcompany.com",
+    'author': "TOSC - DK",
+    'website': "http://www.tosc.nl",
 
     'category': 'Others',
     'version': '0.1',

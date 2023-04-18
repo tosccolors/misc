@@ -9,8 +9,8 @@
     'summary': 'Intercompany Operating Unit invoice rules',
     'version': '10.0.1.1.0',
     'category': 'Accounting & Finance',
-    'website': 'http://www.magnus.nl',
-    'author': 'Odoo SA, Akretion, Magnus, Odoo Community Association (OCA)',
+    'website': 'http://www.tosc.nl',
+    'author': 'Odoo SA, Akretion, TOSC, Odoo Community Association (OCA)',
     'license': 'AGPL-3',
     'installable': True,
     'depends': [

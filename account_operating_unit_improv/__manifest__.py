@@ -12,7 +12,7 @@
     "version": "10.0.1.1.0",
     "author": "Eficent, "
               "Serpent Consulting Services Pvt. Ltd.,"
-              "Magnus, "
+              "TOSC, "
               "Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/operating-unit",
     "category": "Accounting & Finance",

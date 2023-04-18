@@ -11,8 +11,8 @@
        \n If this boolean is true, perform the reversal via a SQL query
     """,
 
-    'author': "Magnus-Sify",
-    'website': 'http://www.magnus.nl',
+    'author': "TOSC-Sify",
+    'website': 'http://www.tosc.nl',
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/10.0/odoo/addons/base/module/module_data.xml

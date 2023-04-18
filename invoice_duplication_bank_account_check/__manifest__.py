@@ -12,8 +12,8 @@
         \n is linked to the res.partner
     """,
 
-    'author': "Magnus-Sify",
-    'website': "http://www.magnus.nl",
+    'author': "TOSC-Sify",
+    'website': "http://www.tosc.nl",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/10.0/odoo/addons/base/module/module_data.xml
