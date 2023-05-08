@@ -14,8 +14,8 @@
         \nwhen creating an invoice or payment which says that "The supplier has changed bank details which are not yet approved.
         """,
 
-    'author': "Magnus-Sify",
-    'website': "http://www.magnus.nl",
+    'author': "The open Source Company",
+    'website': "http://www.tosc.nl",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/10.0/odoo/addons/base/module/module_data.xml
@@ -30,11 +30,9 @@
     'data': [
         # 'security/ir.model.access.csv',
         'views/views.xml',
-        'views/templates.xml',
-        'demo/demo.xml',
+        'data/data.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
-        'demo/demo.xml',
     ],
 }
