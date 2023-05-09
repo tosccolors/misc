@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2017 Willem Hulshof ((www.magnus.nl).)
+# Copyright 2017 Willem Hulshof ((www.tosc.nl).)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 {
@@ -7,7 +7,7 @@
     'version': '10.0.1.0.0',
     'author': 'Willem Hulshof',
     'maintainer': 'Willem Hulshof',
-    'website': 'www.magnus.nl',
+    'website': 'www.tosc.nl',
     'license': '',
 
     # Categories can be used to filter modules in modules listing

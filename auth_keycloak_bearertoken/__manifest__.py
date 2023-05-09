@@ -5,7 +5,7 @@
     'name': 'OAuth2 Authentication - Keycloak',
     'category': 'Tools',
     'version': '10.1',
-    'maintainer': 'Magnus',
+    'maintainer': 'TOSC',
     'depends': ['base', 'web', 'base_setup', 'auth_signup','auth_oauth'],
     'data': [
         'views/auth_oauth_views.xml',

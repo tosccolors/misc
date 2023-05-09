@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2013-Today OpenERP SA (<http://www.openerp.com>) and Magnus W. Hulshof
+#    Copyright (C) 2013-Today OpenERP SA (<http://www.openerp.com>) and TOSC W. Hulshof
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -28,8 +28,8 @@
 
     Supported documents are invoices/refunds.
 ''',
-    'author': 'OpenERP SA/ Magnus',
-    'website': 'http://www.magnus.nl',
+    'author': 'OpenERP SA/ TOSC',
+    'website': 'http://www.tosc.nl',
     'license': 'AGPL-3',
     'depends': [
         'account',

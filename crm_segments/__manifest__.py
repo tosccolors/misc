@@ -10,8 +10,8 @@
         This module adds 4 segments to the res.partner object, to be configured in the Sales > Configuration menu. These segments can be used for various purposes, for example defining customer segments in order to do sales reporting based on these segments. Segment fields will be copied to sale orders.
     """,
 
-    'author': "Magnus - DK",
-    'website': "http://www.yourcompany.com",
+    'author': "TOSC - DK",
+    'website': "http://www.tosc.nl",
 
     'category': 'Others',
     'version': '0.1',

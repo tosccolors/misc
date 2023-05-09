@@ -10,8 +10,8 @@
         This module is an addon on the base module base_partner_merge_improve and makes it easier to recognize the target partner to merge to.
     """,
 
-    'author': "Magnus",
-    'website': "http://www.magnus.nl",
+    'author': "TOSC",
+    'website': "http://www.tosc.nl",
 
     'category': 'Others',
     'version': '0.1',

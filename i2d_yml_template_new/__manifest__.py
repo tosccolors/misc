@@ -7,7 +7,7 @@
     'version': '10.0.1.0.0',
     'author': 'Willem Hulshof',
     'maintainer': 'Willem Hulshof',
-    'website': 'www.magnus.nl',
+    'website': 'www.tosc.nl',
     'license': '',
 
     # Categories can be used to filter modules in modules listing
