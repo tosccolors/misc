@@ -27,7 +27,6 @@ class Company(models.Model):
     verify_setting = fields.Float('Invoice Amount bigger than', digits=dp.get_precision('Account'))
 
 
-    @api.multi
     def write(self, vals):
         res = super(Company, self).write(vals)
 

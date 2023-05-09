@@ -22,25 +22,25 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
-class AccountInvoiceConfirm(models.TransientModel):
-    """
-    This wizard will confirm the all the selected draft/start_wf invoices
-    """
-
-    _inherit = "account.invoice.confirm"
-    _description = "Confirm the selected invoices"
-
-    @api.multi
-    def invoice_confirm(self):
-        context = dict(self._context or {})
-        active_ids = context.get('active_ids', []) or []
-
-        for record in self.env['account.invoice'].browse(active_ids):
-            if (record.type in ('in_invoice', 'in_refund') and record.state != 'start_wf') or \
-                    (record.type in ('out_invoice', 'out_refund') and record.state not in ('draft', 'proforma', 'proforma2')):
-                raise UserError(_("Selected invoice(s) cannot be confirmed as they are not in 'Start Workflow' (Vendor Invoices), 'Draft' or 'Pro-Forma' (Customer Invoices) state."))
-            record.action_invoice_open()
-        return {'type': 'ir.actions.act_window_close'}
+# class AccountInvoiceConfirm(models.TransientModel):
+#     """
+#     This wizard will confirm the all the selected draft/start_wf invoices
+#     """
+#
+#     _inherit = "account.invoice.confirm"
+#     _description = "Confirm the selected invoices"
+#
+#     #
+#     def invoice_confirm(self):
+#         context = dict(self._context or {})
+#         active_ids = context.get('active_ids', []) or []
+#
+#         for record in self.env['account.invoice'].browse(active_ids):
+#             if (record.type in ('in_invoice', 'in_refund') and record.state != 'start_wf') or \
+#                     (record.type in ('out_invoice', 'out_refund') and record.state not in ('draft', 'proforma', 'proforma2')):
+#                 raise UserError(_("Selected invoice(s) cannot be confirmed as they are not in 'Start Workflow' (Vendor Invoices), 'Draft' or 'Pro-Forma' (Customer Invoices) state."))
+#             record.action_invoice_open()
+#         return {'type': 'ir.actions.act_window_close'}
 
 class AccountInvoiceStartWf(models.TransientModel):
     """
@@ -50,7 +50,7 @@ class AccountInvoiceStartWf(models.TransientModel):
     _name = "account.invoice.startwf"
     _description = "Start Workflow of the selected invoices"
 
-    @api.multi
+    # 
     def invoice_startwf(self):
         context = dict(self._context or {})
         active_ids = context.get('active_ids', []) or []
@@ -69,7 +69,7 @@ class AccountInvoiceAuthor(models.TransientModel):
     _name = "account.invoice.author"
     _description = "Authorize the selected invoices"
 
-    @api.multi
+
     def invoice_author(self):
         context = dict(self._context)
         InvObj = self.env['account.invoice']
@@ -94,7 +94,7 @@ class AccountInvoiceVerifier(models.TransientModel):
     _description = "Verify the selected invoices"
 
 
-    @api.multi
+    # 
     def invoice_verifier(self):
         context = dict(self._context)
         InvObj = self.env['account.invoice']

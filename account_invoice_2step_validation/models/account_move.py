@@ -25,49 +25,34 @@ from odoo.exceptions import UserError, ValidationError
 
 
 # added by -- deep
-class Invoice(models.Model):
-    _inherit = ['account.invoice']
+class Move(models.Model):
+    _inherit = ['account.move']
 
-    @api.one
-    @api.depends('invoice_line_ids.price_subtotal', 'tax_line_ids.amount', 'currency_id', 'company_id', 'date_invoice', 'type')
-    def _compute_amount(self):
-
-        # -- deep
+    # @api.one
+    @api.depends('amount_untaxed', 'company_id.verify_setting')
+    def _compute_amount_tresh(self):
+        # -- Sushma,
+        #Note: removed from _compute_amount, and Added new method _compute_amount_tresh
         # Functionality for updating "verif_tresh_exceeded" are split b/w Company & Invoice Objects
-
-        self.amount_untaxed = sum(line.price_subtotal for line in self.invoice_line_ids)
-        self.amount_tax = sum(line.amount for line in self.tax_line_ids)
-        self.amount_total = self.amount_untaxed + self.amount_tax
-        amount_total_company_signed = self.amount_total
-        amount_untaxed_signed = self.amount_untaxed
-        if self.currency_id and self.company_id and self.currency_id != self.company_id.currency_id:
-            currency_id = self.currency_id.with_context(date=self.date_invoice)
-            amount_total_company_signed = currency_id.compute(self.amount_total, self.company_id.currency_id)
-            amount_untaxed_signed = currency_id.compute(self.amount_untaxed, self.company_id.currency_id)
-        sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
-        self.amount_total_company_signed = amount_total_company_signed * sign
-        self.amount_total_signed = self.amount_total * sign
-        self.amount_untaxed_signed = amount_untaxed_signed * sign
-
         if self.company_id.verify_setting < self.amount_untaxed:
             self.verif_tresh_exceeded = True
         else:
             self.verif_tresh_exceeded = False
 
     name = fields.Char(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
-    origin = fields.Char(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
-    reference=fields.Char(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
-    reference_type=fields.Selection(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
-    comment=fields.Text(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
-    state=fields.Selection([
+    invoice_origin = fields.Char(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    ref = fields.Char(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    # reference_type = fields.Selection(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    # comment = fields.Text(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    state = fields.Selection([
         ('draft', 'Draft'),
         ('start_wf', 'Start Workflow'),
         ('proforma', 'Pro-forma'),
         ('proforma2', 'Pro-forma'),
-        ('open', 'Open'),
+        ('posted', 'Posted'),
         ('auth', 'Authorized'),
         ('verified', 'Verified'),
-        ('paid', 'Paid'),
+        # ('paid', 'Paid'),
         ('cancel', 'Cancelled'),
     ], 'Status', index=True, readonly=True, track_visibility='onchange',
         help=' * The \'Draft\' status is used when a user is encoding a new and unconfirmed Invoice. \
@@ -78,22 +63,22 @@ class Invoice(models.Model):
         \n* The \'Open\' status is used when user create invoice,a invoice number is generated.Its in open status till user does not pay invoice. \
         \n* The \'Paid\' status is set automatically when the invoice is paid. Its related journal entries may or may not be reconciled. \
         \n* The \'Cancelled\' status is used when user cancel invoice.')
-    date_invoice=fields.Date(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
-    date_due=fields.Date(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    invoice_date=fields.Date(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    invoice_date_due=fields.Date(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
     partner_id=fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
-    payment_term_id=fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    invoice_payment_term_id=fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
     date=fields.Date(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
     account_id=fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
-    invoice_line_ids = fields.One2many(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
-    tax_line_ids = fields.One2many(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    line_ids = fields.One2many(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
+    # tax_line_ids = fields.One2many(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
     currency_id = fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
     journal_id = fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
     company_id = fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
     partner_bank_id = fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
-    user_id = fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)],'open':[('readonly',False)]})
+    invoice_user_id = fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)],'open':[('readonly',False)]})
     fiscal_position_id = fields.Many2one(states={'draft':[('readonly',False)],'start_wf':[('readonly',False)]})
     verif_tresh_exceeded = fields.Boolean(string='Verification Treshold',
-                                          store=True, readonly=True, compute='_compute_amount',
+                                          store=True, readonly=True, compute='_compute_amount_tresh',
                                           track_visibility='always', copy=False)
     supplier_invoice_number = fields.Char(states={'draft': [('readonly', False)], 'start_wf': [('readonly', False)]})
     payment_mode_id = fields.Many2one(states={'draft': [('readonly', False)], 'start_wf': [('readonly', False)]})
@@ -115,106 +100,118 @@ class Invoice(models.Model):
 
     @api.onchange('partner_id', 'company_id')
     def _onchange_partner_id(self):
-        res = super(Invoice, self)._onchange_partner_id()
-        if self.type in ('in_invoice', 'in_refund'):
+        res = super(Move, self)._onchange_partner_id()
+        if self.move_type in ('in_invoice', 'in_refund'):
             self.user_id = self.partner_id.vendor_owner.id
         return res
 
-    @api.multi
-    def action_date_assign(self):
-        for inv in self:
-            if not inv.date_due:
-                inv._onchange_payment_term_date_invoice()
-        return True
+    
+    # def action_date_assign(self):
+    #     for inv in self:
+    #         if not inv.date_due:
+    #             inv._onchange_payment_term_date_invoice()
+    #     return True
 
 
-    @api.multi
-    def _write(self, vals):
-        pre_not_reconciled = self.filtered(lambda invoice: not invoice.reconciled)
-        pre_reconciled = self - pre_not_reconciled
-        res = super(Invoice, self)._write(vals)
-        reconciled = self.filtered(lambda invoice: invoice.reconciled)
-        not_reconciled = self - reconciled
-        (reconciled & pre_reconciled).filtered(lambda invoice: invoice.state in ['auth','verified'] and
-                                                               invoice.type in ['in_invoice','in_refund']).action_invoice_paid()
-        (not_reconciled & pre_not_reconciled).filtered(lambda invoice: invoice.state == 'paid').action_invoice_re_open()
-        return res
+    # @sushma: super method not found
+    # def _write(self, vals):
+    #     pre_not_reconciled = self.filtered(lambda invoice: not invoice.reconciled)
+    #     pre_reconciled = self - pre_not_reconciled
+    #     res = super(Invoice, self)._write(vals)
+    #     reconciled = self.filtered(lambda invoice: invoice.reconciled)
+    #     not_reconciled = self - reconciled
+    #     (reconciled & pre_reconciled).filtered(lambda invoice: invoice.state in ['auth','verified'] and
+    #                                                            invoice.move_type in ['in_invoice','in_refund']).action_invoice_paid()
+    #     (not_reconciled & pre_not_reconciled).filtered(lambda invoice: invoice.state == 'paid').action_invoice_re_open()
+    #     return res
 
     # Overridden:
-    @api.multi
     def action_invoice_paid(self):
-        # lots of duplicate calls to action_invoice_paid, so we remove those already paid
-        to_pay_invoices = self.filtered(lambda inv: inv.state != 'paid')
-        if to_pay_invoices.filtered(lambda inv: inv.state not in ['auth','verified'] and
-                                                               inv.type in ['in_invoice','in_refund']):
+        res = super(Move, self).action_invoice_paid()
+        # @sushma: check payment state instead move state
+        to_pay_invoices = self.filtered(lambda inv: move.payment_state != 'paid')
+        if to_pay_invoices.filtered(lambda inv: move.state not in ['auth','verified'] and
+                                                               inv.move_type in ['in_invoice','in_refund']):
             raise UserError(_('Invoice must be authorized and/or verified in order to set it to register payment.'))
-        if to_pay_invoices.filtered(lambda inv: inv.state not in ['open'] and
-                                                               inv.type in ['out_invoice','out_refund']):
-            raise UserError(_('Invoice must be open in order to set it to register payment.'))
-        if to_pay_invoices.filtered(lambda inv: not inv.reconciled):
-            raise UserError(
-                _('You cannot pay an invoice which is partially paid. You need to reconcile payment entries first.'))
-        return to_pay_invoices.write({'state': 'paid'})
+        # @sushma : 2 checks need to discuss then we can uncomment
+        # if to_pay_invoices.filtered(lambda inv: inv.state not in ['open'] and
+        #                                                        inv.move_type in ['out_invoice','out_refund']):
+        #     raise UserError(_('Invoice must be open in order to set it to register payment.'))
+        # if to_pay_invoices.filtered(lambda inv: not inv.reconciled):
+        #     raise UserError(
+        #         _('You cannot pay an invoice which is partially paid. You need to reconcile payment entries first.'))
+        return res
 
-    @api.multi
-    def action_invoice_open(self):
-        # lots of duplicate calls to action_invoice_open, so we remove those already open
-        to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
-        if to_open_invoices.filtered(lambda inv: (inv.type in ('in_invoice', 'in_refund') and inv.state != 'start_wf') or \
-                    (inv.type in ('out_invoice', 'out_refund') and inv.state not in ('draft', 'proforma', 'proforma2'))):
-            raise UserError(_("Invoice must be in Start Workflow in the case of a Vendor Invoice or "
-                              "Draft/Pro-forma state in the case of a Customer Invoice in order to validate it."))
-        to_open_invoices.action_date_assign()
-        to_open_invoices.action_move_create()
-        return to_open_invoices.invoice_validate()
+    # @sushma methods removed
+    # def action_invoice_open(self):
+    #     # lots of duplicate calls to action_invoice_open, so we remove those already open
+    #     to_open_invoices = self.filtered(lambda inv: inv.state != 'open')
+    #     if to_open_invoices.filtered(lambda inv: (inv.move_type in ('in_invoice', 'in_refund') and inv.state != 'start_wf') or \
+    #                 (inv.move_type in ('out_invoice', 'out_refund') and inv.state not in ('draft', 'proforma', 'proforma2'))):
+    #         raise UserError(_("Invoice must be in Start Workflow in the case of a Vendor Invoice or "
+    #                           "Draft/Pro-forma state in the case of a Customer Invoice in order to validate it."))
+    #     to_open_invoices.action_date_assign()
+    #     to_open_invoices.action_move_create()
+    #     return to_open_invoices.invoice_validate()
 
-    @api.multi
+
+    # instead action_invoice_open used action_post
+    def action_post(self):
+        to_open_invoices = self.filtered(lambda inv: inv.state != 'posted')
+        if to_open_invoices.filtered(
+                lambda inv: (inv.move_type in ('in_invoice', 'in_refund') and inv.state != 'start_wf') or \
+                                (inv.move_type in ('out_invoice', 'out_refund') and inv.state not in ('draft', 'proforma', 'proforma2'))):
+                raise UserError(_("Invoice must be in Start Workflow in the case of a Vendor Invoice or "
+                                  "Draft/Pro-forma state in the case of a Customer Invoice in order to validate it."))
+        return super(Move, self).action_post()
+
+
+    
     def action_invoice_start_wf(self):
         self.write({'state': 'start_wf'})
 
-    @api.multi
+    
     def action_invoice_auth(self):
         self.write({'state':'auth'})
 
-    @api.multi
+    
     def action_unauthorize(self):
-        self.write({'state':'open'})
+        self.write({'state':'draft'})
 
-    @api.multi
+    
     def action_invoice_verify(self):
         self.write({'state':'verified'})
 
-    @api.multi
     def action_unverify(self):
         return self.action_invoice_auth()
 
     #Overridden:
-    @api.multi
     def action_invoice_cancel(self):
-        if self.filtered(lambda inv: inv.state not in ['proforma2', 'start_wf', 'draft', 'open', 'auth']):
-            raise UserError(_("Invoice must be in draft, Start Workflow, Pro-forma, open or Authorized state in order to be cancelled."))
+        if self.filtered(lambda inv: inv.state not in ['proforma2', 'start_wf', 'draft', 'auth']):
+            raise UserError(_("Invoice must be in draft, Start Workflow, Pro-forma, or Authorized state in order to be cancelled."))
         return self.action_cancel()
 
     #Overridden:
-    @api.multi
     def create_account_payment_line(self):
         apoo = self.env['account.payment.order']
         aplo = self.env['account.payment.line']
         result_payorder_ids = []
         action_payment_type = 'debit'
         for inv in self:
-            if inv.type in ['in_invoice','in_refund'] and inv.state != 'verified' and not (inv.state == 'auth' and inv.verif_tresh_exceeded == False):
+            if inv.move_type in ['in_invoice','in_refund'] and inv.state != 'verified' and not (inv.state == 'auth' and inv.verif_tresh_exceeded == False):
                 raise UserError(_(
                     "The Supplier invoice %s is not in auth or verified state") % inv.number)
-            if inv.type in ['out_invoice','out_refund'] and inv.state != 'open':
+            if inv.move_type in ['out_invoice','out_refund'] and inv.state in ('posted', 'cancel'):
                 raise UserError(_(
-                    "The Customer invoice %s is not in open state") % inv.number)
+                    "The Customer invoice %s is not in posted state") % inv.number)
             if not inv.payment_mode_id:
                 raise UserError(_(
                     "No Payment Mode on invoice %s") % inv.number)
-            if not inv.move_id:
-                raise UserError(_(
-                    "No Journal Entry on invoice %s") % inv.number)
+            ##################NA##############
+            # if not inv.move_id:
+            #     raise UserError(_(
+            #         "No Journal Entry on invoice %s") % inv.number)
+            ###############################
             if not inv.payment_order_ok:
                 raise UserError(_(
                     "The invoice %s has a payment mode '%s' "

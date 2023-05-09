@@ -18,13 +18,23 @@
             </field>
         </record>
 
-        <act_window id="action_account_invoice_author"
+        <!--<act_window id="action_account_invoice_author"
             multi="True"
             key2="client_action_multi" name="Authorize Open Invoices"
             res_model="account.invoice.author" src_model="account.invoice"
             view_mode="form" target="new" view_type="form"
             view_id="account_invoice_author_view"
             groups="account_invoice_2step_validation.authorize"/>
+-->
+
+        <record id="action_account_invoice_author" model="ir.actions.act_window">
+            <field name="name">Authorize Open Invoices</field>
+            <field name="res_model">account.invoice.author</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="account.model_account_move" />
+            <field name="groups_id" eval="[(4, ref('account_invoice_2step_validation.authorize'))]" />
+        </record>
 
 
         <record id="account_invoice_verifier_view" model="ir.ui.view">
@@ -44,13 +54,22 @@
             </field>
         </record>
 
-        <act_window id="action_account_invoice_verifier"
+        <!--<act_window id="action_account_invoice_verifier"
             multi="True"
             key2="client_action_multi" name="Verify Authorized Invoices"
             res_model="account.invoice.verifier" src_model="account.invoice"
             view_mode="form" target="new" view_type="form"
             view_id="account_invoice_verifier_view"
-            groups="account_invoice_2step_validation.verification"/>
+            groups="account_invoice_2step_validation.verification"/>-->
+
+        <record id="action_account_invoice_verifier" model="ir.actions.act_window">
+            <field name="name">Verify Authorized Invoices</field>
+            <field name="res_model">account.invoice.verifier</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="account.model_account_move" />
+            <field name="groups_id" eval="[(4, ref('account_invoice_2step_validation.verification'))]" />
+        </record>
 
 
         <record id="account_invoice_startwf_view" model="ir.ui.view">
@@ -70,13 +89,23 @@
             </field>
         </record>
 
-        <act_window id="action_account_invoice_startwf"
+       <!-- <act_window id="action_account_invoice_startwf"
             multi="True"
             key2="client_action_multi" name="Start Workflow for Draft Invoices"
             res_model="account.invoice.startwf" src_model="account.invoice"
             view_mode="form" target="new" view_type="form"
             view_id="account_invoice_startwf_view"
-            groups="account.group_account_invoice"/>
+            groups="account.group_account_invoice"/>-->
+
+
+        <record id="action_account_invoice_startwf" model="ir.actions.act_window">
+            <field name="name">Start Workflow for Draft Invoices</field>
+            <field name="res_model">account.invoice.startwf</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="account.model_account_move" />
+            <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]"/>
+        </record>
 
         
 
