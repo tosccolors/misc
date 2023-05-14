@@ -1,13 +1,13 @@
 <odoo>
   <data>
-
-    <record model="ir.ui.view" id="supplier_bank_change_approval.list">
+    <record model="ir.ui.view" id="view_partner_bank_form">
       <field name="name">supplier_bank_change_approval_list</field>
       <field name="model">res.partner.bank</field>
       <field name="inherit_id" ref="base.view_partner_bank_form"/>
       <field name="groups_id" eval="[(6, 0, [ref('supplier_bank_change_approval.bank_account_manager') ])]"/>
       <field name="arch" type="xml">
-        <xpath expr="//form" position="inside">
+        <!--xpath expr="//form" position="inside"-->
+        <xpath expr="//group" position="before">
           <header>
             <button name="action_confirm" type="object" string="Confirm" states="draft" class="oe_highlight"/>
             <field name="state" widget="statusbar"/>
