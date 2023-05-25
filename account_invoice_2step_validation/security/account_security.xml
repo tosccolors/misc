@@ -25,7 +25,7 @@
         <field name="name">Financial Manager</field>
         <field name="category_id" ref="base.module_category_accounting"/>
         <!--<field name="implied_ids" eval="[(4, ref('account.group_account_user'))]"/>-->
-        <field name="implied_ids" eval="[(4, ref('account_invoice_2step_validation.authorize')), (4, ref('account.group_account_user')]"/>
+        <field name="implied_ids" eval="[(4, ref('account_invoice_2step_validation.authorize')), (4, ref('account.group_account_user'))]"/>
     </record>
     <record id="verification" model="res.groups">
         <field name="name">Verification</field>
@@ -58,7 +58,7 @@
     
     <record model="ir.rule" id="domain_open_auth_paid_rule">
         <field name="name">Posted Invoice</field>
-        <field name="model_id" ref="model_account_invoice"/>
+        <field name="model_id" ref="model_account_move"/>
         <field name="domain_force">[('state','in',['open','auth','paid'])]</field>
         <field name="global" eval="False"/>
         <field name="perm_read" eval="True"/>
@@ -69,7 +69,7 @@
     </record>
     <record model="ir.rule" id="vendor_manager_rule">
         <field name="name">Vendor Manager</field>
-        <field name="model_id" ref="model_account_invoice"/>
+        <field name="model_id" ref="model_account_move"/>
         <field name="domain_force">[('user_id','=',user.id),('type','in',('in_invoice','in_refund')),('state','!=','draft')]</field>
         <field name="global" eval="False"/>
         <field name="perm_read" eval="True"/>
@@ -80,7 +80,7 @@
     </record>
     <record model="ir.rule" id="super_vendor_manager_rule">
         <field name="name">Super Vendor Manager</field>
-        <field name="model_id" ref="model_account_invoice"/>
+        <field name="model_id" ref="model_account_move"/>
         <field name="domain_force">[('type','in',('in_invoice','in_refund')),('state','!=','draft')]</field>
         <field name="global" eval="False"/>
         <field name="perm_read" eval="True"/>
