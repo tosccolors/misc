@@ -6,8 +6,16 @@ from logging import getLogger
 
 from PIL import Image
 
-from odoo import api, fields, models
+import os
+import tempfile
+import subprocess
+from contextlib import closing
+
+from odoo import api, fields, models, _
 from odoo.tools.safe_eval import safe_eval
+from odoo.tools.misc import find_in_path, ustr
+from odoo.exceptions import UserError, AccessError
+
 
 try:
     # we need this to be sure PIL has loaded PDF support
@@ -24,10 +32,13 @@ except ImportError:
     logger.debug("Can not import PyPDF2")
 
 
+def _get_wkhtmltopdf_bin():
+    return find_in_path("wkhtmltopdf")
+
 class Company(models.Model):
     _inherit = "res.company"
 
-    pdf_background_image = fields.Binary("Background Image Pdf", help="Upload an background image in Pdf format.")
+    pdf_background_image = fields.Binary("Background Image Pdf", help="Upload a background image in Pdf format.")
 
 
 
@@ -35,7 +46,6 @@ class Report(models.Model):
     _inherit = "ir.actions.report"
 
     def _render_qweb_pdf(self, res_ids=None, data=None):
-        logger.info("\n\n\nCame to pdf_bg %s, %s"%(res_ids, self.env.context.get("res_ids")))
         Model = self.env[self.model]
         record_ids = Model.browse(res_ids)
         company_id = False
@@ -56,13 +66,117 @@ class Report(models.Model):
 
         return super(Report, self).with_context(bg_company=company_id)._render_qweb_pdf(res_ids=res_ids, data=data)
 
+
+    @api.model
+    def _prepare_pdf_content(self, bodies, header=None, footer=None, landscape=False, specific_paperformat_args=None,
+                         set_viewport_size=False,):
+
+        '''Execute wkhtmltopdf as a subprocess in order to convert html given in input into a pdf
+        document.
+
+        :param bodies: The html bodies of the report, one per page.
+        :param header: The html header of the report containing all headers.
+        :param footer: The html footer of the report containing all footers.
+        :param landscape: Force the pdf to be rendered under a landscape format.
+        :param specific_paperformat_args: dict of prioritized paperformat arguments.
+        :param set_viewport_size: Enable a viewport sized '1024x1280' or '1280x1024' depending of landscape arg.
+        :return: Content of the pdf as a string
+        '''
+        paperformat_id = self.get_paperformat()
+
+        # Build the base command args for wkhtmltopdf bin
+        command_args = self._build_wkhtmltopdf_args(
+            paperformat_id,
+            landscape,
+            specific_paperformat_args=specific_paperformat_args,
+            set_viewport_size=set_viewport_size)
+
+        files_command_args = []
+        temporary_files = []
+        if header:
+            head_file_fd, head_file_path = tempfile.mkstemp(suffix='.html', prefix='report.header.tmp.')
+            with closing(os.fdopen(head_file_fd, 'wb')) as head_file:
+                head_file.write(header)
+            temporary_files.append(head_file_path)
+            files_command_args.extend(['--header-html', head_file_path])
+        if footer:
+            foot_file_fd, foot_file_path = tempfile.mkstemp(suffix='.html', prefix='report.footer.tmp.')
+            with closing(os.fdopen(foot_file_fd, 'wb')) as foot_file:
+                foot_file.write(footer)
+            temporary_files.append(foot_file_path)
+            files_command_args.extend(['--footer-html', foot_file_path])
+
+        paths = []
+        for i, body in enumerate(bodies):
+            prefix = '%s%d.' % ('report.body.tmp.', i)
+            body_file_fd, body_file_path = tempfile.mkstemp(suffix='.html', prefix=prefix)
+            with closing(os.fdopen(body_file_fd, 'wb')) as body_file:
+                body_file.write(body)
+            paths.append(body_file_path)
+            temporary_files.append(body_file_path)
+
+        pdf_report_fd, pdf_report_path = tempfile.mkstemp(suffix='.pdf', prefix='report.tmp.')
+        os.close(pdf_report_fd)
+        temporary_files.append(pdf_report_path)
+
+        try:
+            wkhtmltopdf = [_get_wkhtmltopdf_bin()] + command_args + files_command_args + paths + [pdf_report_path]
+            process = subprocess.Popen(wkhtmltopdf, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = process.communicate()
+            err = ustr(err)
+
+            if process.returncode not in [0, 1]:
+                if process.returncode == -11:
+                    message = _(
+                        'Wkhtmltopdf failed (error code: %s). Memory limit too low or maximum file number of subprocess reached. Message : %s')
+                else:
+                    message = _('Wkhtmltopdf failed (error code: %s). Message: %s')
+                logger.warning(message, process.returncode, err[-1000:])
+                raise UserError(message % (str(process.returncode), err[-1000:]))
+            else:
+                if err:
+                    logger.warning('wkhtmltopdf: %s' % err)
+        except:
+            raise
+
+        with open(pdf_report_path, 'rb') as pdf_document:
+            pdf_content = pdf_document.read()
+
+        # Manual cleanup of the temporary files
+        for temporary_file in temporary_files:
+            try:
+                os.unlink(temporary_file)
+            except (OSError, IOError):
+                logger.error('Error when trying to remove file %s' % temporary_file)
+
+        return pdf_content
+
+    def _get_background_image(self):
+        " Fetch Brackground Image that can be used in the report. "
+
+        docids = self.env.context.get("res_ids", False)
+        sourceobj = self.env.context.get("bg_source", False)
+
+        backgroungImg = None
+        company = self._context.get("bg_company")
+        company_bg_img = (company.pdf_background_image)
+
+        if docids and sourceobj:
+            source_bg_img = (sourceobj.pdf_background_image)
+            if source_bg_img:
+                backgroungImg = b64decode(source_bg_img)
+
+        if not backgroungImg and company_bg_img:
+            backgroungImg = b64decode(company_bg_img)
+
+        return backgroungImg
+
+    #Overridden:
     @api.model
     def _run_wkhtmltopdf(self, bodies, header=None, footer=None, landscape=False, specific_paperformat_args=None,
                          set_viewport_size=False,):
 
-        logger.info("\n\n\nCame to pdf_bg | _run_wkhtmltopdf %s"%(self.env.context.get("res_ids", False)))
-
-        result = super(Report, self)._run_wkhtmltopdf(
+        result = self._prepare_pdf_content(
             bodies,
             header=header,
             footer=footer,
@@ -71,22 +185,7 @@ class Report(models.Model):
             set_viewport_size=set_viewport_size,
         )
 
-        # docids = self.env.context.get("res_ids", False)
-        backgroungImg = None
-        company_bg = self._context.get("bg_company")
-        background_img = (company_bg.pdf_background_image)
-
-        if background_img:
-            # watermark = b64decode(self.pdf_watermark)
-            backgroungImg = b64decode(background_img)
-
-        # elif docids:
-        #     watermark = safe_eval(
-        #         self.pdf_watermark_expression or "None",
-        #         dict(env=self.env, docs=self.env[self.model].browse(docids)),
-        #     )
-        #     if watermark:
-        #         watermark = b64decode(watermark)
+        backgroungImg = self._get_background_image()
 
         if not backgroungImg:
             return result
@@ -135,3 +234,4 @@ class Report(models.Model):
         pdf.write(pdf_content)
 
         return pdf_content.getvalue()
+

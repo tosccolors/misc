@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-<data>
+    <data>
 
         <!--
             Company (Inherited)
@@ -12,13 +12,14 @@
             <field name="arch" type="xml">
                 <xpath expr="//notebook" position="inside">
                     <page name="configuration" string="Configuration">
-                        <group>
-                            <field name="pdf_background_image"/>
-                        </group>
+                        <div colspan="2">
+                            <label for="pdf_background_image" name="Background Image"/>
+                            <field name="pdf_background_image" />
+                        </div>
                     </page>
                 </xpath>
             </field>
         </record>
 
-</data>
+    </data>
 </odoo>
