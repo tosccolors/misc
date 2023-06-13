@@ -2,7 +2,7 @@
 
 {
     "name": "Pdf Background Image",
-    "version": "14.0.2.0.0",
+    "version": "14.0.3.0.0",
     "author": "Deepa, " "The Open Source company (TOSC)",
     "license": "AGPL-3",
     "category": "Technical Settings",
@@ -10,8 +10,11 @@
     "website": "https://tosc.nl",
     "depends": ["web"],
     "data": [
+        "data/report_layout.xml",
         "views/res_company_view.xml",
         "views/layout_templates.xml",
+        "views/external_layout.xml",
+        "views/document_layout.xml",
     ],
     "installable": True,
 }

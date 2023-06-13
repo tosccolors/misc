@@ -35,12 +35,6 @@ except ImportError:
 def _get_wkhtmltopdf_bin():
     return find_in_path("wkhtmltopdf")
 
-class Company(models.Model):
-    _inherit = "res.company"
-
-    pdf_background_image = fields.Binary("Background Image Pdf", help="Upload a background image in Pdf format.")
-
-
 
 class Report(models.Model):
     _inherit = "ir.actions.report"

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <!--    Layout
+    -->
+    <record id="base_document_layout" model="ir.ui.view">
+        <field name="name">base.document.layout</field>
+        <field name="model">base.document.layout</field>
+        <field name="inherit_id" ref="web.view_base_document_layout" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='logo']" position="after">
+                <field name="full_background_img" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
