@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="1">
+
+    <!-- FIXME: Remove Access Groups from Technical Settings    -->
+
+
+    <record id="base.change_password_wizard_action" model="ir.actions.act_window">
+        <field name="name">Change Password</field>
+        <field name="res_model">change.password.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="base.model_res_users"/>
+        <field name="groups" ref="base.group_no_one"/>
+    </record>
+
+</data>
+<data>
+
+
+    <!-- User Form (Auth)   -->
+    <record id="view_users_auth_form" model="ir.ui.view">
+        <field name="name">res.users.auth.form.inherited</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="auth_signup.res_users_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_reset_password']" position="replace"/>
+            <xpath expr="//button[@name='action_reset_password']" position="replace"/>
+        </field>
+      </record>
+
+    <!-- My Preference   -->
+    <record id="view_users_preference_form" model="ir.ui.view">
+        <field name="name">Preference Inherited</field>
+        <field name="model">res.users</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='preference_change_password']" position="replace"/>
+        </field>
+      </record>
+
+</data>
+
+</odoo>
