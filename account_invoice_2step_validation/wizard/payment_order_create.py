@@ -22,14 +22,13 @@
 #
 #############################################################################
 
-from openerp import models, fields, api, _
-
+from odoo import models, fields, api, _
 
 class AccountPaymentLineCreate(models.TransientModel):
     _inherit = 'account.payment.line.create'
 
     # Overridden:
-    @api.multi
+    # 
     def _prepare_move_line_domain(self):
         domain = super(AccountPaymentLineCreate, self)._prepare_move_line_domain()
         if not self.invoice:

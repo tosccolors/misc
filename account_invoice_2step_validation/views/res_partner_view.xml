@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <record id="view_partners_form_2_step" model="ir.ui.view">
         <field name="name">partner.2step.validation</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//page[@name='sales_purchases']/group/group/field[@name='supplier']" position="after">
-                <field name="vendor_owner" attrs="{'required': [('is_company','=',True),('supplier','=', True)],
-                                                   'invisible': [('supplier','!=', True)]}"/>
+            <xpath expr="//group[@name='purchase']" position="inside">
+                <field name="supplier_rank" invisible="1"/>
+                <field name="vendor_owner" attrs="{'required': [('is_company','=',True),('supplier_rank','>', 0)],
+                                                   'invisible': [('supplier_rank','=', 0)]}"/>
             </xpath>
         </field>
     </record>
@@ -21,10 +23,11 @@
                        <attribute name="filter_domain" >['|','|','|',('zip','ilike',self),('display_name','ilike',self),
                                                                      ('ref','=',self),('email','ilike',self)]</attribute>
                    </field>
-                   <filter name="filter_my_partners" position="attributes" >
+                   <!--<filter name="filter_my_partners" position="attributes" >
                        <attribute name="help" >My Sales Partners</attribute>
-                   </filter>
-                   <filter name="filter_my_partners" position="after" >
+                   </filter>-->
+                   <filter name="type_company" position="after" >
+                       <separator />
                        <filter string="My Vendors" name="my_vendors" domain="[('vendor_owner','=',uid)]"/>
                    </filter>
                    <field name="user_id" position="after">
@@ -36,4 +39,5 @@
             </field>
         </record>
 
+    </data>
 </odoo>

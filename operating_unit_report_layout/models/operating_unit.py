@@ -30,7 +30,7 @@ class OperatingUnit(models.Model):
         return base64.b64encode(
             open(os.path.join(tools.config['root_path'], 'addons', 'base', 'static', 'img', 'res_company_logo.png'),'rb').read())
 
-    logo = fields.Binary(related='partner_id.image', default=_get_logo)
+    logo = fields.Binary(related='partner_id.image_1920', default=_get_logo)
     report_background_image1 = fields.Binary('Background Image for Report Frontpage',
             help='Set Background Image for Report Frontpage')
 

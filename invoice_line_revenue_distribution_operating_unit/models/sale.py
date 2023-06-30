@@ -8,7 +8,6 @@ from odoo.tools.translate import _
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    @api.multi
     @api.constrains('team_id', 'operating_unit_id')
     def _check_team_operating_unit(self):
         for rec in self:
@@ -22,7 +21,6 @@ class SaleOrder(models.Model):
 class CrmTeam(models.Model):
     _inherit = 'crm.team'
 
-    @api.multi
     @api.constrains('operating_unit_id')
     def _check_sales_order_operating_unit(self):
         pass

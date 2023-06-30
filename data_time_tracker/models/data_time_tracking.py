@@ -92,7 +92,7 @@ class DataTrackThread(models.AbstractModel):
         res_id._track_data(track_config, values, 'create')
         return res_id
 
-    @api.multi
+    # @api.multi
     def write(self, values):
         if 'timeFaceCronUpdate' in self.env.context:
             self.remove_duplicates()
@@ -136,11 +136,8 @@ class DataTrackerConfig(models.Model):
     _rec_name = 'model_id'
 
     model_id = fields.Many2one('ir.model', string='Model', ondelete='cascade', required=True, index=True)
-    field_id = fields.Many2one('ir.model.fields', string='Tracking Field', required=True, index=True)
+    field_id = fields.Many2one('ir.model.fields', ondelete='cascade', string='Tracking Field', required=True, index=True)
     relation_model = fields.Char(related='field_id.relation', string='Relational Model', required=True, index=True)
-
-    def check_unique(self):
-        pass
 
     @api.model
     def create(self, values):
@@ -149,7 +146,6 @@ class DataTrackerConfig(models.Model):
             raise UserError(_('Configuration already define for %s and field %s')%(config.model_id.model, config.field_id.name))
         return super(DataTrackerConfig, self).create(values)
 
-    @api.multi
     def write(self, values):
         self.ensure_one()
         model = values['model_id'] if 'model_id' in values else self.model_id.id
@@ -185,7 +181,6 @@ class DataTimeTracker(models.Model):
     relation_model_name = fields.Char(compute ='_get_reference', string="Co-model Ref#")
     type_many2many = fields.Boolean()
 
-    @api.multi
     def action_open_view(self):
         self.ensure_one()
         active_model = self.env.context.get('active_model', '')
@@ -208,7 +203,7 @@ class DataTimeTracker(models.Model):
             }
         return True
 
-    @api.multi
+    # @api.multi
     def remove(self):
         self.ensure_one()
         ctx = self.env.context.copy()
