@@ -54,7 +54,6 @@
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='analytic_account_id']" position="attributes">
                 <attribute name="domain">[('company_id', '=', parent.company_id),'|',('operating_unit_ids', '=', False),('linked_operating_unit', '=', True)]</attribute>
-
             </xpath>
         </field>
     </record>
