@@ -7,7 +7,7 @@ class AccountMoveReversal(models.TransientModel):
     """
     _inherit = 'account.move.reversal'
 
-    @api.multi
+    
     def reverse_moves(self):
         ac_move_ids = self._context.get('active_ids', False)
         company = self.env.user.company_id

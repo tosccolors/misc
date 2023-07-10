@@ -9,7 +9,7 @@
             <field name="view_mode">tree,form</field>
             <field name="context" eval="{
                'default_name': 'Receive invoices per email',
-               'default_object_id': ref('account.model_account_invoice')
+               'default_object_id': ref('account.model_account_move')
                }"/>
             <field name="help">Receive invoices per email. Invoices are created as incoming invoices, with the partner that has the email's sender address.
             </field>

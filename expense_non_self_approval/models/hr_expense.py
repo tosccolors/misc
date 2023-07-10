@@ -5,7 +5,7 @@ from odoo import models, fields, api
 class HrExpenseSheet(models.Model):
     _inherit = 'hr.expense.sheet'
 
-    @api.one
+    
     def _check_approver(self):
         approver = False
         expOfficer = self.env.user.has_group('hr_expense.group_hr_expense_user')

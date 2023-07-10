@@ -10,7 +10,7 @@ class JournalReportWizard(models.TransientModel):
         string='Operating Unit'
     )
 
-    @api.multi
+    
     def _prepare_report_journal(self):
         res = super(JournalReportWizard, self)._prepare_report_journal()
         if self.operating_unit_id:

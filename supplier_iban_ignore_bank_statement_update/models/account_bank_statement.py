@@ -5,7 +5,7 @@ from odoo import models, fields, api
 class AccountBankStatement(models.Model):
     _inherit = "account.bank.statement"
 
-    @api.multi
+    
     def link_bank_to_partner(self):
         """
         overiden link_bank_to_partner() to skip updating iban for supplier

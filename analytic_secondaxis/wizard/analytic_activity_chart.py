@@ -31,7 +31,7 @@ class activities_analytic_chart(models.TransientModel):
     from_date = fields.Date('From')
     to_date = fields.Date('To')
 
-    @api.multi
+    
     def analytic_activities_chart_open_window(self):
         mod_obj = self.env['ir.model.data']
         result_context = {}

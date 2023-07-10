@@ -25,7 +25,7 @@ from odoo import api, models
 class ReportTable(models.AbstractModel):
     _name = 'report.account_report_template.print_template'
 
-    @api.multi
+    
     def render_html(self, docids, data=None):
         wiz_ids = docids or self._context.get('active_ids')
         wiz = self.env["account_report_template.print_template_wiz"].browse(wiz_ids)

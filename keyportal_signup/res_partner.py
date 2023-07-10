@@ -27,7 +27,7 @@ class ResPartner(models.Model):
 
 
 
-    @api.multi
+    
     def _get_signup_url_for_action(self, action=None, view_type=None, menu_id=None, res_id=None, model=None):
         """ generate a signup url for the given partner ids and action, possibly overriding
             the url state components (menu_id, id, view_type) """

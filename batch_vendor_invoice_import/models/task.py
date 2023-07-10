@@ -26,7 +26,7 @@ class Task(models.Model):
         readonly=False
         )
 
-    @api.multi
+    
     @api.constrains('user_id')
     def _check_company(self):
         for task in self:
@@ -34,7 +34,7 @@ class Task(models.Model):
                 raise UserError(_('Configuration error!\nThe company\
                         must be the same as the company of the user in the task.'))
 
-    @api.multi
+    
     def _prepare_attachment_vals(self, datas, filename, md5_datas):
         vals = super(Task, self)._prepare_attachment_vals(datas=datas, filename=filename, md5_datas=md5_datas)
         vals_add = {}

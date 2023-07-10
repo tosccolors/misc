@@ -5,7 +5,7 @@ from odoo import api, models, tools
 class MailThread(models.AbstractModel):
     _inherit = 'mail.thread'
 
-    @api.multi
+    
     def message_post_with_template(self, template_id, **kwargs):
         """ Helper method to send a mail with a template
             :param template_id : the id of the template to render to create the body of the message

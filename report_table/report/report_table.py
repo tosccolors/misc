@@ -26,7 +26,7 @@ from odoo.tools.safe_eval import safe_eval
 class ReportTable(models.AbstractModel):
     _name = 'report.report_table.report_json_table'
 
-    @api.multi
+    
     def render_html(self, docids, data=None):
         docids = docids or self._context.get('active_ids')
         if docids:

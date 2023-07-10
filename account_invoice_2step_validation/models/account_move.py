@@ -28,7 +28,7 @@ from odoo.exceptions import UserError, ValidationError
 class Move(models.Model):
     _inherit = ['account.move']
 
-    # @api.one
+    #
     @api.depends('amount_untaxed', 'company_id.verify_setting')
     def _compute_amount_tresh(self):
         # -- Sushma,

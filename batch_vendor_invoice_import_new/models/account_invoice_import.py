@@ -32,7 +32,7 @@ class AccountInvoiceImport(models.TransientModel):
     operating_unit_id = fields.Many2one('operating.unit', )
     user_id = fields.Many2one(related='task_id.user_id',)
 
-    @api.multi
+
     def import_invoice(self):
         """Original Method called by the button of the wizard
         (import step AND config step). This one is called by _run in
@@ -73,7 +73,7 @@ class AccountInvoiceImport(models.TransientModel):
             action = self.create_invoice_action(parsed_inv, import_config)
         return action
 
-    @api.multi
+
     def create_invoice_action(self, parsed_inv=None, import_config=None):
         '''parsed_inv is not a required argument'''
 

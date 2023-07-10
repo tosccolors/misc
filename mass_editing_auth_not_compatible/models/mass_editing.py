@@ -28,7 +28,7 @@ class MassObject(models.Model):
     _inherit = "mass.editing"
 
     # Overridden:
-    @api.multi
+    
     def create_action(self):
         self.ensure_one()
         cr = self._cr

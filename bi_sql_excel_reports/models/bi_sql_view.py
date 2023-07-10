@@ -16,7 +16,7 @@ class BiSQLView(models.Model):
         default=True,
         help="Show a menu item for this query on the dashboard")
 
-    @api.multi
+    
     def button_create_ui(self):
         self.tree_view_id = self.env['ir.ui.view'].create(
             self._prepare_tree_view()).id

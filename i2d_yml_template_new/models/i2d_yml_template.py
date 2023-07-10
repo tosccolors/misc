@@ -41,7 +41,7 @@ class I2dYmlTemplate(models.Model):
     partner_ids = fields.One2many('yml.template.partner', 'template_id', string='Template Vendors', copy=True)
 
 
-    @api.multi
+    
     @api.onchange('partner_id' )
     def onchange_partner_id(self):
         """
@@ -51,7 +51,7 @@ class I2dYmlTemplate(models.Model):
         if self.partner_id and not self.name:
             self.name = self.partner_id.name
 
-    @api.multi
+    
     def action_export_filesystem(self):
         self.ensure_one()
         vals = {
@@ -78,7 +78,7 @@ class I2dYmlTemplate(models.Model):
         res.run()
         self.write({'state': 'saved'})
 
-    @api.multi
+    
     def action_delete(self):
         self.ensure_one()
         if self.state == 'saved':
@@ -96,7 +96,7 @@ class I2dYmlTemplate(models.Model):
                 res.run()
                 self.write({'state': 'deleted'})
 
-    @api.multi
+    
     def unlink(self):
         for tmpl in self:
             if self.state == 'saved':

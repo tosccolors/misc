@@ -144,7 +144,7 @@ class AccountMove(models.Model):
         cr.execute(sql_query)
         return move
     
-    @api.multi
+    
     def create_reversals(self, date=False, journal=False, move_prefix=False,
                          line_prefix=False, reconcile=False):
         

@@ -62,7 +62,7 @@ class MailThread(models.AbstractModel):
         return CompanyID
 
 
-    @api.multi
+    
     def _find_partner_from_emails(self, emails, res_model=None, res_id=None, check_followers=True, force_create=False, exclude_aliases=True):
         """ Utility method to find partners from email addresses. The rules are :
             1 - check in document (model | self, id) followers

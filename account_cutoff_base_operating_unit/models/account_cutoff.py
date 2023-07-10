@@ -21,7 +21,7 @@ class AccountCutoff(models.Model):
         """
         return ['account_id', 'analytic_account_id', 'operating_unit_id']
 
-    @api.multi
+    
     def _prepare_move(self, to_provision):
         self.ensure_one()
         movelines_to_create = []
@@ -74,7 +74,7 @@ class AccountCutoff(models.Model):
             }
         return res
 
-    @api.multi
+    
     def _prepare_provision_line(self, cutoff_line):
         """ Convert a cutoff line to elements of a move line
 
@@ -90,7 +90,7 @@ class AccountCutoff(models.Model):
             res['operating_unit_id'] = cutoff_line.operating_unit_id.id
         return res
 
-    @api.multi
+    
     def _prepare_provision_tax_line(self, cutoff_tax_line):
         """ Convert a cutoff tax line to elements of a move line
 

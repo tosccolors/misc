@@ -110,13 +110,13 @@ class GetAddInFile(models.TransientModel):
         self._create_log_entry()
         return self._open_download_form()
 
-    @api.multi
+    
     def prepare_addin_file_win(self):
         """ Prepare the Excel Add-in for a user on Windows """
         self.user_sys = 'Windows'
         return self._prepare_addin_file()
 
-    @api.multi
+    
     def prepare_addin_file_mac(self):
         """ Prepare the Excel Add-in for a user on MacOS """
         self.user_sys = 'MacOS'

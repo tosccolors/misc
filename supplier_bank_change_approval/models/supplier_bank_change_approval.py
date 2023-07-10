@@ -10,11 +10,11 @@ class SupplierBankApproval(models.Model):
     _inherit = 'res.partner.bank'
     
     state = fields.Selection([('draft', "Draft"),('confirmed', "Confirmed")],default='draft',string='Status', copy=False, index=True,readonly=True, store=True,track_visibility='always')
-    @api.multi
+    
     def action_draft(self):
         self.state = 'draft'
 
-    @api.multi
+    
     def action_confirm(self):
         self.state = 'confirmed'
 
@@ -31,7 +31,7 @@ class SupplierBankApproval(models.Model):
         return super(SupplierBankApproval, self).create(vals)
        
 
-    @api.multi
+    
     def write(self, vals):
         # Update vendor bank account then  
         # :return:state Draft
@@ -46,7 +46,7 @@ class AccountSupplierBankCheck(models.Model):
     
     _inherit = 'account.invoice'
         
-    @api.multi
+    
     @api.constrains('partner_id')
     def _check_partner_id(self):
         bank_list=[]
@@ -81,7 +81,7 @@ class PaymentOrderBankCheck(models.Model):
 
     _inherit = 'account.payment.order'
 
-    @api.multi
+    
     def draft2open(self):
         partner_ids=self.payment_line_ids.mapped('partner_id')
         for partner in partner_ids:

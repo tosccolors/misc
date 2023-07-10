@@ -11,7 +11,7 @@ class AccountMoveReverse(models.TransientModel):
     _inherit = "account.move.reverse"
 
 
-    @api.multi
+    
     def action_reverse(self): 
         company = self.env.user.company_id
         via_sql_jq = company.reversal_via_sql or company.perform_reversal_by_line_jq \

@@ -38,7 +38,7 @@ class JiraProjectProject(models.Model):
         return selection
 
     @api.constrains('backend_id', 'external_id', 'organization_ids')
-    @api.multi
+    
     def _constrains_jira_uniq(self):
         """Modify the base constraint by adding organizations
 
@@ -71,7 +71,7 @@ class JiraProjectProject(models.Model):
                         "JIRA project and similar organizations."
                     ) % (other.display_name))
 
-    @api.multi
+    
     def make_servicedesk_issue_url(self, jira_issue_id):
         return urllib.parse.urljoin(
             self.backend_id.uri, '/service_desk/customer/portal/{}/{}'.format(

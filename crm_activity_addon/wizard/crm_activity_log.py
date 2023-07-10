@@ -34,7 +34,7 @@ class ActivityLog(models.TransientModel):
 
         return {'value' : {'partner_contact_id': contact_id}}
 
-    @api.multi
+    
     def action_log_and_schedule(self):
         self.ensure_one()
         context = dict(self._context or {})
@@ -57,7 +57,7 @@ class ActivityLog(models.TransientModel):
             'res_id': False
         }
         
-    @api.multi
+    
     def action_log(self):
         context = dict(self._context or {})
         self = self.with_context(get_sizes=True)
@@ -100,7 +100,7 @@ class ActivityLog(models.TransientModel):
                 log.lead_id.write({'stage_id': stage_logged.id})
         return True
 
-    @api.multi
+    
     def action_save(self):
         note = ''
         if self.note and self.note != '<p><br></p>':

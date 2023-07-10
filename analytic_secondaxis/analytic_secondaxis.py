@@ -133,7 +133,7 @@ class ProjectActivityAl(models.Model):
             res = recursive_computation(account.id, res)
         return res
 
-    @api.one
+
     def _debit_credit_bal_qtty(self):
         self.debit = 0.00
         self.credit = 0.00

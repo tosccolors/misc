@@ -8,7 +8,7 @@ class AccountInvoice(models.Model):
 
     source_email = fields.Char()
 
-    @api.multi
+    
     def action_create_source_email_partner(self):
         partners = self.env['res.partner']
         for this in self:

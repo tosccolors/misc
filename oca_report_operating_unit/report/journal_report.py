@@ -8,7 +8,7 @@ class ReportJournalQweb(models.TransientModel):
 
     operating_unit_id = fields.Many2one(comodel_name='operating.unit')
 
-    @api.multi
+    
     def _inject_move_line_values(self):
         self.ensure_one()
         sql = """

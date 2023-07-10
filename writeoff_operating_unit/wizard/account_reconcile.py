@@ -22,7 +22,7 @@ class AccountMoveLineReconcileWriteoff(models.TransientModel):
             res.update({'operating_unit_id': operating_unit_id.id})
         return res
 
-    @api.multi
+    
     def trans_rec_reconcile(self):
         context = dict(self._context or {})
         if self.operating_unit_id:
