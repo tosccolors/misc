@@ -11,7 +11,7 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="binding_model_id" ref="base.model_res_users"/>
-        <field name="groups" ref="base.group_no_one"/>
+<!--        <field name="groups" ref="base.group_no_one"/>-->
     </record>
 
 </data>

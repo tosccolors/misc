@@ -25,9 +25,10 @@ class PortalWizardUser(models.TransientModel):
 
         # Disable Signup token
         for wizard_user in self.sudo().with_context(active_test=False):
-            if wizard_user.in_portal:
+            if wizard_user.in_portal and wizard_user.user_id.id:
                 wizard_user.partner_id.signup_cancel()
-                usrIDS.append(wizard_user.user_id.id)
+                if not wizard_user.user_id.oauth_uid:
+                    usrIDS.append(wizard_user.user_id.id)
 
         if not usrIDS: return res
 
