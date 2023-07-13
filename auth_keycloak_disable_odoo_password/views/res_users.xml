@@ -19,26 +19,30 @@
 
 
     <!-- User Form (Auth)   -->
-    <record id="view_users_auth_form" model="ir.ui.view">
+    <record id="view_users_auth_form1" model="ir.ui.view">
         <field name="name">res.users.auth.form.inherited</field>
         <field name="model">res.users</field>
         <field name="inherit_id" ref="auth_signup.res_users_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//button[@name='action_reset_password']" position="replace"/>
-            <xpath expr="//button[@name='action_reset_password']" position="replace"/>
+            <xpath expr="//button[@name='action_reset_password']" position="attributes">
+                <attribute name="groups">"base.group_no_one"</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_reset_password']" position="attributes">
+                <attribute name="groups">"base.group_no_one"</attribute>
+            </xpath>
         </field>
       </record>
 
     <!-- My Preference   -->
-    <record id="view_users_preference_form" model="ir.ui.view">
-        <field name="name">Preference Inherited</field>
-        <field name="model">res.users</field>
-        <field name="type">form</field>
-        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
-        <field name="arch" type="xml">
-            <xpath expr="//button[@name='preference_change_password']" position="replace"/>
-        </field>
-      </record>
+<!--    <record id="view_users_preference_form" model="ir.ui.view">-->
+<!--        <field name="name">Preference Inherited</field>-->
+<!--        <field name="model">res.users</field>-->
+<!--        <field name="type">form</field>-->
+<!--        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//button[@name='preference_change_password']" position="replace"/>-->
+<!--        </field>-->
+<!--      </record>-->
 
 </data>
 

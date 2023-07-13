@@ -25,8 +25,11 @@ class PortalWizardUser(models.TransientModel):
 
         # Disable Signup token
         for wizard_user in self.sudo().with_context(active_test=False):
-            wizard_user.partner_id.signup_cancel()
-            usrIDS.append(wizard_user.user_id.id)
+            if wizard_user.in_portal:
+                wizard_user.partner_id.signup_cancel()
+                usrIDS.append(wizard_user.user_id.id)
+
+        if not usrIDS: return res
 
         # Push to Keycloak
         provider = self.env.ref(
@@ -54,13 +57,12 @@ class PortalWizardUser(models.TransientModel):
         """ create a new user for wizard_user.partner_id
             :returns record of res.users
         """
-        company_id = self.env.context.get('company_id')
         return self.env['res.users'].with_context(no_reset_password=False, signup_valid=False).create({
             'email': extract_email(self.email),
             'login': extract_email(self.email),
             'partner_id': self.partner_id.id,
-            'company_id': company_id,
-            'company_ids': [(6, 0, [company_id])],
+            'company_id': self.env.company.id,
+            'company_ids': [(6, 0, self.env.company.ids)],
             'groups_id': [(6, 0, [])],
         })
 
