@@ -2,8 +2,8 @@
 
 
 {
-    "name": "Disable Odoo Password & Auto-Push Users to Keycloak",
-    "summary": "Disable Password in Login Page, Autopushing of Portal user to Keycloak",
+    "name": "Auto-Push Users to Keycloak",
+    "summary": "Autopushing of Portal user to Keycloak",
     "version": "14.0.1.1",
     'category': 'Tools',
     'website' : "https://www.tosc.nl/",

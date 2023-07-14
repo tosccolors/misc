@@ -1,11 +1,12 @@
 ==================================================================
-Keycloak: Disable Odoo Password & Auto-Push Users to Keycloak
+Keycloak: Auto-Push Users to Keycloak & Disable Odoo Password
 ==================================================================
 
 
-This module disable password changing in Odoo & login, such that User has to login via Keycloak Auth provider,
-Auto-pushes the Portal user to Keycloak, which inturn will send password mails to user from Keycloak.
-Note: this would disable both password setting & invitation mail from Odoo.
+This module will automatically push the Portal user to Keycloak, which inturn will send password mails to user from Keycloak.
+Also disables password changing in Odoo & login, such that User has to login via Keycloak Auth provider,
+optionally it can be configured whether to send invitation mail from Odoo or not.
+Note: this would disable password re-setting.
 
 **Table of contents**
 
