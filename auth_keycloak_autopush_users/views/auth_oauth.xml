@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<odoo>
+
+  <!--
+        Auth (Keycloak)
+  -->
+  <record id="view_oauth_provider_form" model="ir.ui.view">
+    <field name="name">auth.oauth.provider.form</field>
+    <field name="model">auth.oauth.provider</field>
+    <field name="inherit_id" ref="auth_keycloak.view_oauth_provider_form" />
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='send_password_email']" position="after">
+            <field name="disable_welcome_email" />
+        </xpath>
+
+    </field>
+  </record>
+</odoo>

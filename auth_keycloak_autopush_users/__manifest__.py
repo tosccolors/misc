@@ -4,7 +4,7 @@
 {
     "name": "Auto-Push Users to Keycloak",
     "summary": "Autopushing of Portal user to Keycloak",
-    "version": "14.0.1.1",
+    "version": "14.0.2.0",
     'category': 'Tools',
     'website' : "https://www.tosc.nl/",
     "author": "Deepa, " "The Open Source company (TOSC)",
@@ -13,6 +13,7 @@
         "auth_keycloak",
     ],
     "data": [
-        "views/res_users.xml"
+        "views/res_users.xml",
+        "views/auth_oauth.xml"
     ],
 }

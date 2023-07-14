@@ -69,6 +69,15 @@ class PortalWizardUser(models.TransientModel):
 
     # Overridden:
     def _send_email(self):
-        """ Disable sending signup mail from Odoo"""
-        return True
+        """ Disable sending signup mail from Odoo, if flagged"""
+
+        provider = self.env.ref(
+            'auth_keycloak.default_keycloak_provider',
+            raise_if_not_found=False
+        )
+        disable = provider and provider.disable_welcome_email
+        if disable:
+            return True
+
+        return super()._send_email()
 
