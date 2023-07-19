@@ -36,7 +36,7 @@ class Partner(models.Model):
             }
             return crm.create(dic).id
 
-        activity_form = self.env.ref('crm_activity_addon.crm_activity_log_view_form_misc', False)
+        activity_form = self.env.ref('crm_activity_addon.crm_activity_log_view_form_misc', False) #object os not avilable for v14
         ctx = dict(
             activity_from_partner=True,
             default_partner_id=self.parent_id and self.parent_id.id or self.id,
@@ -52,7 +52,7 @@ class Partner(models.Model):
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'form',
-            'res_model': 'crm.activity.log',
+            'res_model': 'crm.activity.log', # object os not avilable for v14
             'views': [(activity_form.id, 'form')],
             'view_id': activity_form.id,
             'target': 'new',
