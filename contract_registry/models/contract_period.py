@@ -14,7 +14,7 @@ class ContractPeriod(models.Model):
      
      period_id = fields.Many2one("contract.registry",string="Period")
      
-     @api.multi
+     
      @api.constrains('date_end', 'date_start')
      def date_constrains(self):
          for rec in self:

@@ -15,7 +15,7 @@ class FetchmailServerFolder(models.Model):
                                            string="Create Metadata")
 
     # Overridden
-    @api.multi
+    
     def attach_mail(self, match_object, mail_message):
         """Attach mail to match_object."""
         self.ensure_one()

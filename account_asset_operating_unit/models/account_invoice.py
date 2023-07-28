@@ -7,7 +7,7 @@ from odoo import models, fields, api
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
-    @api.one
+
     def asset_create(self):
         res = super(AccountInvoiceLine, self).asset_create()
         if self.asset_category_id:

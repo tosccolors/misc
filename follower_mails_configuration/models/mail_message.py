@@ -6,7 +6,7 @@ class MailMessage(models.Model):
     _inherit = 'mail.message'
     _description = 'Mail Message'
 
-    @api.multi
+    
     def _notify(self, force_send=False, send_after_commit=True, user_signature=True):
         """ Add the related record followers to the destination partner_ids if is not a private message.
             Call mail_notification.notify to manage the email sending

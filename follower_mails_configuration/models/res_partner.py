@@ -15,7 +15,7 @@ class Partner(models.Model):
             res.with_context(ctx).write({'customer':False})
         return res
 
-    @api.multi
+    
     def write(self, values):
         res = super(Partner, self).write(values)
         ctx = self.env.context.copy()

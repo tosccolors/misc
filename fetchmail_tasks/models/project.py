@@ -8,7 +8,7 @@ class Project(models.Model):
 
     code = fields.Char('Project Code')
 
-    @api.multi
+    
     def name_get(self):
         return [(v.id, "%s%s" % (v.code + '-' if v.code else '', v.name)) for v in self]
 

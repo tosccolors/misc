@@ -14,7 +14,7 @@ class AccountBankStatementLine(models.Model):
         res['operating_unit_id'] = self.journal_id.operating_unit_id.id
         return res
 
-    @api.multi
+
     def process_reconciliations(self, data):
         AccountMoveLine = self.env['account.move.line']
         for st_line, datum in zip(self, data):
@@ -48,7 +48,7 @@ class AccountReconcileModel(models.Model):
         else:
             self.operating_unit_id = False
 
-    @api.multi
+
     def get_operating_unit(self):
         res = {}
         operating_unit_id = self.journal_id.operating_unit_id.id if self.journal_id.operating_unit_id else False

@@ -8,7 +8,7 @@ class ResPartnerBank(models.Model):
 
     standard = fields.Boolean('Standard account')
 
-    @api.multi
+    
     @api.constrains('standard', 'partner_id', 'company_id')
     def _check_company(self):
         for res in self:
@@ -25,7 +25,7 @@ class ResPartnerBank(models.Model):
             return {'warning': warning}
 
 
-    @api.multi
+    
     def update_supplier_bill_bank_account(self):
         """
         Update unpaid vendor bills with standard bank account
@@ -43,7 +43,7 @@ class ResPartnerBank(models.Model):
                  """, (self.id, self.company_id.id, self.partner_id.id)
             )
 
-    @api.multi
+    
     def update_payment_order_lines(self):
         """
         Update draft payment order with standard bank account
@@ -73,7 +73,7 @@ class ResPartnerBank(models.Model):
             res.update_payment_order_lines()
         return res
 
-    @api.multi
+    
     def write(self, vals):
         result = super(ResPartnerBank, self).write(vals)
         if vals.get('standard', False):

@@ -35,7 +35,7 @@ class FTPConfig(models.Model):
                                       string='SQL Exports')
 
 
-    @api.multi
+    
     def name_get(self):
         return [(rec.id, "%s (%s)" % (rec.server, rec.user)) for rec in self]
 
@@ -109,7 +109,7 @@ class FTPConfig(models.Model):
         return True
 
 
-    @api.multi
+    
     def automated_run(self):
         configurations = self.search([])
         for config in configurations:
@@ -118,7 +118,7 @@ class FTPConfig(models.Model):
             except Exception:
                 pass
 
-    @api.multi
+    
     def do_send(self):
         cursor = self._cr
         msg = ""
@@ -184,7 +184,7 @@ class FTPConfig(models.Model):
         return True
 
 
-    @api.multi
+    
     def export_sql(self, sqlExport):
         self.ensure_one()
         wiz = self.env['sql.file.wizard'].create({

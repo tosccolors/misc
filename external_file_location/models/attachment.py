@@ -23,7 +23,7 @@ class IrAttachmentMetadata(models.Model):
              'Import Export File (External location)')
         ])
 
-    @api.multi
+    
     def _run(self):
         super(IrAttachmentMetadata, self)._run()
         if self.file_type == 'export_external_location':

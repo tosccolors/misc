@@ -21,7 +21,7 @@ class AccountAssetAsset(models.Model):
 class AccountAssetDepreciationLine(models.Model):
     _inherit = 'account.asset.depreciation.line'
 
-    @api.multi
+    
     def create_move(self, post_move=True):
         created_moves = self.env['account.move']
         prec = self.env['decimal.precision'].precision_get('Account')
@@ -79,7 +79,7 @@ class AccountAssetDepreciationLine(models.Model):
                 lambda m: any(m.asset_depreciation_ids.mapped('asset_id.category_id.open_asset'))).post()
         return [x.id for x in created_moves]
 
-    @api.multi
+    
     def create_grouped_move(self, post_move=True):
         if not self.exists():
             return []

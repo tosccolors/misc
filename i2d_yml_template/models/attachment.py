@@ -24,7 +24,7 @@ class IrAttachmentMetadata(models.Model):
         ])
 
 
-    @api.multi
+    
     def _run(self):
         super(IrAttachmentMetadata, self)._run()
         if self.file_type == 'delete_external_location':

@@ -33,7 +33,7 @@ class IrAttachmentMetadata(models.Model):
          _('Hash of Invoice must be unique per import/export location!')),
     ]
 
-    @api.multi
+    
     def run(self):
         """
         Run the process for each attachment metadata
@@ -71,7 +71,7 @@ class IrAttachmentMetadata(models.Model):
                         attach.env.cr.commit()
         return True
 
-    @api.multi
+    
     def _run(self):
         super(IrAttachmentMetadata, self)._run()
 #        if self.location_id == self.env.ref('batch_vendor_invoice_import_new.batch_invoice_import_location'):

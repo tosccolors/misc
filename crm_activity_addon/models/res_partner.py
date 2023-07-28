@@ -8,13 +8,13 @@ class Partner(models.Model):
     _inherit = 'res.partner'
 
     #Overridden to exclude internal notes (crm.lead) records created using 'Create Activity' button in res.partner
-    @api.multi
+
     def _compute_adv_opportunity_count(self):
         for partner in self:
             operator = 'child_of' if partner.is_company else '='  # the opportunity count should counts the opportunities of this company and all its contacts
             partner.adv_opportunity_count = self.env['crm.lead'].with_context({'lang':'en_US'}).search_count([('type', '=', 'opportunity'), ('partner_id', operator, partner.id), ('is_activity', '=', False), ('stage_id.name','not in',('Won','Logged','Lost')), ('internal_note', '=', False)])
 
-    @api.multi
+
     def create_activity(self):
         self.ensure_one()
 #         if not self.comment:
@@ -36,7 +36,7 @@ class Partner(models.Model):
             }
             return crm.create(dic).id
 
-        activity_form = self.env.ref('crm_activity_addon.crm_activity_log_view_form_misc', False)
+        activity_form = self.env.ref('crm_activity_addon.crm_activity_log_view_form_misc', False) #object os not avilable for v14
         ctx = dict(
             activity_from_partner=True,
             default_partner_id=self.parent_id and self.parent_id.id or self.id,
@@ -52,7 +52,7 @@ class Partner(models.Model):
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'form',
-            'res_model': 'crm.activity.log',
+            'res_model': 'crm.activity.log', # object os not avilable for v14
             'views': [(activity_form.id, 'form')],
             'view_id': activity_form.id,
             'target': 'new',

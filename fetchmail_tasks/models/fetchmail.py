@@ -23,7 +23,7 @@ class FetchmailServer(models.Model):
                                 help="Optional custom server action to trigger for each incoming mail, on the record that was created or updated by this mail")
 
     # Overridden:
-    @api.multi
+    
     def fetch_mail(self):
         """ WARNING: meant for cron usage only - will commit() after each email! """
         additionnal_context = {

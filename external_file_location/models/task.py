@@ -101,7 +101,7 @@ class Task(models.Model):
                 ('delete', 'Delete'),
                 ]
 
-    @api.multi
+    
     def _existing_hash(self, datas):
         self.ensure_one()
         hash = hashlib.md5(datas).hexdigest()
@@ -109,7 +109,7 @@ class Task(models.Model):
             return True
         return False
 
-    @api.multi
+    
     def _prepare_attachment_vals(self, datas, filename, md5_datas):
         self.ensure_one()
         vals = {
@@ -154,7 +154,7 @@ class Task(models.Model):
             elif task.method_type == 'impexp':
                 task.with_context(impexp=True).run_import()
 
-    @api.multi
+    
     def run_import(self):
         self.ensure_one()
         protocols = self.env['external.file.location']._get_classes()
@@ -236,7 +236,7 @@ class Task(models.Model):
             _logger.error('Root directory %s does not exist', self.filepath)
             return
 
-    @api.multi
+    
     def run_export(self):
         self.ensure_one()
         attachment_obj = self.env['attachment.queue']

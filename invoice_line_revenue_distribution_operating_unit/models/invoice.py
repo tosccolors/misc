@@ -17,7 +17,7 @@ class AccountInvoice(models.Model):
             move_line_dict['operating_unit_id'] = iline.operating_unit_id.id
         return res
 
-    @api.multi
+
     def finalize_invoice_move_lines(self, move_lines):
 #        import pdb; pdb.set_trace()
 #        old_move_lines = move_lines
@@ -52,7 +52,7 @@ class AccountInvoiceLine(models.Model):
 
 
     @api.depends('account_analytic_id', 'invoice_id.operating_unit_id')
-    @api.multi
+
     def _compute_operating_unit(self):
         for line in self:
             if line.account_analytic_id \

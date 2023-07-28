@@ -9,7 +9,7 @@ class ProductTemplate(models.Model):
 
     _inherit = 'product.template'
 
-    @api.multi
+    
     def write(self, vals):
         res = super(ProductTemplate, self).write(vals)
         vals_to_update = {}

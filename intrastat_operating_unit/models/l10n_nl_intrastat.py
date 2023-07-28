@@ -11,7 +11,7 @@ class ReportIntrastat(models.Model):
         string='Operating Unit',
     )
 
-    @api.multi
+    
     def generate_lines(self):
         """
         Collect the data lines for the given report.

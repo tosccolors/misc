@@ -15,7 +15,7 @@ class MailComposer(models.TransientModel):
             result['res_id'] = False
         return result
 
-    @api.multi
+    
     def send_mail(self, auto_commit=False):
         ctx = self.env.context.copy()
         res = {}

@@ -54,11 +54,11 @@ class ContractRegistry(models.Model):
      )
 
          
-     @api.multi
+     
      def done_contract(self):
          self.write({'state':'done'})
          
-     @api.multi
+     
      def renew_contract(self):
          self.write({'state':'renew'})
          

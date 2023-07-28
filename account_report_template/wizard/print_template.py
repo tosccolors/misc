@@ -93,7 +93,7 @@ class AccountTemplate(models.TransientModel):
             meth = getattr(self, 'get_%s_dates' % what)
             self.from_date, self.to_date = meth(last=when == 'last')
 
-    @api.multi
+    
     def print_templates(self):
         """Print the templates """
         self._onchange_period()

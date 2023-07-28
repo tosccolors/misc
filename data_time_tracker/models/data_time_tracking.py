@@ -92,7 +92,7 @@ class DataTrackThread(models.AbstractModel):
         res_id._track_data(track_config, values, 'create')
         return res_id
 
-    # @api.multi
+    # 
     def write(self, values):
         if 'timeFaceCronUpdate' in self.env.context:
             self.remove_duplicates()
@@ -203,7 +203,7 @@ class DataTimeTracker(models.Model):
             }
         return True
 
-    # @api.multi
+    # 
     def remove(self):
         self.ensure_one()
         ctx = self.env.context.copy()

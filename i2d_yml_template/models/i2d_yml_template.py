@@ -80,7 +80,7 @@ options:\n\
     description_result     = fields.Char('Regex result for description')
     static_vat             = fields.Char('Static VAT', help='Fixed VAT number')
 
-    @api.multi
+    
     def show_parsed_pdf(self):
         if not self.example_pdf :
             raise UserError(_("Nothing to show. Add an example pdf first."))
@@ -93,38 +93,38 @@ options:\n\
         self.onchange_example_pdf()
         return
 
-    @api.multi
+    
     def hide_parsed_pdf(self):
         self.ensure_one()
         self.hide_pdf = True
         return
 
-    @api.multi
+    
     def show_regex_configurator(self):
         self.ensure_one()
         self.regexr_iframe = True
         return
 
-    @api.multi
+    
     def hide_regex_configurator(self):
         self.ensure_one()
         self.regexr_iframe = False
         return
 
-    @api.multi
+    
     def show_test_output(self):
         self.ensure_one()
         self.hide_output = False
         self.onchange_example_pdf()
         return
 
-    @api.multi
+    
     def hide_test_output(self):
         self.ensure_one()
         self.hide_output = True
         self.onchange_example_pdf()
 
-    @api.multi
+    
     def test_yml_template(self):
         if not self.state == 'saved' :
             raise UserError(_("Please save template in external system first")) 
@@ -161,7 +161,7 @@ options:\n\
                                 +"Your template uses %s and the template found uses %s." % (self.keyword_result, keyword_found.group(1))))
         return
 
-    @api.multi
+    
     def compose_yml_template(self):
         if not self.state == 'saved' :
             raise UserError(_("Please save template in external system first")) 
@@ -203,7 +203,7 @@ options:\n\
         return
 
 
-    @api.multi
+    
     @api.onchange('example_pdf')
     def onchange_example_pdf(self):
         if len(self.example_pdf)>1 :
@@ -243,7 +243,7 @@ options:\n\
         else :
             return "no match"
 
-    @api.multi
+    
     @api.onchange('keyword')
     def onchange_keyword(self):
         if not self.keyword :
@@ -255,37 +255,37 @@ options:\n\
         self.keyword_result = self.onchange_searchfield('('+keyword+')')
         return
 
-    @api.multi
+    
     @api.onchange('amount')
     def onchange_amount(self):
         self.amount_result = self.onchange_searchfield(self.amount)
         return
 
-    @api.multi
+    
     @api.onchange('amount_untaxed')
     def onchange_amount_untaxed(self):
         self.amount_untaxed_result = self.onchange_searchfield(self.amount_untaxed)
         return
 
-    @api.multi
+    
     @api.onchange('date')
     def onchange_date(self):
         self.date_result = self.onchange_searchfield(self.date)
         return
 
-    @api.multi
+    
     @api.onchange('invoice_number')
     def onchange_invoice_number(self):
         self.invoice_number_result = self.onchange_searchfield(self.invoice_number)
         return
 
-    @api.multi
+    
     @api.onchange('description')
     def onchange_description(self):
         self.description_result = self.onchange_searchfield(self.description)
         return
 
-    @api.multi
+    
     def convert2regex(self, string2convert):
         #escape the special meaning characters (this is incomplete but sufficient to start with)
         replacements =[ ('\\', '\\\\' ), 
@@ -308,43 +308,43 @@ options:\n\
         string2convert = '('+ string2convert + ')'
         return string2convert
 
-    @api.multi
+    
     def keyword2regex(self):
         self.keyword = self.convert2regex(self.keyword)
         self.onchange_keyword()
         return
 
-    @api.multi
+    
     def amount2regex(self):
         self.amount = self.convert2regex(self.amount)
         self.onchange_amount()
         return
 
-    @api.multi
+    
     def amount_untaxed2regex(self):
         self.amount_untaxed = self.convert2regex(self.amount_untaxed)
         self.onchange_amount_untaxed()
         return
 
-    @api.multi
+    
     def date2regex(self):
         self.date = self.convert2regex(self.date)
         self.onchange_date()
         return
 
-    @api.multi
+    
     def invoice_number2regex(self):
         self.invoice_number = self.convert2regex(self.invoice_number)
         self.onchange_invoice_number()
         return
 
-    @api.multi
+    
     def description2regex(self):
         self.description = self.convert2regex(self.description)
         self.onchange_description()
         return
 
-    @api.multi
+    
     @api.onchange('partner_id' )
     def onchange_partner_id(self):
         """
@@ -354,7 +354,7 @@ options:\n\
         if self.partner_id and not self.name:
             self.name = self.partner_id.name
 
-    @api.multi
+    
     def action_export_filesystem(self):
         self.ensure_one()
         vals = {
@@ -381,7 +381,7 @@ options:\n\
         res.run()
         self.write({'state': 'saved'})
 
-    @api.multi
+    
     def action_delete(self):
         self.ensure_one()
         if self.state == 'saved':
@@ -399,7 +399,7 @@ options:\n\
                 res.run()
                 self.write({'state': 'deleted'})
 
-    @api.multi
+    
     def unlink(self):
         for tmpl in self:
             if tmpl.state == 'saved':

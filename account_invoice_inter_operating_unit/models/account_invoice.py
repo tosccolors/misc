@@ -15,7 +15,7 @@ class AccountInvoice(models.Model):
                                       readonly=True, copy=False,
                                       _prefetch=False)
 
-    @api.multi
+    
     def action_invoice_open(self):
         """ Validated invoice generate cross invoice base on OU rules """
         res = super(AccountInvoice, self).action_invoice_open()
@@ -52,7 +52,7 @@ class AccountInvoice(models.Model):
                                                   dest_journal_type)
         return res
 
-    @api.multi
+    
     def _get_user_domain(self, dest_ou):
         self.ensure_one()
         group_account_invoice = self.env.ref('account.group_account_invoice')
@@ -63,7 +63,7 @@ class AccountInvoice(models.Model):
             ('id', 'in', group_account_invoice.users.ids),
         ]
 
-    @api.multi
+    
     def _check_intercompany_product(self, dest_ou):
         domain = self._get_user_domain(dest_ou)
         dest_user = self.env['res.users'].search(domain, limit=1)
@@ -77,7 +77,7 @@ class AccountInvoice(models.Model):
                         "product '%s' because it is not multicompany")
                         % (dest_ou.company_id.name, line.product_id.name))
 
-    @api.multi
+    
     def _inter_ou_create_invoice(
             self, dest_ou, dest_inv_type, dest_journal_type):
         """ create an invoice for the given operating unit : it will copy "
@@ -155,7 +155,7 @@ class AccountInvoice(models.Model):
                 dest_invoice.message_post(body=body)
         return {'dest_invoice': dest_invoice}
 
-    @api.multi
+    
     def _prepare_invoice_data(self, dest_inv_type, dest_journal_type,
                               dest_ou):
         """ Generate invoice values
@@ -288,7 +288,7 @@ class AccountInvoice(models.Model):
         }
         return vals
 
-    @api.multi
+    
     def action_invoice_cancel(self):
         for invoice in self:
             dest_ou = self.env['operating.unit']._find_operating_unit_from_partner(

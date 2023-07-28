@@ -24,7 +24,7 @@ class AccountMoveLine(models.Model):
                 res.write({'operating_unit_id': objmove.operating_unit_id.id})
         return res
 
-    @api.multi
+    
     def write(self, vals):
         result = super(AccountMoveLine, self).write(vals)
         if 'operating_unit_id' in vals:
@@ -41,7 +41,7 @@ class AccountMove(models.Model):
 
 
     '''
-    @api.multi
+    
     def post(self):
         ml_obj = self.env['account.move.line']
         for move in self:

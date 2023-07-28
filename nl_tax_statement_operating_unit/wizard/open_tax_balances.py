@@ -8,7 +8,7 @@ class OpenTaxBalances(models.TransientModel):
 
     operating_unit_id = fields.Many2one('operating.unit', 'Operating Unit')
 
-    @api.multi
+    
     def open_taxes(self):
         vals = super(OpenTaxBalances, self).open_taxes()
         vals['context'].update({

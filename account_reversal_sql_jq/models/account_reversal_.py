@@ -153,7 +153,7 @@ class AccountMove(models.Model):
         # move = self.browse(move_id)
         return [move_id]
     
-    @api.multi
+    
     def create_reversals_via_job_sql(self, date=False, journal=False):
         # def create_reversals_via_job_sql(self, date=False, journal
         #                      line_prefix=False, reconcile=False):

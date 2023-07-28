@@ -19,7 +19,7 @@ class MailFollowersConfig(models.Model):
             raise UserError(_("Followers configuration already exists for same company"))
         return super(MailFollowersConfig, self).create(vals)
 
-    @api.multi
+    
     def write(self, vals):
         assert len(self.ids) == 1, "you can open only one configuration at a time"
         if vals.has_key('model_id') or vals.has_key('company_id'):
