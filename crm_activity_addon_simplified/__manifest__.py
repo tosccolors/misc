@@ -29,7 +29,7 @@
     'data': [
         'security/crm_security.xml',
         'report/crm_activity_report_views.xml',
-        'views/views.xml',
+        'views/crm_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
