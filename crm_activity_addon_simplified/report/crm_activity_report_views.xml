@@ -1,0 +1,13 @@
+<odoo>
+  <data>
+        <record id="view_crm_case_opportunities_filter_inherit" model="ir.ui.view">
+            <field name="model">crm.activity.report</field>
+            <field name="inherit_id" ref="crm.crm_activity_report_view_search"></field>
+            <field name="arch" type="xml">
+            	<xpath expr="//search" position="inside">
+            	<filter string="Partner Log" name="partner_log" domain="[('is_partner_log', '=', True)]" help="Activities that are logged by partner"/>
+            	</xpath>
+            </field>
+        </record>
+  </data>
+</odoo>

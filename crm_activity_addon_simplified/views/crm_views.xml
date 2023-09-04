@@ -1,0 +1,36 @@
+<odoo>
+  <data>
+
+    <menuitem
+            id="crm.menu_crm_opportunities"
+            action="crm.action_your_pipeline"
+            parent="sales_team.menu_sales"
+            groups="crm_activity_addon_simplified.group_use_pipline"
+            sequence="4"/>
+
+      <record id="crm.crm_lead_opportunities_tree_view" model="ir.actions.act_window">
+            <field name="groups_id" eval="[(4,ref('crm_activity_addon_simplified.group_use_pipline'))]"/>
+      </record>
+
+    <menuitem id="sale_advertising_order.menu_crm_opportunities2" parent="sale_advertising_order.menu_crm_advertising"
+                  action="sale_advertising_order.action_your_pipeline_advertising" sequence="4" groups="crm_activity_addon_simplified.group_use_pipline"/>
+
+    <menuitem id="crm.crm_opportunity_report_menu" name="Pipeline"
+            parent="sales_team.menu_sale_report" action="crm.crm_opportunity_report_action" sequence="5" groups="crm_activity_addon_simplified.group_use_pipline"/>
+
+    <record id="sale_advertising_order.crm_activity_report_action_tree" model="ir.actions.act_window">
+           <field name="view_mode">tree,pivot</field>
+       </record>
+
+      <record id="crm_case_form_view_oppor_inherited" model="ir.ui.view">
+            <field name="name">crm.lead.form.opportunity.inherited</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+            <field name="arch" type="xml">
+                <xpath expr="//h2" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+  </data>
+</odoo>
