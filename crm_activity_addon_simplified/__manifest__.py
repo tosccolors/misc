@@ -7,10 +7,10 @@
         This module simplifies the functionality of scheduling activities from the partner""",
 
     'description': """
-        This module simplifies the functionality of scheduling activities from the partner form view and hides the fields "planned_revenue" and "probability" within the crm.lead object form view in order to keep activity management simple. 
-        Also the action buttons "New Quotation", "Mark Won", "Mark Lost" in the crm.lead object will be hidden. This module hides the Pipeline menu as well. 
-        This module adds a boolean field created_from_partner in crm.lead (activity) objects which will be set to true for crm.lead objects (activities) that have been created from the partner in order to be able to filter on those activities. 
-        The "name" field within the crm.lead object will be auto-populated and read-only if the boolean created_from_partner is set to true. This module adds a pivot view to the Activities Log menu too.
+        This module simplifies the functionality of scheduling activities from the partner form view and hides the fields "planned_revenue" and "probability" 
+        within the crm.lead object form view in order to keep activity management simple. This module hides the Pipeline menu. It adds a boolean field created_from_partner in crm.lead (activity) objects, which will be set to true for crm.lead objects (activities) that have been created from the res.partner object, in order to be able to filter on those activities. 
+        The "name" field within the crm.lead object will be auto-populated and read-only if the boolean created_from_partner is set to true. 
+        This module adds a pivot view to the Activities Log menu too.
     """,
 
     'author': "K.Sushma",
