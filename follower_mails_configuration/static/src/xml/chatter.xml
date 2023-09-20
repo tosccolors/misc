@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+    <t t-name="mail.chatter.Composer" t-extend="mail.chatter.Composer">
+        <t t-jquery="input[type='checkbox'][t-att-data-fullname='recipient.full_name']"
+            t-operation="replace">
+            <input type="checkbox" t-att-data-fullname="recipient.full_name" />
+        </t>
+    </t>
+
+</templates>

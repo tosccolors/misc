@@ -1,0 +1,40 @@
+.openerp .scrollable_listview table.oe_list_content{
+    display: block;
+    position: static;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.noscroll {
+    overflow-y: hidden !important;
+}
+
+.openerp .scrollable_listview table.oe_list_content > thead th {
+    vertical-align: middle;
+    border-left: 1px solid rgb(223, 223, 223) !important;
+}
+.openerp .scrollable_listview table.oe_list_content > thead.scrolling {
+    position: absolute;
+    z-index: 1;
+}
+.openerp .scrollable_listview table.oe_list_content > tfoot th {
+    text-align: right;
+}
+.openerp .scrollable_listview table.oe_list_content th,
+.openerp .scrollable_listview table.oe_list_content td{
+    border-left: 1px solid rgb(127, 0, 0);
+    border-left: 1px solid rgba(223, 223, 223, .0);
+}
+
+.openerp .scrollable_listview table.oe_list_content td{
+    overflow-wrap: break-word;
+}
+
+.openerp .scrollable_listview table.oe_list_content thead th:hover{
+    border-right: 3px solid black;
+    cursor: e-resize;
+}
+
+.openerp .scrollable_listview table.oe_list_content td.oe_list_field_handle {
+    padding: 3px 6px 6px 3px !important;
+}

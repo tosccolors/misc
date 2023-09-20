@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<odoo>
+
+
+    <menuitem action="action___view"
+              name="menu_invoice_batch_import"
+              id="menu_action_menu_invoice_batch_import_"
+                parent="account.menu_account_config"
+              sequence="10"
+              groups="account.group_account_user,"
+              />
+</odoo>

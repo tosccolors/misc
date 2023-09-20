@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_partner_property_form_inherited" model="ir.ui.view">
+            <field name="name">Add Invoice Transmit Methods on partner form view (account tab) Inherited</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account_invoice_transmit_method.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='customer_invoice_transmit_method_id']" position="attributes">
+                    <attribute name="required">True</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

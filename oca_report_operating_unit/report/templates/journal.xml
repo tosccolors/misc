@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="oca_report_operating_unit.report_journal_qweb_journal_inherit"
+              inherit_id="account_financial_report.report_journal_ledger_journal">
+        <xpath expr="//div[@class='act_as_caption account_title']/span[@t-field='o.date_to']" position="after">
+            <span t-if="o.operating_unit_id"><span t-field="o.operating_unit_id.name"/>-</span>
+        </xpath>
+
+    </template>
+</odoo>

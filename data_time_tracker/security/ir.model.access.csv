@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_data_tracker_config_user,data.tracker.config.user,model_data_tracker_config,base.group_user,1,1,1,0
+access_data_tracker_config_manager,data.tracker.config.manager,model_data_tracker_config,base.group_erp_manager,1,1,1,1
+access_data_time_tracker,data.time.tracker.user,model_data_time_tracker,base.group_user,1,1,1,0
+access_data_time_tracker_manager,data.time.tracker.manager,model_data_time_tracker,base.group_erp_manager,1,1,1,1

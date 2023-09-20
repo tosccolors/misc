@@ -1,0 +1,4 @@
+---Fields in module 'fetchmail_company_setting'---
+fetchmail_company_setting / fetchmail.server         / company_id (many2one)         : NEW relation: res.company
+---XML records in module 'fetchmail_company_setting'---
+NEW ir.ui.view: fetchmail_company_setting.fetchmail_server_form_x1

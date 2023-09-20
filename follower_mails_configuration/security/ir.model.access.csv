@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mail_followers_config_all,mail.followers.config.all,model_mail_followers_config,,1,0,0,0
+access_mail_followers_config_user,mail.followers.config.user,model_mail_followers_config,base.group_user,1,1,1,0
+access_mail_followers_config_manager,mail.followers.config.manager,model_mail_followers_config,base.group_erp_manager,1,1,1,1
+
+

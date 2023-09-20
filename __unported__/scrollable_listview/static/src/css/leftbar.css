@@ -1,0 +1,7 @@
+.openerp .oe_leftbar{
+    overflow-y: auto;
+    padding: 0px 0px 0px 0px;
+}
+.openerp .oe_leftbar .oe_secondary_menus_container {
+    overflow-y: auto;
+}

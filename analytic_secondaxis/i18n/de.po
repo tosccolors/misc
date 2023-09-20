@@ -1,0 +1,209 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* analytic_secondaxis
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-31 08:17+0000\n"
+"PO-Revision-Date: 2017-08-31 08:17+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: analytic_secondaxis
+#: model:ir.ui.view,arch_db:analytic_secondaxis.activities_analytic_chart_view
+msgid "(Keep empty to open the current situation)"
+msgstr "(Leer lassen, um die aktuelle Situation aufzunehmen)"
+
+#. module: analytic_secondaxis
+#: model:ir.ui.menu,name:analytic_secondaxis.menu_activity_al
+msgid "Account Analytic Activities"
+msgstr "Aktivitäten in Projekt / Kostenstelle"
+
+#. module: analytic_secondaxis
+#: model:ir.actions.act_window,name:analytic_secondaxis.action_activity_list
+msgid "Activities"
+msgstr "Aktivitäten"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_account_analytic_line_activity
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_name
+#: model:ir.ui.view,arch_db:analytic_secondaxis.view_account_analytic_line_filter
+#: model:ir.ui.view,arch_db:analytic_secondaxis.view_activity_al_form
+#: model:ir.ui.view,arch_db:analytic_secondaxis.view_activity_al_list
+#: model:ir.ui.view,arch_db:analytic_secondaxis.view_activity_al_tree
+msgid "Activity"
+msgstr "Aktivität"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_currency_id
+msgid "Activity currency"
+msgstr "Währung zur Aktivität"
+
+#. module: analytic_secondaxis
+#: model:ir.ui.view,arch_db:analytic_secondaxis.view_activity_al_form
+msgid "Amounts & Quantity"
+msgstr "Beträge & Mengen"
+
+#. module: analytic_secondaxis
+#: model:ir.model,name:analytic_secondaxis.model_account_analytic_account
+msgid "Analytic Account"
+msgstr "Kostenstellenkonto"
+
+#. module: analytic_secondaxis
+#: model:ir.model,name:analytic_secondaxis.model_activities_analytic_chart
+msgid "Analytic Activities Chart"
+msgstr "Aktivitätentabelle"
+
+#. module: analytic_secondaxis
+#: model:ir.ui.view,arch_db:analytic_secondaxis.activities_analytic_chart_view
+msgid "Analytic Activities Charts"
+msgstr "Aktivitäten-Tabelle"
+
+#. module: analytic_secondaxis
+#: model:ir.model,name:analytic_secondaxis.model_account_analytic_line
+msgid "Analytic Line"
+msgstr "Kostenstellen-Buchung"
+
+#. module: analytic_secondaxis
+#: model:ir.actions.act_window,name:analytic_secondaxis.dblc_activitiy
+msgid "Analytic's lines"
+msgstr "Kontenstellenposten"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_balance
+msgid "Balance"
+msgstr "Saldo"
+
+#. module: analytic_secondaxis
+#: model:ir.ui.view,arch_db:analytic_secondaxis.activities_analytic_chart_view
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#. module: analytic_secondaxis
+#: model:ir.actions.act_window,name:analytic_secondaxis.action_activities_analytic_chart
+#: model:ir.actions.act_window,name:analytic_secondaxis.action_activity_tree
+#: model:ir.ui.menu,name:analytic_secondaxis.menu_action_analytic_activities_tree2
+msgid "Chart of Analytic Activities"
+msgstr "Tabelle analytischer Aktivitäten"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_child_ids
+msgid "Childs Activities"
+msgstr "Untergeordnete Aktivitäten"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_code
+msgid "Code"
+msgstr "Kürzel"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_company_id
+msgid "Company"
+msgstr "Unternehmen"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_project_ids
+#: model:ir.ui.view,arch_db:analytic_secondaxis.view_activity_al_form
+msgid "Concerned Analytic Account"
+msgstr "Betroffenes Projekt / Kostenstelle"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_activities_analytic_chart_create_uid
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_activities_analytic_chart_create_date
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_create_date
+msgid "Created on"
+msgstr ""
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_credit
+msgid "Credit"
+msgstr "Haben"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_debit
+msgid "Debit"
+msgstr "Soll"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_activities_analytic_chart_display_name
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_activities_analytic_chart_from_date
+msgid "From"
+msgstr "Von"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_activities_analytic_chart_id
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_id
+msgid "ID"
+msgstr ""
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_activities_analytic_chart___last_update
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al___last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_activities_analytic_chart_write_uid
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_activities_analytic_chart_write_date
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: analytic_secondaxis
+#: model:ir.ui.view,arch_db:analytic_secondaxis.activities_analytic_chart_view
+msgid "Open Charts"
+msgstr "Kontenplan öffnen"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_parent_id
+msgid "Parent activity"
+msgstr "Übergeordnete Aktivität"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_activity_al_quantity
+msgid "Quantity"
+msgstr "Menge"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_account_analytic_account_activity_ids
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_project_project_activity_ids
+#: model:ir.ui.view,arch_db:analytic_secondaxis.view_account_analytic_account_form
+msgid "Related activities"
+msgstr "Verwandte Aktivitäten"
+
+#. module: analytic_secondaxis
+#: model:ir.model,name:analytic_secondaxis.model_project_activity_al
+msgid "Second Analytical Axes"
+msgstr "Sekundäre analytische Achse"
+
+#. module: analytic_secondaxis
+#: model:ir.ui.view,arch_db:analytic_secondaxis.activities_analytic_chart_view
+msgid "Select the Period for Analysis"
+msgstr "Wählen Sie die Periode der Analyse aus"
+
+#. module: analytic_secondaxis
+#: model:ir.model.fields,field_description:analytic_secondaxis.field_activities_analytic_chart_to_date
+msgid "To"
+msgstr "Bis"
+

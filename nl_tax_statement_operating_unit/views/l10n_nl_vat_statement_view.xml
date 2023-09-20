@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_l10n_nl_vat_report_operating_unit" model="ir.ui.view">
+        <field name="model">l10n.nl.vat.statement</field>
+        <field name="inherit_id" ref="l10n_nl_tax_statement.view_l10n_nl_vat_report_form" />
+        <field name="arch" type="xml">
+            <field name="to_date" position="after">
+                <field name="operating_unit_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="l10n_nl_vat_report_operating_unit_filter" model="ir.ui.view">
+        <field name="name">l10n_nl_vat_statement_filter</field>
+        <field name="model">l10n.nl.vat.statement</field>
+        <field name="arch" type="xml">
+            <search string="Search Statement">
+                <field name="operating_unit_id"/>
+                <group expand="0" string="Group By">
+                    <filter name="operating_unit_id" string="Operating Unit" context="{'group_by':'operating_unit_id'}"/>
+                </group>
+           </search>
+        </field>
+    </record>
+
+    <record id="l10n_nl_tax_statement.action_account_vat_statement_nl" model="ir.actions.act_window">
+        <field name="name">NL BTW Statement</field>
+        <field name="res_model">l10n.nl.vat.statement</field>
+        <field name="search_view_id" ref="l10n_nl_vat_report_operating_unit_filter"/>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

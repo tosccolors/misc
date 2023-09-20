@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2016 Lorenzo Battistini - Agile Business Group
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+<record id="wizard_open_tax_balances" model="ir.ui.view">
+    <field name="name">wizard_open_tax_balances</field>
+    <field name="model">wizard.open.tax.balances</field>
+    <field name="inherit_id" ref="account_tax_balance.wizard_open_tax_balances"/>
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='to_date']" position="after">
+            <field name="operating_unit_id"/>
+        </xpath>
+    </field>
+ </record>
+
+</odoo>

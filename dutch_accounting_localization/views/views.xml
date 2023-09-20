@@ -1,0 +1,59 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <!--
+    <record model="ir.ui.view" id="dutch_accounting_localization.list">
+      <field name="name">dutch_accounting_localization list</field>
+      <field name="model">dutch_accounting_localization.dutch_accounting_localization</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+    -->
+
+    <!-- actions opening views on models -->
+    <!--
+    <record model="ir.actions.act_window" id="dutch_accounting_localization.action_window">
+      <field name="name">dutch_accounting_localization window</field>
+      <field name="res_model">dutch_accounting_localization.dutch_accounting_localization</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    -->
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="dutch_accounting_localization.action_server">
+      <field name="name">dutch_accounting_localization server</field>
+      <field name="model_id" ref="model_dutch_accounting_localization_dutch_accounting_localization"/>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": self._name,
+        }
+      </field>
+    </record>
+    -->
+
+    <!-- Top menu item -->
+    <!--
+    <menuitem name="dutch_accounting_localization" id="dutch_accounting_localization.menu_root"/>
+    -->
+    <!-- menu categories -->
+    <!--
+    <menuitem name="Menu 1" id="dutch_accounting_localization.menu_1" parent="dutch_accounting_localization.menu_root"/>
+    <menuitem name="Menu 2" id="dutch_accounting_localization.menu_2" parent="dutch_accounting_localization.menu_root"/>
+    -->
+    <!-- actions -->
+    <!--
+    <menuitem name="List" id="dutch_accounting_localization.menu_1_list" parent="dutch_accounting_localization.menu_1"
+              action="dutch_accounting_localization.action_window"/>
+    <menuitem name="Server to list" id="dutch_accounting_localization" parent="dutch_accounting_localization.menu_2"
+              action="dutch_accounting_localization.action_server"/>
+    -->
+  </data>
+</odoo>

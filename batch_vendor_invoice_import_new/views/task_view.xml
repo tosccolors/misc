@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_location_form" model="ir.ui.view">
+        <field name="model">external.file.location</field>
+        <field name="inherit_id" ref="external_file_location.view_location_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group/field/tree/field[@name='company_id']" position="after" >
+                 <field name="user_id" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_form" model="ir.ui.view">
+        <field name="model">external.file.task</field>
+        <field name="inherit_id" ref="external_file_location.view_task_form"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="location_id" invisible="0" />
+                <field name="operating_unit_id"/>
+            </field>
+        </field>
+    </record>
+
+
+    <record id="view_task_tree" model="ir.ui.view">
+        <field name="model">external.file.task</field>
+        <field name="inherit_id" ref="external_file_location.view_task_tree"/>
+        <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="user_id" />
+                </field>
+        </field>
+    </record>
+
+</odoo>

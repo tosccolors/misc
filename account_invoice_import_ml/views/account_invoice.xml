@@ -1,0 +1,33 @@
+<odoo>
+    <data>
+        <record id="view_account_invoice_filter" model="ir.ui.view">
+            <field name="inherit_id" ref="account.view_account_invoice_filter" />
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <search position="inside">
+                    <group name="account_invoice_import_ml">
+                        <filter
+                            name="account_invoice_import_ml_failed"
+                            string="Failed invoice recognition"
+                            domain="[('partner_id', '=', %(unknown_supplier)d)]"
+                        />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="invoice_supplier_form" model="ir.ui.view">
+            <field name="inherit_id" ref="account.invoice_supplier_form" />
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <sheet position="before">
+                    <div class="alert-danger" attrs="{'invisible': [('import_ml_warnings', '=', False)]}"><field name="import_ml_warnings" /></div>
+                </sheet>
+                <notebook position="inside">
+                    <page name="account_invoice_import_ml" string="ML results" attrs="{'invisible': ['|', ('import_ml_result', '=', False), ('import_ml_result', '=', {})]}">
+                        <field name="import_ml_result" widget="import_ml_result" />
+                    </page>
+                </notebook>
+            </field>
+        </record>
+    </data>
+</odoo>

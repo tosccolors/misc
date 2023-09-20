@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_segment_four,access_segment_four,model_segment_four,crm_segments.group_sale_segments,1,1,1,1
+access_segment_one,access_segment_one,model_segment_one,crm_segments.group_sale_segments,1,1,1,1
+access_segment_two,access_segment_two,model_segment_two,crm_segments.group_sale_segments,1,1,1,1
+access_segment_three,access_segment_three,model_segment_three,crm_segments.group_sale_segments,1,1,1,1
+
+access_segment_four_user,access_segment_four,model_segment_four,base.group_user,1,0,0,0
+access_segment_one_user,access_segment_one,model_segment_one,base.group_user,1,0,0,0
+access_segment_two_user,access_segment_two,model_segment_two,base.group_user,1,0,0,0
+access_segment_three_user,access_segment_three,model_segment_three,base.group_user,1,0,0,0
+

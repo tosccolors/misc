@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="journal_report_wizard_form_view_inherit" model="ir.ui.view">
+        <field name="name">journal.report.wizard.form.inherit</field>
+        <field name="model">journal.ledger.report.wizard</field>
+        <field name="inherit_id" ref="account_financial_report.journal_ledger_wizard"/>
+        <field name="arch" type="xml">
+            <xpath expr="//footer" position="before">
+                <separator string="Operating Unit"/>
+                <group>
+                    <field name="operating_unit_id" options="{'no_create': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
