@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_i2d_yml_template_full,Full access on i2d YML Templates to Advisor,model_i2d_yml_template,account.group_account_manager,1,1,1,1
-access_i2d_yml_template_partner_full,Full access on i2d YML Template Partner to Advisor,model_yml_template_partner,account.group_account_manager,1,1,1,1

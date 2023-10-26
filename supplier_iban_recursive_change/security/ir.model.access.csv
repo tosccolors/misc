@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_supplier_iban_recursive_change_supplier_iban_recursive_change,supplier_iban_recursive_change.supplier_iban_recursive_change,model_supplier_iban_recursive_change_supplier_iban_recursive_change,,1,0,0,0

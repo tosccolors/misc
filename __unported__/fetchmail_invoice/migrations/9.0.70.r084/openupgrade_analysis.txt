@@ -1,7 +1,0 @@
----Fields in module 'fetchmail_invoice'---
-fetchmail_invoice / res.partner              / fetchmail_invoice_default (boolean): NEW 
----XML records in module 'fetchmail_invoice'---
-NEW ir.actions.act_window: fetchmail_invoice.action_link_invoice_to_email_account
-NEW ir.actions.todo: base.open_menu
-NEW ir.ui.view: fetchmail_invoice.view_partner_form_x1
-NEW res.partner: fetchmail_invoice.default_partner

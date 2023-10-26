@@ -1,8 +1,0 @@
-<odoo>
-    <data noupdate="1">
-        <record id="unknown_supplier" model="res.partner">
-            <field name="active" eval="False" />
-            <field name="name">Unknown supplier</field>
-        </record>
-    </data>
-</odoo>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="1">
-        <record model="ir.config_parameter" id="ocr_endpoint" forcecreate="True">
-            <field name="key">invoice_import_simple_pdf_fetchmail.ocr_endpoint</field>
-            <field name="value">http://localhost:5000</field>
-        </record>
-    </data>
-</odoo>

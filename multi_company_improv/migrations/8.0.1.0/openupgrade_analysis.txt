@@ -1,5 +1,0 @@
----Fields in module 'multi_company_improv'---
----XML records in module 'multi_company_improv'---
-DEL ir.rule: multi_company_improv.account_banking_account_settings_rule
-DEL ir.rule: multi_company_improv.account_banking_imported_file_rule
-DEL ir.rule: multi_company_improv.banking_export_sepa_rule
