@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_picking_from_odooto_monta_form" model="ir.ui.view">
+            <field name="name">picking.from.odooto.monta.form</field>
+            <field name="model">picking.from.odooto.monta</field>
+            <field name="arch" type="xml">
+                <form string="Monta Picking" create="0" edit="0" delete="0" duplicate="0">
+                    <header>
+                        <field name="status" widget="statusbar" statusbar_visible="draft,successful,failed" statusbar_colors='{"draft":"blue","successful":"blue", "failed":"red"}'/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1 class="d-flex">
+                                <field name="picking_id" readonly="True"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group col="4">
+                                <field name="partner_delivery_address_id"/>
+                                <field name="partner_invoice_address_id" />
+                                <field name="sale_id"/>
+                                <field name="monta_response_code"/>
+                            </group>
+                            <group col="4">
+                                <field name="planned_shipment_date"/>
+                                <field name="shipped"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="monta_stock_move_ids" string="Move lines">
+                                <field name="monta_stock_move_ids" readonly="True">
+                                    <tree string="Moves">
+                                        <field name="move_id"/>
+                                        <field name="product_id"/>
+                                        <field name="ordered_quantity"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="shipping_comment" string="Shipping Comment">
+                                <field name="shipping_comment"/>
+                            </page>
+                            <page name="payload" string="Monta Payload">
+                                <field name="json_payload" readonly="True"/>
+                            </page>
+                            <page name="monta_response_message" string="Monta Response Message">
+                                <field name="monta_response_message" readonly="True"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+            </record>
+
+        <record model="ir.ui.view" id="view_monta_picking_tree">
+            <field name="name">picking.from.odooto.monta.tree</field>
+            <field name="model">picking.from.odooto.monta</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Monta Picking" create="0" edit="0" duplicate="0">
+                    <field name="picking_id"/>
+                    <field name="partner_delivery_address_id"/>
+                    <field name="partner_invoice_address_id" />
+                    <field name="sale_id" password="True"/>
+                    <field name="planned_shipment_date"/>
+                    <field name="shipped"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_monta_picking">
+            <field name="name">Monta Picking</field>
+            <field name="res_model">picking.from.odooto.monta</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_monta_picking_tree"/>
+        </record>
+
+</odoo>

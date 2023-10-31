@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="view_monta_config_form" model="ir.ui.view">
+            <field name="name">monta.config.form</field>
+            <field name="model">monta.config</field>
+            <field name="arch" type="xml">
+                <form string="Monta Config">
+                    <sheet>
+                        <group col="4">
+                            <field name="host"/>
+                        </group>
+                        <group col="4">
+                            <field name="username"/>
+                            <field name="password" password="True"/>
+                            <field name="origin"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+            </record>
+
+        <record model="ir.ui.view" id="view_monta_config_tree">
+            <field name="name">monta.config.tree</field>
+            <field name="model">monta.config</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Monta Config">
+                    <field name="username"/>
+                    <field name="host"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_monta_config">
+            <field name="name">Monta Settings</field>
+            <field name="res_model">monta.config</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_monta_config_tree"/>
+        </record>
+
+
+
+
+</odoo>
