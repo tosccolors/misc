@@ -110,7 +110,9 @@ class PickingfromOdootoMonta(models.Model):
 
 
         try:
-            response = requests.post(url, headers=headers, data=payload, auth=HTTPBasicAuth(user, pwd))
+            # response = requests.post(url, headers=headers, data=payload, auth=HTTPBasicAuth(user, pwd))
+            response = requests.request("POST", url, headers=headers, data=payload, auth=HTTPBasicAuth(user, pwd))
+
 
             self.write({
                 'monta_response_code': response.status_code,
