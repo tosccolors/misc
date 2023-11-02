@@ -153,14 +153,7 @@ class PickingfromOdootoMonta(models.Model):
                 "Quantity": str(int(line.ordered_quantity))
             })
         response = self.call_monta_interface(payload, "POST", "rest/v5/inboundforecast/group")
-
-
-        print ("\n\n")
-        print (response)
-        print (response.status_code)
-        print (response.text)
-        print ("\n\n")
-
+        return response
 
 class PickingLinefromOdootoMonta(models.Model):
     _name = 'stock.move.from.odooto.monta'
