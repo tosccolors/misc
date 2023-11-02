@@ -12,19 +12,24 @@ class Picking(models.Model):
     def transfer_picking_to_monta(self):
         monta_picking_obj = self.env['picking.from.odooto.monta']
         lines = []
-
         for move in self.move_ids:
             lines.append((0, 0 ,{'move_id':move.id}))
 
         monta_picking_id = monta_picking_obj.create(
             {'picking_id':self.id, 'status':'draft', 'monta_stock_move_ids': lines})
         self.write({'monta_log_id': monta_picking_id})
-        monta_picking_id.monta_content()
+        
+        if self.picking_type_code == 'outgoing' and self.sale_id:
+            monta_picking_id.monta_good_receipt_content()
+
+        if self.picking_type_code == 'incoming' and self.purchase_id:
+            monta_picking_id.monta_inbound_forecast_content()
         return monta_picking_id
 
 
     def button_validate(self):
         res = super().button_validate()
-        self.transfer_picking_to_monta()
+        if self.picking_type_code == 'outgoing':
+            self.transfer_picking_to_monta()
         return res
 
