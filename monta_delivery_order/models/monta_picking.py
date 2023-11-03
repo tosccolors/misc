@@ -13,10 +13,10 @@ class PickingfromOdootoMonta(models.Model):
     def _compute_response(self):
         for pick in self:
             pick.status = 'draft'
-            if pick.monta_response_code == '200':
+            if pick.monta_response_code == 200:
                 pick.picking_monta_response = True
                 pick.status = 'successful'
-            elif pick.monta_response_code is not '':
+            elif pick.monta_response_code and pick.monta_response_code != 200:
                 pick.picking_monta_response = False
                 pick.status = 'failed'
 
@@ -35,7 +35,45 @@ class PickingfromOdootoMonta(models.Model):
     status = fields.Selection([('draft', 'Draft'), ('successful', 'Successful'), ('failed', 'Failed')], string='Status',
                               required=True, readonly=True, store=True, compute=_compute_response)
 
-    def monta_content(self):
+
+    def call_monta_interface(self, payload, request, method):
+        config = self.env['monta.config'].search([], limit=1)
+        payload = json.dumps(payload)
+        self.write({"json_payload": payload})
+        headers = {
+            'Content-Type': 'application/json'
+        }
+        url = config.host
+        if url.endswith("/"):
+            url += method
+        else:
+            url += '/'+method
+        user = config.username
+        pwd = config.password
+        response = False
+        try:
+            response = requests.request(request, url, headers=headers, data=payload, auth=HTTPBasicAuth(user, pwd))
+            dic ={
+                'monta_response_code': response.status_code,
+                'monta_response_message': response.text,
+            }
+            if response.status_code == 200 and method == 'rest/v5/inboundforecast/group':
+                monta_lines = []
+                response_data = json.loads(response.text)
+                for line in self.monta_stock_move_ids:
+                    line_dt = next((item for item in response_data['InboundForecasts'] if item["Sku"] == line.product_id.default_code), None)
+                    if line_dt:
+                        monta_lines.append((1, line.id, {'monta_inbound_forecast_id':line_dt['InboundForecastId']}))
+                dic['monta_stock_move_ids'] = monta_lines
+            self.write(dic)
+        except Exception as e:
+            raise AccessError(
+                _('Error Roularta Interface call: %s') % (e))
+            # raise FailedJobError(
+            #     _('Error Roularta Interface call: %s') % (e))
+        return response
+
+    def monta_good_receipt_content(self):
         config = self.env['monta.config'].search([], limit=1)
         planned_shipment_date = self.planned_shipment_date.isoformat()
         shipped = self.shipped.isoformat() if self.shipped else planned_shipment_date
@@ -99,32 +137,23 @@ class PickingfromOdootoMonta(models.Model):
                 "Sku": line.product_id.default_code,
                 "OrderedQuantity": line.ordered_quantity
             })
-        payload = json.dumps(payload)
-        self.write({"json_payload":payload})
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        url = config.host
-        user = config.username
-        pwd = config.password
+        self.call_monta_interface(payload, "POST", "rest/v5/order")
 
-
-        try:
-            # response = requests.post(url, headers=headers, data=payload, auth=HTTPBasicAuth(user, pwd))
-            response = requests.request("POST", url, headers=headers, data=payload, auth=HTTPBasicAuth(user, pwd))
-
-
-            self.write({
-                'monta_response_code': response.status_code,
-                'monta_response_message': response.text,
+    def monta_inbound_forecast_content(self):
+        planned_shipment_date = self.planned_shipment_date.isoformat()
+        payload = {
+                "Reference": self.picking_id.name,
+                "InboundForecasts":[],
+                "DeliveryDate": planned_shipment_date
+            }
+        for line in self.monta_stock_move_ids:
+            payload['InboundForecasts'].append({
+                "DeliveryDate": planned_shipment_date,
+                "Sku": line.product_id.default_code,
+                "Quantity": str(int(line.ordered_quantity))
             })
-        except Exception as e:
-            raise AccessError(
-                _('Error Roularta Interface call: %s') % (e))
-            # raise FailedJobError(
-            #     _('Error Roularta Interface call: %s') % (e))
-
-
+        response = self.call_monta_interface(payload, "POST", "rest/v5/inboundforecast/group")
+        return response
 
 class PickingLinefromOdootoMonta(models.Model):
     _name = 'stock.move.from.odooto.monta'
@@ -134,3 +163,5 @@ class PickingLinefromOdootoMonta(models.Model):
     monta_move_id = fields.Many2one('picking.from.odooto.monta', required=True)
     product_id = fields.Many2one('product.product', related='move_id.product_id')
     ordered_quantity = fields.Float(related='move_id.product_qty', string='Ordered Quantity')
+    monta_inbound_forecast_id = fields.Char("Monta Inbound Forecast Id")
+
