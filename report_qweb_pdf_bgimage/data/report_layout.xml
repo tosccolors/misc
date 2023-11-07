@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="external_layout_custom_bg" model="report.layout">
+        <field name="name">Background (w/o Header &amp; Footer)</field>
+        <field name="view_id"
+            ref="report_qweb_pdf_bgimage.external_clean_layout_background_template"
+        />
+        <field name="image">/report_qweb_pdf_bgimage/static/img/preview_standard.png</field>
+        <field name="pdf">/report_qweb_pdf_bgimage/static/pdf/preview_standard.pdf</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <!--
+        External Layout : Overridden
+    -->
+
+    <template id="external_clean_layout_background_template"
+        primary="True" inherit_id="web.external_layout_clean" >
+
+        <xpath expr="//div[contains(@t-attf-class, 'header')]" position="replace"/>
+        <xpath expr="//div[contains(@t-attf-class, 'footer')]" position="replace"/>
+
+    </template>
+
+    <template id="styles_company_report" inherit_id="web.styles_company_report">
+        <xpath expr="//t[contains(@t-elif, 'layout')]" position="after">
+
+            <t t-elif="layout == 'report_qweb_pdf_bgimage.external_clean_layout_background_template'">
+                &amp;.o_clean_footer {
+                        border-top: 3px solid <t t-esc='secondary' />;
+                        h4 {
+                            color: <t t-esc='secondary' />;
+                        }
+                        .pagenumber {
+                            border: 3px solid <t t-esc='primary' />;
+                            background-color: <t t-esc='secondary' />;
+                        }
+                    }
+                &amp;.o_report_layout_clean {
+                    h1, h2, h3 {
+                        color: <t t-esc='primary' />;
+                    }
+                    strong {
+                        color: <t t-esc='secondary' />;
+                    }
+                    table {
+                        thead {
+                            color: <t t-esc='secondary' />;
+                            tr th {
+                                border-top: 3px solid <t
+                    t-esc='secondary'
+                /> !important;
+                            }
+                        }
+                        tbody {
+                            tr:last-child td {
+                                border-bottom: 3px solid <t t-esc='secondary' />;
+                            }
+                        }
+                    }
+                    #total {
+                        strong {
+                            color: <t t-esc='secondary' />;
+                        }
+                    }
+                }
+            </t>
+        </xpath>
+    </template>
+
+
+
+</odoo>
