@@ -24,6 +24,7 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'data/cron_data.xml',
         'views/monta_config_view.xml',
         'views/monta_picking_view.xml',
         'views/stock_view.xml',

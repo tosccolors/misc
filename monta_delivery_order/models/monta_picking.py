@@ -53,6 +53,10 @@ class PickingfromOdootoMonta(models.Model):
         response = False
         try:
             response = requests.request(request, url, headers=headers, data=payload, auth=HTTPBasicAuth(user, pwd))
+
+            if response.status_code == 200 and 'rest/v5/inbounds' == method:
+                return response
+
             dic ={
                 'monta_response_code': response.status_code,
                 'monta_response_message': response.text,
@@ -155,6 +159,8 @@ class PickingfromOdootoMonta(models.Model):
         response = self.call_monta_interface(payload, "POST", "rest/v5/inboundforecast/group")
         return response
 
+
+
 class PickingLinefromOdootoMonta(models.Model):
     _name = 'stock.move.from.odooto.monta'
     _order = 'create_date desc'
@@ -164,4 +170,24 @@ class PickingLinefromOdootoMonta(models.Model):
     product_id = fields.Many2one('product.product', related='move_id.product_id')
     ordered_quantity = fields.Float(related='move_id.product_qty', string='Ordered Quantity')
     monta_inbound_forecast_id = fields.Char("Monta Inbound Forecast Id")
+    inbound_id = fields.Char('Inbound ID')
+
+    @api.model
+    def _cron_monta_get_inbound(self):
+        self_obj = self.search([])
+        inboundIds = [int(id) for id in self_obj.filtered(lambda l: l.inbound_id).mapped('inbound_id')]
+        inbound_id = max(inboundIds) if inboundIds else False
+        method = 'rest/v5/inbounds'
+        if inbound_id:
+            method ="rest/v5/inbounds?sinceid="+str(inbound_id)
+        response = self.env['picking.from.odooto.monta'].call_monta_interface({}, "GET", method)
+        if response.status_code == 200:
+            response_data = json.loads(response.text)
+            for dt in response_data:
+                inboundID = dt['Id']
+                sku = dt['Sku']
+                inboundRef = dt['InboundForecastReference']
+                odoo_inbound_obj = self.search([('product_id.default_code', '=', sku), ('monta_move_id.picking_id.name', '=', inboundRef)])
+                if odoo_inbound_obj:
+                    odoo_inbound_obj.write({'inbound_id':inboundID})
 
