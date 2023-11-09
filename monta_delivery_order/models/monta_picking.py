@@ -77,26 +77,26 @@ class PickingfromOdootoMonta(models.Model):
         config = self.env['monta.config'].search([], limit=1)
         planned_shipment_date = self.planned_shipment_date.isoformat()
         shipped = self.shipped.isoformat() if self.shipped else planned_shipment_date
-        devlivery_add = self.partner_delivery_address_id
+        delivery_add = self.partner_delivery_address_id
         invoice_add  = self.partner_invoice_address_id if self.sale_id else self.partner_delivery_address_id
         payload = {
             "WebshopOrderId": self.picking_id.name,
             "Origin": config.origin,
             "ConsumerDetails":{
                 "DeliveryAddress": {
-                        "Company": devlivery_add.name,
-                        "FirstName": devlivery_add.firstname,
+                        "Company": delivery_add.name,
+                        "FirstName": delivery_add.firstname,
                         "MiddleName": '',
-                        "LastName": devlivery_add.lastname,
-                        "Street": devlivery_add.street or ''+' '+devlivery_add.street2 or '',
+                        "LastName": delivery_add.lastname,
+                        "Street": delivery_add.street or ' '+' '+delivery_add.street2 or ' ',
                         "HouseNumber": '',
                         "HouseNumberAddition": '',
-                        "PostalCode": devlivery_add.zip,
-                        "City": devlivery_add.city,
-                        "State": devlivery_add.state_id.code,
-                        "CountryCode": devlivery_add.country_id.code,
-                        "PhoneNumber": devlivery_add.mobile,
-                        "EmailAddress": devlivery_add.email
+                        "PostalCode": delivery_add.zip,
+                        "City": delivery_add.city,
+                        "State": delivery_add.state_id.code,
+                        "CountryCode": delivery_add.country_id.code,
+                        "PhoneNumber": delivery_add.mobile,
+                        "EmailAddress": delivery_add.email
                 },
                 "InvoiceAddress": {
                     "Company": invoice_add.name,
