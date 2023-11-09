@@ -88,7 +88,7 @@ class PickingfromOdootoMonta(models.Model):
                         "FirstName": delivery_add.firstname,
                         "MiddleName": '',
                         "LastName": delivery_add.lastname,
-                        "Street": delivery_add.street or ' '+' '+delivery_add.street2 or ' ',
+                        "Street": delivery_add.street if delivery_add.street else ' '+' '+delivery_add.street2 if delivery_add.street2 else ' ',
                         "HouseNumber": '',
                         "HouseNumberAddition": '',
                         "PostalCode": delivery_add.zip,
