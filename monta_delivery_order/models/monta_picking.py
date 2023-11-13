@@ -139,7 +139,7 @@ class PickingfromOdootoMonta(models.Model):
         for line in self.monta_stock_move_ids:
             payload['Lines'].append({
                 "Sku": line.product_id.default_code,
-                "OrderedQuantity": line.ordered_quantity
+                "OrderedQuantity": int(line.ordered_quantity)
             })
         self.call_monta_interface(payload, "POST", "rest/v5/order")
 
