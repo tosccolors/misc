@@ -7,19 +7,23 @@
             <field name="arch" type="xml">
                 <form string="Monta Picking" create="0" edit="0" delete="0" duplicate="0">
                     <header>
+                        <button string="Generate Payload" name="generate_payload" type="object"/>
+                        <button string="Call Monta Interface" name="action_call_monta_interface" type="object"/>
                         <field name="status" widget="statusbar" statusbar_visible="draft,successful,failed" statusbar_colors='{"draft":"blue","successful":"blue", "failed":"red"}'/>
                     </header>
                     <sheet>
                         <div class="oe_title">
                             <h1 class="d-flex">
                                 <field name="picking_id" readonly="True"/>
+                                <field name="picking_type_code" invisible="True"/>
                             </h1>
                         </div>
                         <group>
                             <group col="4">
                                 <field name="partner_delivery_address_id"/>
                                 <field name="partner_invoice_address_id" />
-                                <field name="sale_id"/>
+                                <field name="sale_id" attrs="{'column_invisible':[('picking_type_code', '!=', 'outgoing')]}"/>
+                                <field name="purchase_id" attrs="{'column_invisible':[('picking_type_code', '!=', 'incoming')]}"/>
                                 <field name="monta_response_code"/>
                             </group>
                             <group col="4">
@@ -68,11 +72,42 @@
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="action_monta_picking">
-            <field name="name">Monta Picking</field>
+        <record model="ir.ui.view" id="view_monta_get_inbound_tree">
+            <field name="name">stock.move.from.odooto.monta.tree</field>
+            <field name="model">stock.move.from.odooto.monta</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Monta Inbounds" create="0" edit="0" duplicate="0">
+                    <field name="monta_move_id"/>
+                    <field name="product_id"/>
+                    <field name="ordered_quantity" />
+                    <field name="inbound_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_monta_outbound_order">
+            <field name="name">Outbound Order</field>
             <field name="res_model">picking.from.odooto.monta</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_monta_picking_tree"/>
+            <field name="domain">[('picking_type_code', '=', 'outgoing')]</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_monta_inbound_forecaste">
+            <field name="name">Inbound Forecast</field>
+            <field name="res_model">picking.from.odooto.monta</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_monta_picking_tree"/>
+            <field name="domain">[('picking_type_code', '=', 'incoming')]</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_monta_inbounds_get">
+            <field name="name">Inbounds</field>
+            <field name="res_model">stock.move.from.odooto.monta</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_monta_get_inbound_tree"/>
+            <field name="domain">[('inbound_id', '!=', False)]</field>
         </record>
 
 </odoo>

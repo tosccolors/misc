@@ -8,6 +8,7 @@ import json
 class PickingfromOdootoMonta(models.Model):
     _name = 'picking.from.odooto.monta'
     _order = 'create_date desc'
+    _rec_name = 'picking_id'
 
     @api.depends('monta_response_code')
     def _compute_response(self):
@@ -21,7 +22,9 @@ class PickingfromOdootoMonta(models.Model):
                 pick.status = 'failed'
 
     picking_id = fields.Many2one('stock.picking', required=True)
+    picking_type_code = fields.Selection(related='picking_id.picking_type_code')
     sale_id = fields.Many2one('sale.order', related="picking_id.sale_id")
+    purchase_id = fields.Many2one('purchase.order', related="picking_id.purchase_id")
     partner_delivery_address_id = fields.Many2one('res.partner',related="picking_id.partner_id")
     partner_invoice_address_id = fields.Many2one('res.partner', related="sale_id.partner_invoice_id", string='Invoice Address')
     shipping_comment = fields.Html(related="picking_id.note",string='Shipping Comment')
@@ -36,10 +39,9 @@ class PickingfromOdootoMonta(models.Model):
                               required=True, readonly=True, store=True, compute=_compute_response)
 
 
-    def call_monta_interface(self, payload, request, method):
+    def call_monta_interface(self, request, method):
         config = self.env['monta.config'].search([], limit=1)
-        payload = json.dumps(payload)
-        self.write({"json_payload": payload})
+        payload = self.json_payload
         headers = {
             'Content-Type': 'application/json'
         }
@@ -77,7 +79,7 @@ class PickingfromOdootoMonta(models.Model):
             #     _('Error Roularta Interface call: %s') % (e))
         return response
 
-    def monta_good_receipt_content(self):
+    def monta_good_receipt_content(self, button_action=False):
         config = self.env['monta.config'].search([], limit=1)
         planned_shipment_date = self.planned_shipment_date.isoformat()
         shipped = self.shipped.isoformat() if self.shipped else planned_shipment_date
@@ -141,9 +143,13 @@ class PickingfromOdootoMonta(models.Model):
                 "Sku": line.product_id.default_code,
                 "OrderedQuantity": int(line.ordered_quantity)
             })
-        self.call_monta_interface(payload, "POST", "rest/v5/order")
 
-    def monta_inbound_forecast_content(self):
+        payload = json.dumps(payload)
+        self.write({"json_payload": payload})
+        if not button_action:
+            self.call_monta_interface("POST", "rest/v5/order")
+
+    def monta_inbound_forecast_content(self, button_action=False):
         planned_shipment_date = self.planned_shipment_date.isoformat()
         payload = {
                 "Reference": self.picking_id.name,
@@ -156,9 +162,23 @@ class PickingfromOdootoMonta(models.Model):
                 "Sku": line.product_id.default_code,
                 "Quantity": str(int(line.ordered_quantity))
             })
-        response = self.call_monta_interface(payload, "POST", "rest/v5/inboundforecast/group")
-        return response
+        payload = json.dumps(payload)
+        self.write({"json_payload": payload})
+        if not button_action:
+            response = self.call_monta_interface("POST", "rest/v5/inboundforecast/group")
+            return response
 
+    def generate_payload(self):
+        if self.picking_type_code == 'outgoing' and self.sale_id:
+            self.monta_good_receipt_content(True)
+        elif self.picking_type_code == 'incoming' and self.purchase_id:
+            self.monta_inbound_forecast_content(True)
+
+    def action_call_monta_interface(self):
+        if self.picking_type_code == 'outgoing' and self.sale_id:
+            self.call_monta_interface("POST", "rest/v5/order")
+        elif self.picking_type_code == 'incoming' and self.purchase_id:
+            self.call_monta_interface("POST", "rest/v5/inboundforecast/group")
 
 
 class PickingLinefromOdootoMonta(models.Model):
@@ -180,7 +200,7 @@ class PickingLinefromOdootoMonta(models.Model):
         method = 'rest/v5/inbounds'
         if inbound_id:
             method ="rest/v5/inbounds?sinceid="+str(inbound_id)
-        response = self.env['picking.from.odooto.monta'].call_monta_interface({}, "GET", method)
+        response = self.env['picking.from.odooto.monta'].call_monta_interface("GET", method)
         if response.status_code == 200:
             response_data = json.loads(response.text)
             for dt in response_data:
