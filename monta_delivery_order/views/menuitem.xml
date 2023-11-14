@@ -22,16 +22,29 @@
             sequence="1"/>
 
     <menuitem id="monta_picking_root"
-              name="Picking"
+              name="Monta Order"
               parent="monta_root_menu"
             sequence="1"/>
 
     <menuitem
             id="monta_picking_menu"
-            name="Monta Picking"
+            name="Outbound Order"
             parent="monta_picking_root"
-            action="action_monta_picking"
+            action="action_monta_outbound_order"
             sequence="1"/>
 
+    <menuitem
+            id="monta_inbound_forecast_menu"
+            name="Inbound Forecast"
+            parent="monta_picking_root"
+            action="action_monta_inbound_forecaste"
+            sequence="2"/>
+
+    <menuitem
+            id="action_monta_inbounds_get_menu"
+            name="Inbounds"
+            parent="monta_picking_root"
+            action="action_monta_inbounds_get"
+            sequence="3"/>
 
 </odoo>
