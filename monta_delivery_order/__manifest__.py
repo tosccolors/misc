@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['sale_stock', 'partner_firstname', 'purchase_stock'],
+    'depends': ['sale_stock', 'partner_firstname', 'purchase_stock', 'base_address_extended'],
 
     # always loaded
     'data': [
@@ -28,6 +28,7 @@
         'views/monta_config_view.xml',
         'views/monta_picking_view.xml',
         'views/stock_view.xml',
+        'views/res_partner_view.xml',
         'views/menuitem.xml',
         # 'views/templates.xml',
     ],

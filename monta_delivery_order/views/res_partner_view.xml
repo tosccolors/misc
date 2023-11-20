@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="address_street_extended_form" model="ir.ui.view">
+        <field name="name">partner.form.address.extended</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='street']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='street2']" position="before">
+                <field name="street_name" placeholder="Street" style="flex: 3 1 auto"/>
+                <field name="street_number" placeholder="House #" style="flex: 1 1 auto"/>
+                <field name="street_number2" placeholder="Door #" style="flex: 1 1 auto"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
