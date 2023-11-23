@@ -3,7 +3,7 @@
 
     <record id="ir_cron_data_get_inbound" model="ir.cron">
         <field name="name">Monta: GET Inbound</field>
-        <field name="model_id" ref="model_stock_move_from_odooto_monta"/>
+        <field name="model_id" ref="model_monta_inboundto_odoo_move"/>
         <field name="state">code</field>
         <field name="code">model._cron_monta_get_inbound()</field>
         <field name="interval_number">1</field>
