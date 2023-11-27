@@ -13,6 +13,9 @@ class Website(models.Model):
 
     _inherit = "website"
 
+    wildcard_domain = fields.Char("Wildard Domain", help="Set Wildcard domain, to support sub-domain, Ex: *.example.com")
+
+
     # Overridden:
     @tools.cache('domain_name', 'country_id', 'fallback')
     @api.model
@@ -82,8 +85,7 @@ class Website(models.Model):
             d1 = _remove_port(domain_name).split('.')
             wildcard_domain = '*.%s.%s' % (d1[len(d1) - 2], d1[len(d1) - 1])
 
-            found_websites = self.search([('domain', 'ilike', wildcard_domain)]).sorted('country_group_ids')
-            websites = websites or found_websites.filtered(lambda w: _filter_domain(w, wildcard_domain, ignore_port=True))
+            websites = self.search([('wildcard_domain', 'ilike', wildcard_domain)]).sorted('country_group_ids')
 
         if not websites:
             if not fallback:
