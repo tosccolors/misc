@@ -4,7 +4,7 @@
 {
     "name": "Website Wildcard Domain",
     "summary": "Allows wildcard domain for linking same website to several sub-domains",
-    "version": "14.0.0.0",
+    "version": "14.0.2.0",
     'category': 'Website',
     'website' : "https://www.tosc.nl/",
     "author": "Deepa, " "The Open Source company (TOSC)",
@@ -14,5 +14,6 @@
         "website",
     ],
     "data": [
+        "views/website_views.xml",
     ],
 }
