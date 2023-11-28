@@ -39,6 +39,42 @@
                                         <field name="product_id"/>
                                         <field name="ordered_quantity"/>
                                     </tree>
+                                    <form string="Moves">
+                                        <group col="4">
+                                             <field name="move_id"/>
+                                             <field name="product_id"/>
+                                             <field name="ordered_quantity"/>
+                                             <field name="monta_inbound_forecast_id"/>
+                                        </group>
+                                         <notebook>
+                                             <page name="Monta Inbound" attrs="{'invisible':[('parent.picking_type_code', '!=', 'incoming')]}">
+                                                <field name="monta_inbound_line_ids" readonly="True">
+                                                    <tree string="Inbound">
+                                                        <field name="inbound_id"/>
+                                                        <field name="inbound_quantity"/>
+                                                    </tree>
+                                                    <form string="Inbound">
+                                                        <group>
+                                                            <group>
+                                                                <field name="inbound_id"/>
+                                                                <field name="inbound_quantity"/>
+                                                            </group>
+                                                            <notebook>
+                                                                <page string="Batches">
+                                                                    <field name="monta_batch_ids" readonly="True">
+                                                                        <tree>
+                                                                            <field name="batch_id"/>
+                                                                            <field name="batch_quantity"/>
+                                                                        </tree>
+                                                                    </field>
+                                                                </page>
+                                                            </notebook>
+                                                        </group>
+                                                    </form>
+                                                </field>
+                                             </page>
+                                         </notebook>
+                                    </form>
                                 </field>
                             </page>
                             <page name="shipping_comment" string="Shipping Comment">
@@ -73,14 +109,14 @@
         </record>
 
         <record model="ir.ui.view" id="view_monta_get_inbound_tree">
-            <field name="name">stock.move.from.odooto.monta.tree</field>
-            <field name="model">stock.move.from.odooto.monta</field>
+            <field name="name">monta.inboundto.odoo.move.tree</field>
+            <field name="model">monta.inboundto.odoo.move</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Monta Inbounds" create="0" edit="0" duplicate="0">
-                    <field name="monta_move_id"/>
+                    <field name="monta_move_line_id"/>
                     <field name="product_id"/>
-                    <field name="ordered_quantity" />
+                    <field name="inbound_quantity"/>
                     <field name="inbound_id"/>
                 </tree>
             </field>
@@ -104,7 +140,7 @@
 
         <record model="ir.actions.act_window" id="action_monta_inbounds_get">
             <field name="name">Inbounds</field>
-            <field name="res_model">stock.move.from.odooto.monta</field>
+            <field name="res_model">monta.inboundto.odoo.move</field>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_monta_get_inbound_tree"/>
             <field name="domain">[('inbound_id', '!=', False)]</field>

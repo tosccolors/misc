@@ -2,3 +2,5 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_monta_config,monta_config,model_monta_config,,1,1,1,1
 access_picking_from_odooto_monta,picking_from_odooto_monta,model_picking_from_odooto_monta,,1,1,1,1
 access_stock_move_from_odooto_monta,stock_move_from_odooto_monta,model_stock_move_from_odooto_monta,,1,1,1,1
+access_monta_inboundto_odoo_move,monta_inboundto_odoo_move,model_monta_inboundto_odoo_move,,1,1,1,1
+access_monta_inbound_batch,monta_inbound_batch,model_monta_inbound_batch,,1,1,1,1
