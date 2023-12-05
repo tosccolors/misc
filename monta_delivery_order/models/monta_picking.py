@@ -35,6 +35,7 @@ class PickingfromOdootoMonta(models.Model):
     monta_response_message = fields.Text('Monta Response Message')
     picking_monta_response = fields.Boolean(compute=_compute_response, default=False, store=True, string='Roularta Response')
     json_payload = fields.Text('Payload')
+    client_order_ref = fields.Char(string="Customer Reference", related="picking_id.client_order_ref")
     status = fields.Selection([('draft', 'Draft'), ('successful', 'Successful'), ('failed', 'Failed')], string='Status',
                               required=True, readonly=True, store=True, compute=_compute_response)
 
@@ -87,6 +88,7 @@ class PickingfromOdootoMonta(models.Model):
         invoice_add  = self.partner_invoice_address_id if self.sale_id else self.partner_delivery_address_id
         payload = {
             "WebshopOrderId": self.picking_id.name,
+            "Reference": self.client_order_ref,
             "Origin": config.origin,
             "ConsumerDetails":{
                 "DeliveryAddress": {
@@ -135,6 +137,7 @@ class PickingfromOdootoMonta(models.Model):
             "Shipped": shipped,
             "PackingServiceText": '',
             "Family": '',
+            "Comment":self.client_order_ref,
             "PickbonIds": ''
         }
 
