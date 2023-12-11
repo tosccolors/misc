@@ -38,6 +38,7 @@ class PickingfromOdootoMonta(models.Model):
     client_order_ref = fields.Char(string="Customer Reference", related="picking_id.client_order_ref")
     status = fields.Selection([('draft', 'Draft'), ('successful', 'Successful'), ('failed', 'Failed')], string='Status',
                               required=True, readonly=True, store=True, compute=_compute_response)
+    # outbound_batch = fields.Boolean()
 
 
     def call_monta_interface(self, request, method):
@@ -56,8 +57,7 @@ class PickingfromOdootoMonta(models.Model):
         response = False
         try:
             response = requests.request(request, url, headers=headers, data=payload, auth=HTTPBasicAuth(user, pwd))
-
-            if response.status_code == 200 and 'rest/v5/inbounds' == method:
+            if response.status_code == 200 and ('rest/v5/inbounds' == method or '/batches' in method):
                 return response
 
             dic ={
@@ -183,6 +183,29 @@ class PickingfromOdootoMonta(models.Model):
         elif self.picking_type_code == 'incoming' and self.purchase_id:
             self.call_monta_interface("POST", "rest/v5/inboundforecast/group")
 
+    @api.model
+    def _cron_monta_get_outbound_batches(self):
+        # self_obj = self.search([])
+        method = "order/%s/batches"
+        monta_move_obj = self.env['stock.move.from.odooto.monta']
+        monta_outbond_obj = self.env['monta.outbound.batch']
+        for obj in self.search([('picking_id.picking_type_code', '=', 'outgoing'),('picking_id.state', '=', 'assigned'), ('status', '=', 'successful')]):
+        # for obj in self.search([('picking_id.picking_type_code', '=', 'outgoing')]):
+            orderNum = obj.picking_id.name.replace('/', '')
+            response = self.call_monta_interface("GET", method%orderNum)
+            if response.status_code == 200:
+                response_data = json.loads(response.text)
+                for line in response_data.get('BatchLines', []):
+                    sku = line['Sku']
+                    batch_content = line['BatchContent']
+                    odoo_outbound_line = monta_move_obj.search(
+                        [('product_id.default_code', '=', sku), ('monta_move_id.picking_id.name', '=', obj.picking_id.name)])
+                    if odoo_outbound_line:
+                        data = {'batch_id':batch_content['Id'],
+                                'title':batch_content['Title'],
+                                'monta_outbound_id': odoo_outbound_line.id}
+                        monta_outbond_obj.create(data)
+
 
 class PickingLinefromOdootoMonta(models.Model):
     _name = 'stock.move.from.odooto.monta'
@@ -195,26 +218,10 @@ class PickingLinefromOdootoMonta(models.Model):
     ordered_quantity = fields.Float(related='move_id.product_qty', string='Ordered Quantity')
     monta_inbound_forecast_id = fields.Char("Monta Inbound Forecast Id")
     monta_inbound_line_ids = fields.One2many('monta.inboundto.odoo.move', 'monta_move_line_id')
+    monta_outbound_batch_ids = fields.One2many('monta.outbound.batch', 'monta_outbound_id')
+
     # inbound_id = fields.Char('Inbound ID')
 
-    # @api.model
-    # def _cron_monta_get_inbound(self):
-    #     self_obj = self.search([])
-    #     inboundIds = [int(id) for id in self_obj.filtered(lambda l: l.inbound_id).mapped('inbound_id')]
-    #     inbound_id = max(inboundIds) if inboundIds else False
-    #     method = 'rest/v5/inbounds'
-    #     if inbound_id:
-    #         method ="rest/v5/inbounds?sinceid="+str(inbound_id)
-    #     response = self.env['picking.from.odooto.monta'].call_monta_interface("GET", method)
-    #     if response.status_code == 200:
-    #         response_data = json.loads(response.text)
-    #         for dt in response_data:
-    #             inboundID = dt['Id']
-    #             sku = dt['Sku']
-    #             inboundRef = dt['InboundForecastReference']
-    #             odoo_inbound_obj = self.search([('product_id.default_code', '=', sku), ('monta_move_id.picking_id.name', '=', inboundRef)])
-    #             if odoo_inbound_obj:
-    #                 odoo_inbound_obj.write({'inbound_id':inboundID})
 
 class MontaInboundtoOdooMove(models.Model):
     _name = 'monta.inboundto.odoo.move'
@@ -287,7 +294,7 @@ class MontaInboundtoOdooMove(models.Model):
             self.validate_picking_from_inbound_qty(inboundMoveData)
 
 
-class MontaInboundtoOdooMove(models.Model):
+class MontaInboundBatchtoOdooMove(models.Model):
     _name = 'monta.inbound.batch'
     _order = 'create_date desc'
     _rec_name = 'monta_inbound_id'
@@ -295,5 +302,15 @@ class MontaInboundtoOdooMove(models.Model):
     monta_inbound_id = fields.Many2one('monta.inboundto.odoo.move', required=True)
     batch_id = fields.Char('Batch ID')
     batch_quantity = fields.Float(string='Batch Quantity')
+
+
+class MontaOutboundBatchtoOdooMove(models.Model):
+    _name = 'monta.outbound.batch'
+    _order = 'create_date desc'
+    _rec_name = 'monta_outbound_id'
+
+    monta_outbound_id = fields.Many2one('stock.move.from.odooto.monta', required=True)
+    batch_id = fields.Char('Batch ID')
+    title = fields.Float(string='Title')
 
 

@@ -47,6 +47,20 @@
                                              <field name="monta_inbound_forecast_id"/>
                                         </group>
                                          <notebook>
+                                             <page name="Outbound Batches" attrs="{'invisible':[('parent.picking_type_code', '!=', 'outgoing')]}">
+                                                 <field name="monta_outbound_batch_ids" readonly="True">
+                                                     <tree string="Batches">
+                                                        <field name="batch_id"/>
+                                                        <field name="title"/>
+                                                     </tree>
+                                                     <form string="Inbound">
+                                                        <group>
+                                                            <field name="batch_id"/>
+                                                            <field name="title"/>
+                                                        </group>
+                                                     </form>
+                                                 </field>
+                                             </page>
                                              <page name="Monta Inbound" attrs="{'invisible':[('parent.picking_type_code', '!=', 'incoming')]}">
                                                 <field name="monta_inbound_line_ids" readonly="True">
                                                     <tree string="Inbound">
