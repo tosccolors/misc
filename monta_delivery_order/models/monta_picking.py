@@ -52,7 +52,14 @@ class PickingfromOdootoMonta(models.Model):
         headers = {
             'Content-Type': 'application/json'
         }
+
         url = config.host
+
+        #only for outbound batches
+        if '/batches' in method:
+            url = "https://api-v6.monta.nl"
+        # ends
+
         if url.endswith("/"):
             url += method
         else:

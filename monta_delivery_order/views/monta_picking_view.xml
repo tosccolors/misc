@@ -14,8 +14,7 @@
                     <sheet>
                         <div class="oe_title">
                             <h1 class="d-flex">
-                                <field name="picking_id" invisible="True"/>
-                                <field name="monta_order_name" readonly="True"/>
+                                <field name="picking_id" readonly="True"/>
                                 <field name="picking_type_code" invisible="True"/>
                             </h1>
                         </div>
@@ -30,6 +29,7 @@
                             <group col="4">
                                 <field name="planned_shipment_date"/>
                                 <field name="shipped"/>
+                                <field name="monta_order_name" readonly="True"/>
                             </group>
                         </group>
                         <notebook>
