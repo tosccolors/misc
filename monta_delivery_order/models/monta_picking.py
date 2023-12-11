@@ -201,7 +201,7 @@ class PickingfromOdootoMonta(models.Model):
         method = "order/%s/batches"
         monta_move_obj = self.env['stock.move.from.odooto.monta']
         monta_outbond_obj = self.env['monta.outbound.batch']
-        for obj in self.search([('picking_id.picking_type_code', '=', 'outgoing'),('picking_id.state', '=', 'assigned'), ('status', '=', 'successful')]):
+        for obj in self.search([('picking_id.picking_type_code', '=', 'outgoing'),('picking_id.state', 'not in', ('draft', 'done', 'cancel')), ('status', '=', 'successful')]):
         # for obj in self.search([('picking_id.picking_type_code', '=', 'outgoing')]):
         #     orderNum = obj.picking_id.name.replace('/', '')
             orderNum = obj.monta_order_name
