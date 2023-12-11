@@ -57,14 +57,14 @@ class PickingfromOdootoMonta(models.Model):
         response = False
         try:
             response = requests.request(request, url, headers=headers, data=payload, auth=HTTPBasicAuth(user, pwd))
-            if response.status_code == 200 and ('rest/v5/inbounds' == method or '/batches' in method):
+            if response.status_code == 200 and ('inbounds' == method or '/batches' in method):
                 return response
 
             dic ={
                 'monta_response_code': response.status_code,
                 'monta_response_message': response.text,
             }
-            if response.status_code == 200 and method == 'rest/v5/inboundforecast/group':
+            if response.status_code == 200 and method == 'inboundforecast/group':
                 monta_lines = []
                 response_data = json.loads(response.text)
                 for line in self.monta_stock_move_ids:
@@ -150,7 +150,7 @@ class PickingfromOdootoMonta(models.Model):
         payload = json.dumps(payload)
         self.write({"json_payload": payload})
         if not button_action:
-            self.call_monta_interface("POST", "rest/v5/order")
+            self.call_monta_interface("POST", "order")
 
     def monta_inbound_forecast_content(self, button_action=False):
         planned_shipment_date = self.planned_shipment_date.isoformat()
@@ -168,7 +168,7 @@ class PickingfromOdootoMonta(models.Model):
         payload = json.dumps(payload)
         self.write({"json_payload": payload})
         if not button_action:
-            response = self.call_monta_interface("POST", "rest/v5/inboundforecast/group")
+            response = self.call_monta_interface("POST", "inboundforecast/group")
             return response
 
     def generate_payload(self):
@@ -179,9 +179,9 @@ class PickingfromOdootoMonta(models.Model):
 
     def action_call_monta_interface(self):
         if self.picking_type_code == 'outgoing' and self.sale_id:
-            self.call_monta_interface("POST", "rest/v5/order")
+            self.call_monta_interface("POST", "order")
         elif self.picking_type_code == 'incoming' and self.purchase_id:
-            self.call_monta_interface("POST", "rest/v5/inboundforecast/group")
+            self.call_monta_interface("POST", "inboundforecast/group")
 
     @api.model
     def _cron_monta_get_outbound_batches(self):
@@ -269,9 +269,9 @@ class MontaInboundtoOdooMove(models.Model):
         self_obj = self.search([])
         inboundIds = [int(id) for id in self_obj.filtered(lambda l: l.inbound_id).mapped('inbound_id')]
         inbound_id = max(inboundIds) if inboundIds else False
-        method = 'rest/v5/inbounds'
+        method = 'inbounds'
         if inbound_id:
-            method = "rest/v5/inbounds?sinceid=" + str(inbound_id)
+            method = "inbounds?sinceid=" + str(inbound_id)
         response = self.env['picking.from.odooto.monta'].call_monta_interface("GET", method)
         inboundMoveData = {}
         if response.status_code == 200:
