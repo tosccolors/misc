@@ -20,6 +20,11 @@ class PickingfromOdootoMonta(models.Model):
             elif pick.monta_response_code and pick.monta_response_code != 200:
                 pick.picking_monta_response = False
                 pick.status = 'failed'
+                
+    @api.depends('picking_id')
+    def _compute_order_name(self):
+        for pick in self:
+            pick.monta_order_name = pick.picking_id.name.replace('/', '')
 
     picking_id = fields.Many2one('stock.picking', required=True)
     picking_type_code = fields.Selection(related='picking_id.picking_type_code')
@@ -38,8 +43,8 @@ class PickingfromOdootoMonta(models.Model):
     client_order_ref = fields.Char(string="Customer Reference", related="picking_id.client_order_ref")
     status = fields.Selection([('draft', 'Draft'), ('successful', 'Successful'), ('failed', 'Failed')], string='Status',
                               required=True, readonly=True, store=True, compute=_compute_response)
-    # outbound_batch = fields.Boolean()
-
+    monta_order_name = fields.Char(string="Monta Order Name", compute=_compute_order_name, store=True)
+    # outbound_batch = fields.Boolean()vg
 
     def call_monta_interface(self, request, method):
         config = self.env['monta.config'].search([], limit=1)
@@ -87,7 +92,7 @@ class PickingfromOdootoMonta(models.Model):
         delivery_add = self.partner_delivery_address_id
         invoice_add  = self.partner_invoice_address_id if self.sale_id else self.partner_delivery_address_id
         payload = {
-            "WebshopOrderId": self.picking_id.name,
+            "WebshopOrderId": self.monta_order_name,
             "Reference": self.client_order_ref,
             "Origin": config.origin,
             "ConsumerDetails":{
@@ -155,7 +160,7 @@ class PickingfromOdootoMonta(models.Model):
     def monta_inbound_forecast_content(self, button_action=False):
         planned_shipment_date = self.planned_shipment_date.isoformat()
         payload = {
-                "Reference": self.picking_id.name,
+                "Reference": self.monta_order_name,
                 "InboundForecasts":[],
                 "DeliveryDate": planned_shipment_date
             }
@@ -191,7 +196,8 @@ class PickingfromOdootoMonta(models.Model):
         monta_outbond_obj = self.env['monta.outbound.batch']
         for obj in self.search([('picking_id.picking_type_code', '=', 'outgoing'),('picking_id.state', '=', 'assigned'), ('status', '=', 'successful')]):
         # for obj in self.search([('picking_id.picking_type_code', '=', 'outgoing')]):
-            orderNum = obj.picking_id.name.replace('/', '')
+        #     orderNum = obj.picking_id.name.replace('/', '')
+            orderNum = obj.monta_order_name
             response = self.call_monta_interface("GET", method%orderNum)
             if response.status_code == 200:
                 response_data = json.loads(response.text)
@@ -199,7 +205,7 @@ class PickingfromOdootoMonta(models.Model):
                     sku = line['Sku']
                     batch_content = line['BatchContent']
                     odoo_outbound_line = monta_move_obj.search(
-                        [('product_id.default_code', '=', sku), ('monta_move_id.picking_id.name', '=', obj.picking_id.name)])
+                        [('product_id.default_code', '=', sku), ('monta_move_id.monta_order_name', '=', obj.monta_order_name)])
                     if odoo_outbound_line:
                         data = {'batch_id':batch_content['Id'],
                                 'title':batch_content['Title'],
@@ -282,7 +288,7 @@ class MontaInboundtoOdooMove(models.Model):
                 inboundRef = dt['InboundForecastReference']
                 inboundQty = dt['Quantity']
                 odoo_inbound_obj = self.env['stock.move.from.odooto.monta'].search(
-                    [('product_id.default_code', '=', sku), ('monta_move_id.picking_id.name', '=', inboundRef)])
+                    [('product_id.default_code', '=', sku), ('monta_move_id.monta_order_name', '=', inboundRef)])
                 if odoo_inbound_obj:
                     inbound_data = {'monta_move_line_id': odoo_inbound_obj.id,'inbound_id': inboundID, 'inbound_quantity': inboundQty}
                     if dt.get('Batch', False):

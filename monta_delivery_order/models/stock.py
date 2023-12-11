@@ -29,7 +29,7 @@ class Picking(models.Model):
 
     def button_validate(self):
         res = super().button_validate()
-        if self.picking_type_code == 'outgoing' and self.state == 'assigned':
+        if self.picking_type_code == 'outgoing' and not self.monta_log_id and self.state in ('confirmed','assigned'):
             self.transfer_picking_to_monta()
         return res
 
