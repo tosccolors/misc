@@ -5,3 +5,4 @@ access_stock_move_from_odooto_monta,stock_move_from_odooto_monta,model_stock_mov
 access_monta_inboundto_odoo_move,monta_inboundto_odoo_move,model_monta_inboundto_odoo_move,,1,1,1,1
 access_monta_inbound_batch,monta_inbound_batch,model_monta_inbound_batch,,1,1,1,1
 access_monta_outbound_batch,monta_outbound_batch,model_monta_outbound_batch,,1,1,1,1
+access_monta_product_stock,monta_product_stock,model_monta_product_stock,,1,1,1,1

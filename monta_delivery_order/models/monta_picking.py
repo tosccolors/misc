@@ -68,7 +68,8 @@ class PickingfromOdootoMonta(models.Model):
         response = False
         try:
             response = requests.request(request, url, headers=headers, data=payload, auth=HTTPBasicAuth(user, pwd))
-            if response.status_code == 200 and ('inbounds' == method or '/batches' in method):
+            if response.status_code == 200 and \
+                    ('inbounds' == method or '/batches' in method or '/products' in method):
                 return response
 
             dic ={

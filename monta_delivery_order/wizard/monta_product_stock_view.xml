@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <record id="monta_product_stock_form" model="ir.ui.view">
+        <field name="name">monta.product.stock.form</field>
+        <field name="model">monta.product.stock</field>
+        <field name="arch" type="xml">
+            <form string="Monta Products Stock">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="sku"/>
+                            <field name="stock_inbound_forecasted"/>
+                            <field name="stock_quarantaine"/>
+                            <field name="stock_all"/>
+                            <field name="stock_blocked"/>
+                        </group>
+                        <group>
+                            <field name="stock_in_transit"/>
+                            <field name="stock_reserved"/>
+                            <field name="stock_available"/>
+                            <field name="stock_whole_saler"/>
+                            <field name="stock_open"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="monta_product_stock_tree" model="ir.ui.view">
+        <field name="name">monta.product.stock.tree</field>
+        <field name="model">monta.product.stock</field>
+        <field name="arch" type="xml">
+            <tree string="Monta Products Stock">
+                <field name="sku"/>
+                <field name="stock_inbound_forecasted"/>
+                <field name="stock_quarantaine"/>
+                <field name="stock_all"/>
+                <field name="stock_blocked"/>
+                <field name="stock_in_transit"/>
+                <field name="stock_reserved"/>
+                <field name="stock_available"/>
+                <field name="stock_whole_saler"/>
+                <field name="stock_open"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="monta_get_product_stock_form" model="ir.ui.view">
+        <field name="name">monta.product.stock.form</field>
+        <field name="model">monta.product.stock</field>
+        <field name="arch" type="xml">
+            <form string="Get Monta Products Stock">
+                 <sheet>
+                     <h4>
+                         Fetch Monta Stock!
+                     </h4>
+                 </sheet>
+                <footer>
+                    <button string="Get Monta Products Stock"
+                            type="object" name="action_fetch_stock" class="btn btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_call_stock_api" model="ir.actions.server">
+        <field name="name">Get Monta Product Stock</field>
+        <field name="model_id" ref="model_monta_product_stock"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = model.monta_get_product_stock_action()
+        </field>
+    </record>
+    </data>
+</odoo>

@@ -1,0 +1,1 @@
+from . import monta_product_stock
