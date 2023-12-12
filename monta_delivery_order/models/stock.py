@@ -19,10 +19,10 @@ class Picking(models.Model):
             {'picking_id':self.id, 'status':'draft', 'monta_stock_move_ids': lines})
         self.write({'monta_log_id': monta_picking_id})
         
-        if self.picking_type_code == 'outgoing' and self.sale_id:
+        if self.picking_type_code == 'outgoing' and self.sale_id and not self.monta_log_id:
             monta_picking_id.monta_good_receipt_content()
 
-        if self.picking_type_code == 'incoming' and self.purchase_id:
+        if self.picking_type_code == 'incoming' and self.purchase_id and not self.monta_log_id:
             monta_picking_id.monta_inbound_forecast_content()
         return monta_picking_id
 
