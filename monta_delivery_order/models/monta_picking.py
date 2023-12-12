@@ -262,8 +262,13 @@ class MontaInboundtoOdooMove(models.Model):
         for inboundObj, moveDt in inboundMoveData.items():
             moveObj = moveDt[0]
             inboundQty = moveDt[1]
+            batchRef = moveObj.product_id.default_code+'_'+moveDt[2]
             if moveObj.state in ('confirmed', 'partially_available', 'assigned'):
-                moveObj.quantity_done = inboundQty  # inbound qty variable
+                # moveObj.move_line_ids.\
+                #     create({'move_id':moveObj.id, 'lot_name':batchRef, 'qty_done':inboundQty}) #create move line and add batch ref for lot/serial number
+                for move_line in moveObj.move_line_ids:
+                    move_line.lot_name = batchRef
+                    move_line.qty_done = inboundQty  # inbound qty variable
                 picking_obj |= moveObj.picking_id
 
         # GET Outbound
@@ -311,11 +316,13 @@ class MontaInboundtoOdooMove(models.Model):
                     [('product_id.default_code', '=', sku), ('monta_move_id.monta_order_name', '=', inboundRef)])
                 if odoo_inbound_obj:
                     inbound_data = {'monta_move_line_id': odoo_inbound_obj.id,'inbound_id': inboundID, 'inbound_quantity': inboundQty}
+                    batch_ref = False
                     if dt.get('Batch', False):
-                        inbound_data['monta_batch_ids'] = [(0, 0, {'batch_id':dt['Batch']['Reference'], 'batch_quantity':dt['Batch']['Quantity']})]
+                        batch_ref = dt['Batch']['Reference']
+                        inbound_data['monta_batch_ids'] = [(0, 0, {'batch_ref':batch_ref, 'batch_quantity':dt['Batch']['Quantity']})]
                     newObj = self.create(inbound_data)
 
-                    inboundMoveData[newObj]=[odoo_inbound_obj.move_id, inboundQty]
+                    inboundMoveData[newObj]=[odoo_inbound_obj.move_id, inboundQty, batch_ref]
         if inboundMoveData:
             self.validate_picking_from_monta_qty(inboundMoveData=inboundMoveData)
 
@@ -326,8 +333,17 @@ class MontaInboundBatchtoOdooMove(models.Model):
     _rec_name = 'monta_inbound_id'
 
     monta_inbound_id = fields.Many2one('monta.inboundto.odoo.move', required=True)
-    batch_id = fields.Char('Batch ID')
+    batch_ref = fields.Char('Batch Ref#')
     batch_quantity = fields.Float(string='Batch Quantity')
+
+
+    @api.model
+    def create(self, vals):
+        res = super(MontaInboundBatchtoOdooMove, self).create(vals)
+        product = res.monta_inbound_id.product_id
+        lot_number = product.default_code+'_'+res.batch_ref
+        lot = self.env['stock.lot'].create({'name':lot_number, 'ref':res.batch_ref, 'product_id':product.id})
+        return res
 
 
 class MontaOutboundBatchtoOdooMove(models.Model):
