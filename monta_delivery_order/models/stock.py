@@ -11,6 +11,8 @@ class Picking(models.Model):
 
     def transfer_picking_to_monta(self):
         monta_picking_obj = self.env['picking.from.odooto.monta']
+        if not self.sale_id or not self.purchase_id:
+            return
         lines = []
         for move in self.move_ids:
             lines.append((0, 0 ,{'move_id':move.id}))
@@ -29,20 +31,20 @@ class Picking(models.Model):
 
     def button_validate(self):
         res = super().button_validate()
-        if self.picking_type_code == 'outgoing' and not self.monta_log_id and self.state not in ('draft','done', 'cancel'):
+        if self.picking_type_code == 'outgoing' and self.sale_id and not self.monta_log_id and self.state not in ('draft','done', 'cancel'):
             self.transfer_picking_to_monta()
         return res
 
     def action_assign(self):
         res = super().action_assign()
-        if self.picking_type_code == 'outgoing' and not self.monta_log_id and self.state not in (
+        if self.picking_type_code == 'outgoing' and self.sale_id and not self.monta_log_id and self.state not in (
         'draft', 'done', 'cancel'):
             self.transfer_picking_to_monta()
         return res
 
     def action_confirm(self):
         res = super().action_confirm()
-        if self.picking_type_code == 'outgoing' and not self.monta_log_id:
+        if self.picking_type_code == 'outgoing' and self.sale_id and not self.monta_log_id:
             self.transfer_picking_to_monta()
         return res
 
