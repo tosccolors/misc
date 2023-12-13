@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+
+    <!--
+        Brand
+    -->
+    <record id="website_form_inherit" model="ir.ui.view">
+        <field name="name">website.form.inherited</field>
+        <field name="model">website</field>
+        <field name="inherit_id" ref="website.view_website_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='domain']" position="after">
+                <field name="wildcard_domain" placeholder="*.example.com"/>
+            </xpath>
+        </field>
+    </record>
+
+
+
+</odoo>
