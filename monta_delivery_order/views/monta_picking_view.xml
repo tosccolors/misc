@@ -32,6 +32,9 @@
                                 <field name="monta_order_name" readonly="True"/>
                             </group>
                         </group>
+                        <group>
+                            <field name="message"/>
+                        </group>
                         <notebook>
                             <page name="monta_stock_move_ids" string="Move lines">
                                 <field name="monta_stock_move_ids" readonly="True">

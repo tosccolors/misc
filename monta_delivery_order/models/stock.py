@@ -11,7 +11,7 @@ class Picking(models.Model):
 
     def transfer_picking_to_monta(self):
         monta_picking_obj = self.env['picking.from.odooto.monta']
-        if not self.sale_id or not self.purchase_id:
+        if not (self.sale_id or self.purchase_id):
             return
         lines = []
         for move in self.move_ids:
@@ -21,30 +21,30 @@ class Picking(models.Model):
             {'picking_id':self.id, 'status':'draft', 'monta_stock_move_ids': lines})
         self.write({'monta_log_id': monta_picking_id})
         
-        if self.picking_type_code == 'outgoing' and self.sale_id and not self.monta_log_id:
+        if self.picking_type_code == 'outgoing' and self.sale_id:
             monta_picking_id.monta_good_receipt_content()
 
-        if self.picking_type_code == 'incoming' and self.purchase_id and not self.monta_log_id:
+        if self.picking_type_code == 'incoming' and self.purchase_id:
             monta_picking_id.monta_inbound_forecast_content()
         return monta_picking_id
 
 
     def button_validate(self):
         res = super().button_validate()
-        if self.picking_type_code == 'outgoing' and self.sale_id and not self.monta_log_id and self.state not in ('draft','done', 'cancel'):
+        if self.picking_type_code in ('outgoing', 'incoming') and (self.sale_id or self.purchase_id) and not self.monta_log_id and self.state not in ('draft','done', 'cancel'):
             self.transfer_picking_to_monta()
         return res
 
     def action_assign(self):
         res = super().action_assign()
-        if self.picking_type_code == 'outgoing' and self.sale_id and not self.monta_log_id and self.state not in (
+        if self.picking_type_code in ('outgoing', 'incoming') and (self.sale_id or self.purchase_id) and not self.monta_log_id and self.state not in (
         'draft', 'done', 'cancel'):
             self.transfer_picking_to_monta()
         return res
 
     def action_confirm(self):
         res = super().action_confirm()
-        if self.picking_type_code == 'outgoing' and self.sale_id and not self.monta_log_id:
+        if self.picking_type_code in ('outgoing', 'incoming') and (self.sale_id or self.purchase_id) and not self.monta_log_id:
             self.transfer_picking_to_monta()
         return res
 
