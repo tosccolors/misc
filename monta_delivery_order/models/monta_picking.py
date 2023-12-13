@@ -3,6 +3,8 @@ import requests
 from requests.auth import HTTPBasicAuth
 from odoo.exceptions import AccessError
 import json
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class PickingfromOdootoMonta(models.Model):
@@ -44,6 +46,7 @@ class PickingfromOdootoMonta(models.Model):
     status = fields.Selection([('draft', 'Draft'), ('successful', 'Successful'), ('failed', 'Failed')], string='Status',
                               required=True, readonly=True, store=True, compute=_compute_response)
     monta_order_name = fields.Char(string="Monta Order Name", compute=_compute_order_name, store=True)
+    message = fields.Char('Error/Exception Message')
 
     def call_monta_interface(self, request, method):
         config = self.env['monta.config'].search([], limit=1)
@@ -68,7 +71,8 @@ class PickingfromOdootoMonta(models.Model):
         response = False
         try:
             response = requests.request(request, url, headers=headers, data=payload, auth=HTTPBasicAuth(user, pwd))
-            if response.status_code == 200 and ('inbounds' == method or '/batches' in method):
+            if response.status_code == 200 and \
+                    ('/inbounds' == method or '/batches' in method or '/products' in method):
                 return response
 
             dic ={
@@ -86,9 +90,7 @@ class PickingfromOdootoMonta(models.Model):
             self.write(dic)
         except Exception as e:
             raise AccessError(
-                _('Error Roularta Interface call: %s') % (e))
-            # raise FailedJobError(
-            #     _('Error Roularta Interface call: %s') % (e))
+                _('Error Monta Interface call: %s') % (e))
         return response
 
     def monta_good_receipt_content(self, button_action=False):
@@ -201,32 +203,38 @@ class PickingfromOdootoMonta(models.Model):
         monta_outbond_obj = self.env['monta.outbound.batch']
         outboundMoveData = {}
         for obj in self.search([('picking_id.picking_type_code', '=', 'outgoing'),('picking_id.state', 'not in', ('draft', 'done', 'cancel')), ('status', '=', 'successful')]):
-            orderNum = obj.monta_order_name
-            response = self.call_monta_interface("GET", method%orderNum)
-            if response.status_code == 200:
-                response_data = json.loads(response.text)
-                for line in response_data.get('BatchLines', []):
-                    sku = line['Sku']
-                    batch_content = line['BatchContent']
-                    qty = abs(int(line['Quantity']))
-                    odoo_outbound_line = monta_move_obj.search(
-                        [('product_id.default_code', '=', sku), ('monta_move_id.monta_order_name', '=', obj.monta_order_name)])
-                    if odoo_outbound_line:
-                        data = {'batch_id':batch_content['Id'],
-                                'title':batch_content['Title'],
-                                'batch_quantity':qty,
-                                'monta_outbound_id': odoo_outbound_line.id}
-                        # batch created
-                        monta_outbond_obj.create(data)
+            try:
+                orderNum = obj.monta_order_name
+                response = self.call_monta_interface("GET", method%orderNum)
+                if response.status_code == 200:
+                    response_data = json.loads(response.text)
+                    for line in response_data.get('BatchLines', []):
+                        sku = line['Sku']
+                        batch_content = line['BatchContent']
+                        qty = abs(int(line['Quantity']))
+                        odoo_outbound_line = monta_move_obj.search(
+                            [('product_id.default_code', '=', sku), ('monta_move_id.monta_order_name', '=', obj.monta_order_name)])
+                        if odoo_outbound_line:
+                            batch_ref = batch_content['Title']
+                            data = {'batch_id':batch_content['Id'],
+                                    'title':batch_content['Title'],
+                                    'batch_quantity':qty,
+                                    'monta_outbound_id': odoo_outbound_line.id}
+                            # batch created
+                            monta_outbond_obj.create(data)
 
-                        move_obj = odoo_outbound_line.move_id
-                        if outboundMoveData.get(move_obj, False):
-                            outboundMoveData[move_obj] +=  qty
-                        else:
-                            outboundMoveData[move_obj] = qty
+                            move_obj = odoo_outbound_line.move_id
+                            if outboundMoveData.get((move_obj, batch_ref), False):
+                                outboundMoveData[(move_obj, batch_ref)] +=  qty
+                            else:
+                                outboundMoveData[(move_obj, batch_ref)] = qty
+            except Exception as e:
+                _logger.info(
+                    "\nError: Monta Outbound scheduler %s\n,"%(e)
+                )
         if outboundMoveData:
             self.env['monta.inboundto.odoo.move'].validate_picking_from_monta_qty(outboundMoveData=outboundMoveData)
-                            
+
 
 class PickingLinefromOdootoMonta(models.Model):
     _name = 'stock.move.from.odooto.monta'
@@ -240,6 +248,31 @@ class PickingLinefromOdootoMonta(models.Model):
     monta_inbound_forecast_id = fields.Char("Monta Inbound Forecast Id")
     monta_inbound_line_ids = fields.One2many('monta.inboundto.odoo.move', 'monta_move_line_id')
     monta_outbound_batch_ids = fields.One2many('monta.outbound.batch', 'monta_outbound_id')
+
+    def create_lot_from_batch(self, product, move_obj, batch_ref, qty):
+        lot_number = product.default_code + '_' + batch_ref
+        lot_obj = self.env['stock.lot']
+        quant = self.env['stock.quant']
+        lot = lot_obj.search(
+            [('name', '=', lot_number), ('product_id', '=', product.id),
+             ('company_id', '=', move_obj.company_id.id)])
+        if lot:
+            line_fields = [f for f in quant._fields.keys()]
+            quantData = quant.with_context(self.env.context.copy()).default_get(line_fields)
+            quantData.update(
+                {'product_id': product.id,
+                 'location_id': move_obj.location_dest_id.id,
+                 'quantity': qty,
+                 'inventory_quantity': qty,
+                 'lot_id': lot.id})
+            quant.create(quantData)
+        else:
+            self.env['stock.lot'].create(
+                {'name': lot_number,
+                 'ref': batch_ref,
+                 'product_id': product.id,
+                 'company_id': move_obj.company_id.id})
+        return
 
 
 class MontaInboundtoOdooMove(models.Model):
@@ -256,38 +289,83 @@ class MontaInboundtoOdooMove(models.Model):
     def validate_picking_from_monta_qty(self, inboundMoveData={}, outboundMoveData={}):
         picking_obj = self.env['stock.picking']
         backorderConfirmObj = self.env['stock.backorder.confirmation']
+        msg = ''
+        monta_obj = self.env['picking.from.odooto.monta']
+        def _assign_lot(moveObj, batchRef, qty):
+            if not moveObj.move_line_ids:
+                lot = self.env['stock.lot'].search(
+                    [('name', '=', batchRef), ('company_id', '=', moveObj.company_id.id)], order='id Desc', limit=1)
+                moveObj.quantity_done = qty  # must update before lot number
+                for move_line in moveObj.move_line_ids:
+                    move_line.lot_id = lot.id
+                    move_line.qty_done = qty # inbound/outbound qty variable
+            else:
+                for move_line in moveObj.move_line_ids:
+                    move_line.lot_name = batchRef
+                    move_line.qty_done = inboundQty  # inbound/outbound qty variable
 
         #GET inbound
         for inboundObj, moveDt in inboundMoveData.items():
             moveObj = moveDt[0]
             inboundQty = moveDt[1]
-            if moveObj.state in ('confirmed', 'partially_available', 'assigned'):
-                moveObj.quantity_done = inboundQty  # inbound qty variable
-                picking_obj |= moveObj.picking_id
+            batchRef = moveObj.product_id.default_code + '_' + moveDt[2]
+            monta_obj |= moveObj.picking_id.monta_log_id
+            try:
+                if moveObj.state in ('confirmed', 'partially_available', 'assigned'):
+                    _assign_lot(moveObj, batchRef, inboundQty)
+                    ## moveObj.move_line_ids.\
+                    ##     create({'move_id':moveObj.id, 'lot_name':batchRef, 'qty_done':inboundQty}) #create move line and add batch ref for lot/serial number
+                    # for move_line in moveObj.move_line_ids:
+                    #     move_line.lot_name = batchRef
+                    #     move_line.qty_done = inboundQty  # inbound qty variable
+                    picking_obj |= moveObj.picking_id
+            except Exception as e:
+                msg += "Error: Inbound lot/serial number assigning: %s''!!\n" % (e)
 
         # GET Outbound
-        for moveObj, qty in outboundMoveData.items():
-            if moveObj.state in ('confirmed', 'partially_available', 'assigned'):
-                moveObj.quantity_done = qty  # outbound qty variable
-                picking_obj |= moveObj.picking_id
+        for keys, qty in outboundMoveData.items():
+            moveObj = keys[0]
+            monta_obj |= moveObj.picking_id.monta_log_id
+            batchRef = moveObj.product_id.default_code + '_' + keys[1]
+            try:
+                # lot = self.env['stock.lot'].search([('name', '=', batchRef),  ('company_id', '=', moveObj.company_id.id)], order='id Desc', limit=1)
+                if moveObj.state in ('confirmed', 'partially_available', 'assigned'):
+                    _assign_lot(moveObj, batchRef, inboundQty)
+                    # # moveObj.quantity_done = qty  # outbound qty variable
+                    # # moveObj.move_line_ids.\
+                    # #     create({'move_id':moveObj.id, 'lot_name':batchRef, 'qty_done':qty}) #create move line and add batch ref for lot/serial number
+                    # moveObj.quantity_done = qty # must update before lot number
+                    # for move_line in moveObj.move_line_ids:
+                    #     # move_line.lot_name = batchRef
+                    #     move_line.lot_id = lot.id
+                    #     move_line.qty_done = qty
+
+                    picking_obj |= moveObj.picking_id
+            except Exception as e:
+                msg += "Error: Outbound lot/serial number assigning: %s''!!\n" % (e)
 
         for pickObj in picking_obj:
-            res = pickObj.button_validate()
-            if res is True:
-                return res
-            ctx = res['context']
-            # create backorder and process it
-            line_fields = [f for f in backorderConfirmObj._fields.keys()]
-            backOrderData = backorderConfirmObj.with_context(ctx).default_get(line_fields)
-            backOrderId = backorderConfirmObj.with_context(ctx).create(backOrderData)
-            backOrderId.with_context(ctx).process()
+            monta_obj |= pickObj.monta_log_id
+            try:
+                res = pickObj.button_validate()
+                if res is True:
+                    return res
+                ctx = res['context']
+                # create backorder and process it
+                line_fields = [f for f in backorderConfirmObj._fields.keys()]
+                backOrderData = backorderConfirmObj.with_context(ctx).default_get(line_fields)
+                backOrderId = backorderConfirmObj.with_context(ctx).create(backOrderData)
+                backOrderId.with_context(ctx).process()
 
-            #Validated backorder in order to sync to Monta
-            backOrderPicking = self.env['stock.picking'].search([('picking_type_code','=', 'incoming'),('backorder_id', '=', pickObj.id), ('state', 'in', ('partially_available', 'assigned'))])
-            if backOrderPicking:
-                backOrderPicking.transfer_picking_to_monta()
-            return True
-        return False
+                #Validated backorder in order to sync to Monta
+                backOrderPicking = self.env['stock.picking'].search([('picking_type_code','=', 'incoming'),('backorder_id', '=', pickObj.id), ('state', 'in', ('partially_available', 'assigned'))])
+                if backOrderPicking:
+                    backOrderPicking.transfer_picking_to_monta()
+            except Exception as e:
+                msg +=("Error Validating Picking: %s''!!\n" % (e))
+
+        if moveObj:
+            moveObj.write({'message':msg})
 
     @api.model
     def _cron_monta_get_inbound(self):
@@ -301,20 +379,54 @@ class MontaInboundtoOdooMove(models.Model):
         inboundMoveData = {}
         if response.status_code == 200:
             response_data = json.loads(response.text)
+            response_data =[{
+                "Id": 333463858,
+                "Sku": "FURN_8888",
+                "Quantity": 2,
+                "Created": "2023-12-12T12:26:09.84",
+                "Type": "Inbound",
+                "Quarantaine": False,
+                "ReturnedOrderWebshopOrderId": None,
+                "Reference": None,
+                "InboundForecastReference": "WHIN00045",
+                "InboundForecastSupplier": None,
+                "InboundReference": "WHIN00045",
+                "InboundSupplier": None,
+                "Batch": {
+                    "Reference": "2",
+                    "Quantity": 450,
+                    "BestBeforeDate": "2026-01-01T00:00:00",
+                    "StockAll": 450,
+                    "StockQuarantaine": 0,
+                    "StockBlocked": 0,
+                    "StockInTransit": 0,
+                    "StockReserved": 0,
+                    "StockAvailble": 450
+                },
+                "InboundForecastComment": None,
+                "InboundForecastGroupComment": None
+            }]
             for dt in response_data:
-                inboundID = dt['Id']
-                sku = dt['Sku']
-                inboundRef = dt['InboundForecastReference']
-                inboundQty = dt['Quantity']
-                odoo_inbound_obj = self.env['stock.move.from.odooto.monta'].search(
-                    [('product_id.default_code', '=', sku), ('monta_move_id.monta_order_name', '=', inboundRef)])
-                if odoo_inbound_obj:
-                    inbound_data = {'monta_move_line_id': odoo_inbound_obj.id,'inbound_id': inboundID, 'inbound_quantity': inboundQty}
-                    if dt.get('Batch', False):
-                        inbound_data['monta_batch_ids'] = [(0, 0, {'batch_id':dt['Batch']['Reference'], 'batch_quantity':dt['Batch']['Quantity']})]
-                    newObj = self.create(inbound_data)
+                try:
+                    inboundID = dt['Id']
+                    sku = dt['Sku']
+                    inboundRef = dt['InboundForecastReference']
+                    inboundQty = dt['Quantity']
+                    odoo_inbound_obj = self.env['stock.move.from.odooto.monta'].search(
+                        [('product_id.default_code', '=', sku), ('monta_move_id.monta_order_name', '=', inboundRef)])
+                    if odoo_inbound_obj:
+                        inbound_data = {'monta_move_line_id': odoo_inbound_obj.id,'inbound_id': inboundID, 'inbound_quantity': inboundQty}
+                        batch_ref = False
+                        if dt.get('Batch', False):
+                            batch_ref = dt['Batch']['Reference']
+                            inbound_data['monta_batch_ids'] = [(0, 0, {'batch_ref':batch_ref, 'batch_quantity':dt['Batch']['Quantity']})]
+                        newObj = self.create(inbound_data)
 
-                    inboundMoveData[newObj]=[odoo_inbound_obj.move_id, inboundQty]
+                        inboundMoveData[newObj]=[odoo_inbound_obj.move_id, inboundQty, batch_ref]
+                except Exception as e:
+                    _logger.info(
+                        "\nError: Monta Inbound scheduler %s,\n" % (e)
+                    )
         if inboundMoveData:
             self.validate_picking_from_monta_qty(inboundMoveData=inboundMoveData)
 
@@ -325,9 +437,16 @@ class MontaInboundBatchtoOdooMove(models.Model):
     _rec_name = 'monta_inbound_id'
 
     monta_inbound_id = fields.Many2one('monta.inboundto.odoo.move', required=True)
-    batch_id = fields.Char('Batch ID')
+    batch_ref = fields.Char('Batch Ref#')
     batch_quantity = fields.Float(string='Batch Quantity')
 
+    @api.model
+    def create(self, vals):
+        res = super().create(vals)
+        product = res.monta_inbound_id.product_id
+        move_obj = res.monta_inbound_id.monta_move_line_id.move_id
+        self.env['stock.move.from.odooto.monta'].create_lot_from_batch(product, move_obj, res.batch_ref, res.monta_inbound_id.inbound_quantity)
+        return res
 
 class MontaOutboundBatchtoOdooMove(models.Model):
     _name = 'monta.outbound.batch'
@@ -336,7 +455,15 @@ class MontaOutboundBatchtoOdooMove(models.Model):
 
     monta_outbound_id = fields.Many2one('stock.move.from.odooto.monta', required=True)
     batch_id = fields.Char('Batch ID')
-    title = fields.Float(string='Title')
+    title = fields.Char(string='Title/Batch Ref')
     batch_quantity = fields.Float(string='Batch Quantity')
+
+    @api.model
+    def create(self, vals):
+        res = super().create(vals)
+        product = res.monta_outbound_id.product_id
+        move_obj = res.monta_outbound_id.move_id
+        self.env['stock.move.from.odooto.monta'].create_lot_from_batch(product, move_obj, res.title, res.batch_quantity)
+        return res
 
 

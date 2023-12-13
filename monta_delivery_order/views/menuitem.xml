@@ -47,4 +47,15 @@
             action="action_monta_inbounds_get"
             sequence="3"/>
 
+    <menuitem id="monta_stock_root"
+              name="Monta Stock"
+              parent="monta_root_menu"
+            sequence="2"/>
+
+    <menuitem id="menu_action_account_bank_journal_form"
+              action="action_call_stock_api"
+              parent="monta_stock_root"
+              sequence="1"/>
+
+
 </odoo>

@@ -32,6 +32,9 @@
                                 <field name="monta_order_name" readonly="True"/>
                             </group>
                         </group>
+                        <group>
+                            <field name="message"/>
+                        </group>
                         <notebook>
                             <page name="monta_stock_move_ids" string="Move lines">
                                 <field name="monta_stock_move_ids" readonly="True">
@@ -53,11 +56,13 @@
                                                      <tree string="Batches">
                                                         <field name="batch_id"/>
                                                         <field name="title"/>
+                                                        <field name="batch_quantity"/>
                                                      </tree>
                                                      <form string="Inbound">
                                                         <group>
                                                             <field name="batch_id"/>
                                                             <field name="title"/>
+                                                            <field name="batch_quantity"/>
                                                         </group>
                                                      </form>
                                                  </field>
@@ -78,7 +83,7 @@
                                                                 <page string="Batches">
                                                                     <field name="monta_batch_ids" readonly="True">
                                                                         <tree>
-                                                                            <field name="batch_id"/>
+                                                                            <field name="batch_ref"/>
                                                                             <field name="batch_quantity"/>
                                                                         </tree>
                                                                     </field>
