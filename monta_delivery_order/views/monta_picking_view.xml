@@ -55,13 +55,13 @@
                                                  <field name="monta_outbound_batch_ids" readonly="True">
                                                      <tree string="Batches">
                                                         <field name="batch_id"/>
-                                                        <field name="title"/>
+                                                        <field name="batch_ref"/>
                                                         <field name="batch_quantity"/>
                                                      </tree>
                                                      <form string="Inbound">
                                                         <group>
                                                             <field name="batch_id"/>
-                                                            <field name="title"/>
+                                                            <field name="batch_ref"/>
                                                             <field name="batch_quantity"/>
                                                         </group>
                                                      </form>

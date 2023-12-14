@@ -13,6 +13,7 @@
                             <field name="username"/>
                             <field name="password" password="True"/>
                             <field name="origin"/>
+                            <field name="inbound_id"/>
                         </group>
                     </sheet>
                 </form>
