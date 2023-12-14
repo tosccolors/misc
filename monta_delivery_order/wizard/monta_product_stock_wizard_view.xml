@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    <record id="monta_product_stock_form" model="ir.ui.view">
+    <!--<record id="monta_product_stock_form" model="ir.ui.view">
         <field name="name">monta.product.stock.form</field>
         <field name="model">monta.product.stock</field>
         <field name="arch" type="xml">
@@ -26,9 +26,9 @@
                 </sheet>
             </form>
         </field>
-    </record>
+    </record>-->
 
-    <record id="monta_product_stock_tree" model="ir.ui.view">
+    <!--<record id="monta_product_stock_tree" model="ir.ui.view">
         <field name="name">monta.product.stock.tree</field>
         <field name="model">monta.product.stock</field>
         <field name="arch" type="xml">
@@ -45,11 +45,11 @@
                 <field name="stock_open"/>
             </tree>
         </field>
-    </record>
+    </record>-->
 
-    <record id="monta_get_product_stock_form" model="ir.ui.view">
-        <field name="name">monta.product.stock.form</field>
-        <field name="model">monta.product.stock</field>
+    <record id="monta_get_product_stock_wizard_form" model="ir.ui.view">
+        <field name="name">monta.product.stock.wizard.form</field>
+        <field name="model">monta.product.stock.wizard</field>
         <field name="arch" type="xml">
             <form string="Get Monta Products Stock">
                  <sheet>
@@ -66,13 +66,13 @@
         </field>
     </record>
 
-    <record id="action_call_stock_api" model="ir.actions.server">
+    <!--<record id="action_call_stock_api" model="ir.actions.server">
         <field name="name">Get Monta Product Stock</field>
-        <field name="model_id" ref="model_monta_product_stock"/>
+        <field name="model_id" ref="model_monta_product_stock_wizard"/>
         <field name="state">code</field>
         <field name="code">
             action = model.monta_get_product_stock_action()
         </field>
-    </record>
+    </record>-->
     </data>
 </odoo>

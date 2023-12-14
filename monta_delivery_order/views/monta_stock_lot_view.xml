@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="monta_product_stock_lot_form" model="ir.ui.view">
+        <field name="name">monta.product.stock.lot.form</field>
+        <field name="model">monta.product.stock.lot</field>
+        <field name="arch" type="xml">
+            <form string="Monta Products Stock" create="0" edit="0" delete="0" duplicate="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="sku"/>
+                            <field name="stock_inbound_forecasted"/>
+                            <field name="stock_quarantaine"/>
+                            <field name="stock_all"/>
+                            <field name="stock_blocked"/>
+                        </group>
+                        <group>
+                            <field name="stock_in_transit"/>
+                            <field name="stock_reserved"/>
+                            <field name="stock_available"/>
+                            <field name="stock_whole_saler"/>
+                            <field name="stock_open"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="Batches">
+                            <field name="monta_stock_lot_ids">
+                                <tree string="Batches">
+                                    <field name="batch_id"/>
+                                    <field name="batch_ref"/>
+                                    <field name="batch_quantity"/>
+                                 </tree>
+                                 <form string="Batches">
+                                    <group>
+                                        <field name="batch_id"/>
+                                        <field name="batch_ref"/>
+                                        <field name="batch_quantity"/>
+                                    </group>
+                                 </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="monta_product_stock_lot_tree" model="ir.ui.view">
+        <field name="name">monta.product.stock.lot.tree</field>
+        <field name="model">monta.product.stock.lot</field>
+        <field name="arch" type="xml">
+            <tree string="Monta Products Stock Lot" create="0" edit="0" delete="0" duplicate="0" js_class="monta_product_stock_lot_list">
+                <field name="sku"/>
+                <field name="stock_inbound_forecasted"/>
+                <field name="stock_quarantaine"/>
+                <field name="stock_all"/>
+                <field name="stock_blocked"/>
+                <field name="stock_in_transit"/>
+                <field name="stock_reserved"/>
+                <field name="stock_available"/>
+                <field name="stock_whole_saler"/>
+                <field name="stock_open"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_monta_product_stock_lot">
+        <field name="name">Monta Product Stock Lot</field>
+        <field name="res_model">monta.product.stock.lot</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="monta_product_stock_lot_tree"/>
+    </record>
+
+    <record id="action_monta_inventory_adjustment" model="ir.actions.server">
+        <field name="name">Inventory Adjustment From Monta</field>
+        <field name="model_id" ref="model_monta_product_stock_lot"/>
+        <field name="binding_model_id" ref="model_monta_product_stock_lot"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+        if records:
+            records.do_inventory_adjustment()
+        </field>
+    </record>
+</odoo>

@@ -1,1 +1,1 @@
-from . import monta_product_stock
+from . import monta_product_stock_wizard
