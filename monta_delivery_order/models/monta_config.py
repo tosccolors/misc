@@ -20,3 +20,4 @@ class MontaConfig(models.Model):
     origin = fields.Char('Origin', required=True,
                        help='This is the URL that the system can be reached at.'
                        )
+    inbound_id = fields.Char("Monta Inbound ID")
