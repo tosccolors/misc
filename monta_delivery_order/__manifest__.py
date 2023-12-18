@@ -26,11 +26,12 @@
     'data': [
         'security/ir.model.access.csv',
         'data/cron_data.xml',
-        'wizard/monta_product_stock_view.xml',
+        'wizard/monta_product_stock_wizard_view.xml',
         'views/monta_config_view.xml',
         'views/monta_picking_view.xml',
         'views/stock_view.xml',
         'views/res_partner_view.xml',
+        'views/monta_stock_lot_view.xml',
         'views/menuitem.xml',
         # 'views/templates.xml',
     ],
@@ -38,4 +39,10 @@
     'demo': [
         # 'demo/demo.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'monta_delivery_order/static/src/xml/tree.xml',
+            'monta_delivery_order/static/src/js/monta_stock_tree_extend.js',
+        ],
+    },
 }

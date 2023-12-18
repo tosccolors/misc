@@ -11,6 +11,7 @@ class PickingfromOdootoMonta(models.Model):
     _name = 'picking.from.odooto.monta'
     _order = 'create_date desc'
     _rec_name = 'picking_id'
+    _description = 'Picking Odoo To Monta'
 
     @api.depends('monta_response_code')
     def _compute_response(self):
@@ -241,6 +242,7 @@ class PickingLinefromOdootoMonta(models.Model):
     _name = 'stock.move.from.odooto.monta'
     _order = 'create_date desc'
     _rec_name = 'monta_move_id'
+    _description = 'Move Odoo To Monta'
 
     move_id = fields.Many2one('stock.move', required=True)
     monta_move_id = fields.Many2one('picking.from.odooto.monta', required=True)
@@ -281,6 +283,7 @@ class MontaInboundtoOdooMove(models.Model):
     _name = 'monta.inboundto.odoo.move'
     _order = 'create_date desc'
     _rec_name = 'monta_move_line_id'
+    _description = 'Monta Inbound'
 
     monta_move_line_id = fields.Many2one('stock.move.from.odooto.monta', required=True)
     inbound_id = fields.Char('Inbound ID')
@@ -410,38 +413,38 @@ class MontaInboundtoOdooMove(models.Model):
             self.validate_picking_from_monta_qty(inboundMoveData=inboundMoveData)
 
 
-class MontaStockLot(models.Model):
-    _name = 'monta.stock.lot'
-    _order = 'create_date desc'
-    _rec_name = 'batch_ref'
-
-    batch_id = fields.Char('Batch ID')
-    batch_ref = fields.Char(string='Title/Batch Ref')
-    batch_quantity = fields.Float(string='Batch Quantity')
-    monta_inbound_id = fields.Many2one('monta.inboundto.odoo.move')
-    monta_outbound_id = fields.Many2one('stock.move.from.odooto.monta')
-
-
-    @api.model
-    def create(self, vals):
-        res = super().create(vals)
-        params = []
-        batch_ref = res.batch_ref
-        if res.monta_inbound_id:
-            product = res.monta_inbound_id.product_id
-            move_obj = res.monta_inbound_id.monta_move_line_id.move_id
-            qty = res.monta_inbound_id.inbound_quantity
-            params.append(product, move_obj, qty)
-
-        if res.monta_outbound_id:
-            product = res.monta_outbound_id.product_id
-            move_obj = res.monta_outbound_id.move_id
-            qty = res.batch_quantity
-            params.append(product, move_obj, qty)
-
-        if params:
-            self.env['stock.move.from.odooto.monta'].create_lot_from_batch(params[0], params[1], res.batch_ref, params[2])
-        return res
+# class MontaStockLot(models.Model):
+#     _name = 'monta.stock.lot'
+#     _order = 'create_date desc'
+#     _rec_name = 'batch_ref'
+# 
+#     batch_id = fields.Char('Batch ID')
+#     batch_ref = fields.Char(string='Title/Batch Ref')
+#     batch_quantity = fields.Float(string='Batch Quantity')
+#     monta_inbound_id = fields.Many2one('monta.inboundto.odoo.move')
+#     monta_outbound_id = fields.Many2one('stock.move.from.odooto.monta')
+# 
+# 
+#     @api.model
+#     def create(self, vals):
+#         res = super().create(vals)
+#         params = []
+#         batch_ref = res.batch_ref
+#         if res.monta_inbound_id:
+#             product = res.monta_inbound_id.product_id
+#             move_obj = res.monta_inbound_id.monta_move_line_id.move_id
+#             qty = res.monta_inbound_id.inbound_quantity
+#             params.append(product, move_obj, qty)
+# 
+#         if res.monta_outbound_id:
+#             product = res.monta_outbound_id.product_id
+#             move_obj = res.monta_outbound_id.move_id
+#             qty = res.batch_quantity
+#             params.append(product, move_obj, qty)
+# 
+#         if params:
+#             self.env['stock.move.from.odooto.monta'].create_lot_from_batch(params[0], params[1], res.batch_ref, params[2])
+#         return res
 
 
 # class MontaInboundBatchtoOdooMove(models.Model):
