@@ -295,7 +295,7 @@ class MontaInboundtoOdooMove(models.Model):
     def validate_picking_from_monta_qty(self, inboundMoveData={}, outboundMoveData={}):
         picking_obj = self.env['stock.picking']
         backorderConfirmObj = self.env['stock.backorder.confirmation']
-        exception_picking_data = {}
+        update_picking_msg = {}
         monta_obj = self.env['picking.from.odooto.monta']
 
         def _assign_lot(moveObj, lotRef, qty):
@@ -312,7 +312,7 @@ class MontaInboundtoOdooMove(models.Model):
                 data.update({'lot_name': lotRef})
             elif picking.picking_type_code == 'outgoing':
                 lot = self.env['stock.lot'].search(
-                    [('name', '=', lotRef),('product_id', '=', product.id)
+                    [('name', '=', lotRef),('product_id', '=', product.id),
                      ('company_id', '=', moveObj.company_id.id)])
                 if lot:
                     data.update({'lot_id': lot.id})
@@ -462,7 +462,7 @@ class MontaInboundtoOdooMove(models.Model):
 
     @api.model
     def _cron_monta_get_inbound(self):
-        self_obj = self.search([])
+        # self_obj = self.search([])
         method = 'inbounds'
         config = self.env['monta.config'].search([], limit=1)
         if config.inbound_id:
