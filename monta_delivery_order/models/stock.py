@@ -11,7 +11,7 @@ class Picking(models.Model):
 
     def transfer_picking_to_monta(self):
         monta_picking_obj = self.env['picking.from.odooto.monta']
-        if not (self.sale_id or self.purchase_id):
+        if not (self.sale_id or self.purchase_id) or self.monta_log_id:
             return
         lines = []
         for move in self.move_ids:
