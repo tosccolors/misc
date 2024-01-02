@@ -202,6 +202,7 @@ class PickingfromOdootoMonta(models.Model):
         method = "order/%s/batches"
         monta_move_obj = self.env['stock.move.from.odooto.monta']
         monta_outbond_obj = self.env['monta.stock.lot']
+        stockMove = self.env['stock.move']
         outboundMoveData = {}
         for obj in self.search([('picking_id.picking_type_code', '=', 'outgoing'),
                                 ('picking_id.state', 'not in', ('draft', 'done', 'cancel')), ('status', '=', 'successful')]):
@@ -226,6 +227,7 @@ class PickingfromOdootoMonta(models.Model):
                             monta_outbond_obj.create(data)
 
                             move_obj = odoo_outbound_line.move_id
+                            stockMove |= move_obj
                             if outboundMoveData.get((move_obj, batch_ref), False):
                                 outboundMoveData[(move_obj, batch_ref)] +=  qty
                             else:
@@ -235,6 +237,7 @@ class PickingfromOdootoMonta(models.Model):
                     "\nError: Monta Outbound scheduler %s\n,"%(e)
                 )
         if outboundMoveData:
+            stockMove.mapped('move_line_ids').unlink()
             self.env['monta.inboundto.odoo.move'].validate_picking_from_monta_qty(outboundMoveData=outboundMoveData)
 
 
@@ -299,7 +302,7 @@ class MontaInboundtoOdooMove(models.Model):
         monta_obj = self.env['picking.from.odooto.monta']
 
         def _assign_lot(moveObj, lotRef, qty):
-            moveObj.move_line_ids.unlink()
+            # moveObj.move_line_ids.unlink()
 
             product = moveObj.product_id
             picking = moveObj.picking_id
@@ -324,7 +327,8 @@ class MontaInboundtoOdooMove(models.Model):
         for inboundObj, moveDt in inboundMoveData.items():
             moveObj = moveDt[0]
             inboundQty = moveDt[1]
-            batchRef = moveObj.product_id.default_code + '_' + moveDt[2]
+            # batchRef = moveObj.product_id.default_code + '_' + moveDt[2]
+            batchRef = moveDt[2]
             monta_obj |= moveObj.picking_id.monta_log_id
             try:
                 if moveObj.state in ('confirmed', 'partially_available', 'assigned'):
@@ -339,7 +343,8 @@ class MontaInboundtoOdooMove(models.Model):
         for keys, outQty in outboundMoveData.items():
             moveObj = keys[0]
             monta_obj |= moveObj.picking_id.monta_log_id
-            batchRef = moveObj.product_id.default_code + '_' + keys[1]
+            # batchRef = moveObj.product_id.default_code + '_' + keys[1]
+            batchRef = keys[1]
             try:
                 if moveObj.state in ('confirmed', 'partially_available', 'assigned'):
                     _assign_lot(moveObj, batchRef, outQty)
@@ -469,6 +474,7 @@ class MontaInboundtoOdooMove(models.Model):
             method = "inbounds?sinceid=" + config.inbound_id
         response = self.env['picking.from.odooto.monta'].call_monta_interface("GET", method)
         inboundMoveData = {}
+        stockMove = self.env['stock.move']
         if response.status_code == 200:
             response_data = json.loads(response.text)
             for dt in response_data:
@@ -486,7 +492,7 @@ class MontaInboundtoOdooMove(models.Model):
                             batch_ref = dt['Batch']['Reference']
                             inbound_data['monta_batch_ids'] = [(0, 0, {'batch_ref':batch_ref, 'batch_quantity':dt['Batch']['Quantity']})]
                         newObj = self.create(inbound_data)
-
+                        stockMove |= odoo_inbound_obj.move_id
                         inboundMoveData[newObj]=[odoo_inbound_obj.move_id, inboundQty, batch_ref]
                 except Exception as e:
                     _logger.info(
@@ -497,6 +503,7 @@ class MontaInboundtoOdooMove(models.Model):
         inbound_id = max(inboundIds) if inboundIds else False
         config.write({'inbound_id':inbound_id})
         if inboundMoveData:
+            stockMove.mapped('move_line_ids').unlink()
             self.validate_picking_from_monta_qty(inboundMoveData=inboundMoveData)
 
 
