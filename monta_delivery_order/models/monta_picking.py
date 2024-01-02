@@ -360,20 +360,23 @@ class MontaInboundtoOdooMove(models.Model):
                 res = pickObj.button_validate()
                 if res is True:
                     return res
-                ctx = res['context']
-                # create backorder and process it
-                line_fields = [f for f in backorderConfirmObj._fields.keys()]
-                backOrderData = backorderConfirmObj.with_context(ctx).default_get(line_fields)
-                backOrderId = backorderConfirmObj.with_context(ctx).create(backOrderData)
-                backOrderId.with_context(ctx).process()
 
-                #Validated backorder in order to sync to Monta
-                backOrderPicking = self.env['stock.picking'].\
-                    search([('picking_type_code','=', 'incoming'),
-                            ('backorder_id', '=', pickObj.id),
-                            ('state', 'in', ('partially_available', 'assigned'))])
-                if backOrderPicking:
-                    backOrderPicking.transfer_picking_to_monta()
+                # Disable backorder creation #################
+                # ctx = res['context']
+                # # create backorder and process it
+                # line_fields = [f for f in backorderConfirmObj._fields.keys()]
+                # backOrderData = backorderConfirmObj.with_context(ctx).default_get(line_fields)
+                # backOrderId = backorderConfirmObj.with_context(ctx).create(backOrderData)
+                # backOrderId.with_context(ctx).process()
+                #
+                # #Validated backorder in order to sync to Monta
+                # backOrderPicking = self.env['stock.picking'].\
+                #     search([('picking_type_code','=', 'incoming'),
+                #             ('backorder_id', '=', pickObj.id),
+                #             ('state', 'in', ('partially_available', 'assigned'))])
+                # if backOrderPicking:
+                #     backOrderPicking.transfer_picking_to_monta()
+                # Disable backorder End###############
                 update_picking_msg[pickObj.monta_log_id] = ''
             except Exception as e:
                 pickObj |= pickObj
