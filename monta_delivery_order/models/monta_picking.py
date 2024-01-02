@@ -324,7 +324,8 @@ class MontaInboundtoOdooMove(models.Model):
         for inboundObj, moveDt in inboundMoveData.items():
             moveObj = moveDt[0]
             inboundQty = moveDt[1]
-            batchRef = moveObj.product_id.default_code + '_' + moveDt[2]
+            # batchRef = moveObj.product_id.default_code + '_' + moveDt[2]
+            batchRef = moveDt[2]
             monta_obj |= moveObj.picking_id.monta_log_id
             try:
                 if moveObj.state in ('confirmed', 'partially_available', 'assigned'):
@@ -339,7 +340,8 @@ class MontaInboundtoOdooMove(models.Model):
         for keys, outQty in outboundMoveData.items():
             moveObj = keys[0]
             monta_obj |= moveObj.picking_id.monta_log_id
-            batchRef = moveObj.product_id.default_code + '_' + keys[1]
+            # batchRef = moveObj.product_id.default_code + '_' + keys[1]
+            batchRef = keys[1]
             try:
                 if moveObj.state in ('confirmed', 'partially_available', 'assigned'):
                     _assign_lot(moveObj, batchRef, outQty)
