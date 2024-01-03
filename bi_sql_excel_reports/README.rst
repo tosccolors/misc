@@ -1,7 +1,7 @@
 
-.. image:: https://img.shields.io/badge/maturity-Beta-yellow.png
+.. image:: https://img.shields.io/badge/maturity-Production%2FStable-green.png
     :target: https://odoo-community.org/page/development-status
-    :alt: Beta
+    :alt: Production/Stable
 
 .. image:: https://img.shields.io/badge/licence-LGPL--3-blue.svg
    :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
@@ -14,7 +14,8 @@ BI SQL Excel Reports
 The module allows users to fetch data from queries (stored as views) via a
 Microsoft Excel add-in on their local Windows or Apple machine. The data is
 loaded into a (hidden) worksheet, the report is visualized via a pivot table
-and optionally a pivot chart. For each report the SQL view and layout of the
+and optionally a pivot chart. Alternatively the data is presented as an Excel
+table (with option 'Data table'). For each report the SQL view and layout of the
 pivot table and chart are defined within Odoo. Alternatively, queries can be
 defined to be saved as CSV files to the users machine.
 
@@ -112,14 +113,14 @@ Example::
   Complete the steps via "Create SQL View, Indexes and Models" and "Create UI".
   Next, add an entry for an Excel report via "SQL Excel Reports", enter a sequence nr for the
   report and give it a name, for example "Demo - Odoo Modules". Enter the technical name of the
-  query we just created: excel_module_odoo_overview. Enter "Stacked Bar" for the Chart Type and
+  query we just created: excel_module_odoo_overview. Enter "Stacked Column" for the Chart Type and
   enter "Modules" for the short name (this will be the name of the worksheet in Excel).
 
   Complete the Excel report layout definition by adding fields for the pivot table:
   - field x_author as a filter
   - field x_state for columns
-  - field x_category for rows
-  - field x_module for rows and unselect "details"
+  - field x_category for rows and unselect "details"
+  - field x_module for rows
   - field x_mod_count for values
   - field x_category as a slicer with slicer-top 8 and slicer-height 304
   - field x_state as a slicer with slicer-top 317 and slicer-height 93

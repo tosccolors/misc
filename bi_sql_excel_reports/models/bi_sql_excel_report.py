@@ -17,8 +17,8 @@ class BiSqlExcelReport(models.Model):
     _name = 'bi.sql.excel.report'
     _order = 'sequence, id'
     auth = None                              # reference to authorization object
-    add_in_latest_ver = 0.75                 # the latest Excel Add-in version
-    add_in_incompatible_ver = 0.71           # Add-in version (or older) incompatible with Odoo module
+    add_in_latest_ver = 1.00                 # the latest Excel Add-in version
+    add_in_incompatible_ver = 0.80           # Add-in version (or older) incompatible with Odoo module
 
     PROHIBITED_WORDS = [
         'delete',
@@ -121,6 +121,11 @@ class BiSqlExcelReport(models.Model):
         string='Classic layout',
         default=False,
         help="Use the classic pivot table layout")
+
+    data_table = fields.Boolean(
+        string='As Excel table',
+        default=False,
+        help="Present data as an Excel table, not as pivot table")
 
     chart_type = fields.Selection(
         # Values for Microsoft Excel Chart Type (XlChartType)
@@ -307,7 +312,7 @@ class BiSqlExcelReport(models.Model):
                     mod_version = mfdata[start + 10: stop]
                     mod_version = mod_version.replace('"', '')
                     mod_version = mod_version.strip()
-            print(mfdata)
+            # print(mfdata)
         return mod_version
 
     @api.model
@@ -317,7 +322,7 @@ class BiSqlExcelReport(models.Model):
         result = {'upgrade_available': False, 'upgrade_required': False, 'message': ''}
         upd_msg_a = 'Please update your Odoo-Reports Excel Add-in.'
         upd_msg_b = 'A new version of the Odoo-Reports Excel Add-in is available.'
-        upd_msg_c = 'Log in to Odoo, goto Dashboards and select SQL Excel Reports Add-in.'
+        upd_msg_c = 'Login to Odoo, goto Dashboards and select SQL Excel Reports Add-in.'
         if type(user_machine_info) != dict:
             result['upgrade_available'] = True
             result['upgrade_required'] = True
@@ -418,8 +423,8 @@ class BiSqlExcelReport(models.Model):
         del_first_columns = header[:5] == ['id', 'create_date', 'create_uid', 'write_date', 'write_uid']
         if del_first_columns:
             data = [row[5:] for row in data]
-        # Put selected columns in sequence when a CSV download
-        if report.is_csv_download:
+        # Put selected columns in sequence when an Excel (data) table or a CSV download
+        if report.data_table or report.is_csv_download:
             header = data[0]
             layout = self._get_meta_data(table_name='bi_sql_excel_report_field',
                                          where_clause='report_id=' + str(report.id),
@@ -427,7 +432,10 @@ class BiSqlExcelReport(models.Model):
             if type(layout) != list:
                 return layout
             selected_col = [row['name'] for row in layout]
-            new_header = [row['caption'] if row['caption'] else row['name'][2:] for row in layout]
+            if report.data_table:
+                new_header = ['x_' + row['caption'] if row['caption'] else row['name'] for row in layout]
+            else:
+                new_header = [row['caption'] if row['caption'] else row['name'][2:] for row in layout]
             col_index = [header.index(col) for col in selected_col if col in header]
             data = [[row[idx] for idx in col_index] for row in data]
             data[0] = new_header

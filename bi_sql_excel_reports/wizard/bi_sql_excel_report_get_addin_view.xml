@@ -15,7 +15,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                 <field name="user_sys" invisible="1"/>
 
                 <group cols="1" attrs="{'invisible': [('has_data', '=', True)]}">
-                    <p>Please, select if your computer is a Windows machine or an Apple Mac</p>
+                    <p>Please select if your computer is a Windows machine or an Apple Mac</p>
                     <br/>
                     <button name="prepare_addin_file_win" string="Windows"
                             type="object" class="oe_highlight" icon="fa-arrow-right text-success"/>
