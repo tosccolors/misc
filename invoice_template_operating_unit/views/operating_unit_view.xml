@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Operating Unit
+        FIXME: inherit base view operating_unit.view_operating_unit_form_inherits, when report layout is not in use
+    -->
+    <record id="view_operating_unit_form_inherits" model="ir.ui.view">
+        <field name="name">operating.unit.form</field>
+        <field name="model">operating.unit</field>
+        <field name="inherit_id" ref="operating_unit_report_layout.view_operating_unit_form_inherits" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="edi_template" string="Template Configuration">
+                    <group>
+                        <field name="invoice_template_id" />
+                    </group>
+                    <group>
+                        <div>
+                            <p>Note: A custom layout can also be used along with invoice template as follows:</p>
+                            <ul>
+                                <li>Step 1: Export the record 'Invoice Notification Email'</li>
+                                <li>Step 2: Import by making necessary changes, and set external_id as "invoice_template_operating_unit.{OperatingUnit_CODE}"</li>
+                                <li>Ex: invoice_template_operating_unit.RED</li>
+                            </ul>
+                        </div>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
