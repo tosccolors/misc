@@ -16,26 +16,6 @@ class MontaStockLot(models.Model):
     monta_outbound_id = fields.Many2one('stock.move.from.odooto.monta')
     monta_product_lot_id = fields.Many2one('monta.product.stock.lot')
 
-    # @api.model
-    # def create(self, vals):
-    #     res = super().create(vals)
-    #     params = []
-    #     if res.monta_inbound_id:
-    #         product = res.monta_inbound_id.product_id
-    #         move_obj = res.monta_inbound_id.monta_move_line_id.move_id
-    #         qty = res.monta_inbound_id.inbound_quantity
-    #         params.append(product, move_obj, qty)
-    # 
-    #     if res.monta_outbound_id:
-    #         product = res.monta_outbound_id.product_id
-    #         move_obj = res.monta_outbound_id.move_id
-    #         qty = res.batch_quantity
-    #         params.append(product, move_obj, qty)
-    # 
-    #     if params:
-    #         self.env['stock.move.from.odooto.monta'].create_lot_from_batch(params[0], params[1], res.batch_ref, params[2])
-    #     return res
-
 class MontaProductStockLot(models.Model):
     _name ='monta.product.stock.lot'
     _order = 'create_date desc'
