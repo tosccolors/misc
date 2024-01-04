@@ -58,10 +58,12 @@ class PickingfromOdootoMonta(models.Model):
 
         url = config.host
 
-        #only for outbound batches
-        if '/batches' in method:
+        # GET inboundforecast/group/
+        if 'api-v6.monta.nl' in method:
             url = "https://api-v6.monta.nl"
-        # ends
+            method = method.split(url)[1]
+        elif '/batches' in method :#only for outbound batches
+            url = "https://api-v6.monta.nl"
 
         if url.endswith("/"):
             url += method
@@ -73,7 +75,8 @@ class PickingfromOdootoMonta(models.Model):
         try:
             response = requests.request(request, url, headers=headers, data=payload, auth=HTTPBasicAuth(user, pwd))
             if response.status_code == 200 and \
-                    ('inbounds' in method or '/batches' in method or '/products' in method):
+                    ('inbounds' in method or '/batches' in method or '/products' in method
+                     or 'api-v6.monta.nl' in url):
                 return response
 
             dic ={
@@ -295,6 +298,27 @@ class MontaInboundtoOdooMove(models.Model):
     # monta_batch_ids = fields.One2many('monta.inbound.batch', 'monta_inbound_id')
     monta_batch_ids = fields.One2many('monta.stock.lot', 'monta_inbound_id')
 
+    def partial_validation_from_monta(self, pickObj, res):
+        backorderConfirmObj = self.env['stock.backorder.confirmation']
+
+        method = "https://api-v6.monta.nl/inboundforecast/group/"+pickObj.name
+
+        response = self.env['picking.from.odooto.monta'].call_monta_interface("GET", method)
+        approved = []
+        if response.status_code == 200:
+            response_data = json.loads(response.text)
+            approved = [val['Approved'] for i, val in enumerate(response_data['InboundForecasts']) if not val['Approved']]
+        if not approved:
+            ctx = res['context']
+            # cancel backorder and validate picking
+            line_fields = [f for f in backorderConfirmObj._fields.keys()]
+            backOrderData = backorderConfirmObj.with_context(ctx).default_get(line_fields)
+            backOrderId = backorderConfirmObj.with_context(ctx).create(backOrderData)
+            backOrderId.with_context(
+                ctx).process_cancel_backorder() # partial force validation create new line with 0 qty done
+
+        return True
+
     def validate_picking_from_monta_qty(self, inboundMoveData={}, outboundMoveData={}):
         picking_obj = self.env['stock.picking']
         backorderConfirmObj = self.env['stock.backorder.confirmation']
@@ -360,6 +384,8 @@ class MontaInboundtoOdooMove(models.Model):
                 res = pickObj.button_validate()
                 if res is True:
                     return res
+
+                self.partial_validation_from_monta(pickObj, res)
 
                 # Disable backorder creation #################
                 # ctx = res['context']
