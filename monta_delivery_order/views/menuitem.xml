@@ -20,6 +20,12 @@
             parent="monta_config_root"
             action="action_monta_config"
             sequence="1"/>
+    <menuitem
+            id="monta_delivery_block_menu"
+            name="Monta Delivery Block"
+            parent="monta_config_root"
+            action="action_monta_delivery_block"
+            sequence="1"/>
 
     <menuitem id="monta_picking_root"
               name="Monta Order"

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+     <record id="view_delivery_carrier_form_monta" model="ir.ui.view">
+         <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+         <field name="name">Delivery Carrier Monta</field>
+         <field name="model">delivery.carrier</field>
+         <field name="arch" type="xml">
+             <xpath expr="//field[@name='integration_level']" position="before">
+                 <field name="monta_shipper_code"/>
+             </xpath>
+         </field>
+    </record>
+</odoo>

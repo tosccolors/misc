@@ -6,6 +6,8 @@ from odoo.exceptions import ValidationError
 class Sale(models.Model):
     _inherit = 'sale.order'
 
+    delivery_block_id = fields.Many2one('monta.delivery.block', 'Monta Delivery Block')
+
     @api.onchange('commitment_date')
     def _check_commitment_date(self):
         if self.commitment_date and self.commitment_date.date() <= fields.Datetime.now().date():
