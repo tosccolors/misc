@@ -20,7 +20,7 @@
 
     # any module necessary for this one to work correctly
     'depends': ['sale_stock', 'partner_firstname', 'purchase_stock', 'base_address_extended',
-                'stock_picking_customer_ref'],
+                'stock_picking_customer_ref', 'delivery'],
 
     # always loaded
     'data': [
@@ -32,6 +32,9 @@
         'views/stock_view.xml',
         'views/res_partner_view.xml',
         'views/monta_stock_lot_view.xml',
+        'views/delivery_carrier_view.xml',
+        'views/monta_delivery_block_view.xml',
+        'views/sale_view.xml',
         'views/menuitem.xml',
         # 'views/templates.xml',
     ],

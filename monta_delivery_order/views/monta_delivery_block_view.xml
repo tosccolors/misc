@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+     <record id="monta_delivery_block_form" model="ir.ui.view">
+        <field name="name">monta.delivery.block.form</field>
+        <field name="model">monta.delivery.block</field>
+        <field name="arch" type="xml">
+            <form string="Delivery Block">
+                <sheet>
+                    <group>
+                        <field name="name" required="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+     </record>
+
+    <record id="monta_delivery_block_tree" model="ir.ui.view">
+        <field name="name">monta.delivery.block.tree</field>
+        <field name="model">monta.delivery.block</field>
+        <field name="arch" type="xml">
+            <tree string="Delivery Block">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_monta_delivery_block">
+        <field name="name">Monta Delivery Block</field>
+        <field name="res_model">monta.delivery.block</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="monta_delivery_block_tree"/>
+    </record>
+
+</odoo>

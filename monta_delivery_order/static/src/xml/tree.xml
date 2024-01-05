@@ -11,16 +11,3 @@
 </t>
 
 </templates>
-<!--<templates>
-    <t t-name="monta.ListView.Buttons" t-inherit="web.ListView.Buttons" t-inherit-mode="primary" owl="1">
-        <xpath expr="//*[@class='btn btn-primary o_list_button_add']" position="after">
-
-            <button
-                type="button" class="btn btn-primary" t-on-click="onClickMontaStockLot">
-                Get Monta Stock
-            </button>
-        </xpath>
-    </t>
-</templates>-->
-
-            <!--<button t-if="props.resModel == 'monta.product.stock.lot'"-->

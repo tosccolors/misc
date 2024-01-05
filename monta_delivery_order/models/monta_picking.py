@@ -103,6 +103,12 @@ class PickingfromOdootoMonta(models.Model):
         shipped = self.shipped.isoformat() if self.shipped else planned_shipment_date
         delivery_add = self.partner_delivery_address_id
         invoice_add  = self.partner_invoice_address_id if self.sale_id else self.partner_delivery_address_id
+        blocked = False
+        blocked_msg = ''
+        if self.sale_id and self.sale_id.delivery_block_id:
+            blocked = True
+            blocked_msg = self.sale_id.delivery_block_id.name
+
         payload = {
             "WebshopOrderId": self.monta_order_name,
             "Reference": self.client_order_ref,
@@ -139,18 +145,19 @@ class PickingfromOdootoMonta(models.Model):
                     "EmailAddress": invoice_add.email
                 },
                 "InvoiceDebtorNumber": '',
-                "B2B": False,
-                "ShippingComment": self.shipping_comment
+                "B2B": True,
+                "ShippingComment": self.shipping_comment or ''
             },
             "PlannedShipmentDate": planned_shipment_date,
             "ShipOnPlannedShipmentDate": planned_shipment_date,
-            "Blocked": False,
-            "BlockedMessage": '',
-            "Quarantaine": False,
+            "Blocked": blocked,
+            "BlockedMessage": blocked_msg,
+            "Quarantaine": '',
             "DeliveryDateRequested": planned_shipment_date,
             "Lines":[],
             "Picking": True,
             "Picked": '',
+            "ShipperOptions":[],
             "Shipped": shipped,
             "PackingServiceText": '',
             "Family": '',
@@ -163,6 +170,14 @@ class PickingfromOdootoMonta(models.Model):
                 "Sku": line.product_id.default_code,
                 "OrderedQuantity": int(line.ordered_quantity)
             })
+
+        if self.sale_id.carrier_id:
+            delivery_method = self.sale_id.carrier_id
+            payload['ShipperOptions'].append({
+                "ShipperCode": delivery_method.name,
+                "Code": delivery_method.monta_shipper_code
+            })
+
 
         payload = json.dumps(payload)
         self.write({"json_payload": payload})
