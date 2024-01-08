@@ -20,10 +20,8 @@ class Invoice(models.Model):
             template = self.operating_unit_id.invoice_template_id
             custom_layout = "%s.%s" %("invoice_template_operating_unit", self.operating_unit_id.code)
 
-            if not self.env.ref(custom_layout):
+            if not self.env.ref(custom_layout, raise_if_not_found=False):
                 custom_layout = "account.mail_template_data_notification_email_account_invoice"
-
-            _logger.info("template %s \ncustom_layout %s"%(template, custom_layout))
 
         else:
             template = self.env.ref('account.email_template_edi_invoice', False)
