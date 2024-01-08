@@ -4,7 +4,7 @@
 {
     "name": "Invoice Email Template Operating Unit",
     "summary": "Uses Email Template set in Operating Unit",
-    "version": "10.0.3",
+    "version": "10.0.3.1",
     'category': 'Tools',
     'website' : "https://www.tosc.nl/",
     "author": "Deepa, " "The Open Source company (TOSC)",
