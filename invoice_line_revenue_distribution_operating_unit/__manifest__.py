@@ -26,7 +26,7 @@
     'version': '10.0.1.1.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['sale','account_operating_unit','analytic_operating_unit'],
+    'depends': ['sale','account_operating_unit','analytic_operating_unit', 'sale_operating_unit'],
 
     # always loaded
     'data': [
