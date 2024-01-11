@@ -255,7 +255,7 @@ class PickingfromOdootoMonta(models.Model):
                     "\nError: Monta Outbound scheduler %s\n,"%(e)
                 )
         if outboundMoveData:
-            stockMove.mapped('move_line_ids').unlink()
+            # stockMove.mapped('move_line_ids').unlink()
             self.env['monta.inboundto.odoo.move'].validate_picking_from_monta_qty(outboundMoveData=outboundMoveData)
 
 
@@ -441,5 +441,5 @@ class MontaInboundtoOdooMove(models.Model):
         inbound_id = max(inboundIds) if inboundIds else False
         config.write({'inbound_id':inbound_id})
         if inboundMoveData:
-            stockMove.mapped('move_line_ids').unlink()
+            # stockMove.mapped('move_line_ids').unlink()
             self.validate_picking_from_monta_qty(inboundMoveData=inboundMoveData)
