@@ -111,7 +111,7 @@ class PickingfromOdootoMonta(models.Model):
 
         payload = {
             "WebshopOrderId": self.monta_order_name,
-            "Reference": self.client_order_ref,
+            "Reference": self.client_order_ref or '',
             "Origin": config.origin,
             "ConsumerDetails":{
                 "DeliveryAddress": {
