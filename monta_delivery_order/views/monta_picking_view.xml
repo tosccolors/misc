@@ -57,6 +57,7 @@
                                                         <field name="batch_id"/>
                                                         <field name="batch_ref"/>
                                                         <field name="batch_quantity"/>
+                                                        <field name="monta_create_date" string="Shipped Date"/>
                                                      </tree>
                                                      <form string="Inbound">
                                                         <group>
@@ -85,6 +86,7 @@
                                                                         <tree>
                                                                             <field name="batch_ref"/>
                                                                             <field name="batch_quantity"/>
+                                                                            <field name="monta_create_date"/>
                                                                         </tree>
                                                                     </field>
                                                                 </page>

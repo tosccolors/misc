@@ -4,6 +4,12 @@ from requests.auth import HTTPBasicAuth
 from odoo.exceptions import AccessError
 import json
 import logging
+from datetime import datetime
+import pytz
+from pytz import timezone
+from odoo.tools import  DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
+
+
 _logger = logging.getLogger(__name__)
 
 
@@ -213,6 +219,15 @@ class PickingfromOdootoMonta(models.Model):
         elif self.picking_type_code == 'incoming' and self.purchase_id:
             self.call_monta_interface("POST", "inboundforecast/group")
 
+    def convert_TZ_UTC(self, TZ_datetime):
+        shipped_date = datetime.strptime(TZ_datetime, '%Y-%m-%dT%H:%M:%S.%f').strftime('%Y-%m-%d %H:%M:%S')
+        shipped_date = datetime.strptime(shipped_date, '%Y-%m-%d %H:%M:%S')
+        tz_name = self.env.context.get('tz') or self.env.user.tz
+        user_tz = pytz.timezone(tz_name)
+        utc = pytz.utc
+        dt = user_tz.localize(shipped_date).astimezone(utc).strftime('%Y-%m-%d %H:%M:%S')
+        return dt
+
     @api.model
     def _cron_monta_get_outbound_batches(self):
         method = "order/%s/batches"
@@ -225,7 +240,12 @@ class PickingfromOdootoMonta(models.Model):
             try:
                 orderNum = obj.monta_order_name
                 response = self.call_monta_interface("GET", method%orderNum)
+                response_order_info = self.call_monta_interface("GET", "order/%s"%orderNum)
                 if response.status_code == 200:
+                    shipped_date = False
+                    if response_order_info.status_code == 200:
+                        response_order_info_data = json.loads(response_order_info.text)
+                        shipped_date = self.convert_TZ_UTC(response_order_info_data['Shipped'])
                     response_data = json.loads(response.text)
                     for line in response_data.get('BatchLines', []):
                         sku = line['Sku']
@@ -239,6 +259,8 @@ class PickingfromOdootoMonta(models.Model):
                                     'batch_ref':batch_content['Title'],
                                     'batch_quantity':qty,
                                     'monta_outbound_id': odoo_outbound_line.id}
+                            if shipped_date:
+                                data.update({'monta_create_date': shipped_date})
                             # batch created
                             monta_outbond_obj.create(data)
 
@@ -286,17 +308,34 @@ class MontaInboundtoOdooMove(models.Model):
     # monta_batch_ids = fields.One2many('monta.inbound.batch', 'monta_inbound_id')
     monta_batch_ids = fields.One2many('monta.stock.lot', 'monta_inbound_id')
 
+    def apply_backdate(self, pickObj):
+        date = False
+        if pickObj.picking_type_code == 'outgoing':
+            date = max(pickObj.monta_log_id.monta_stock_move_ids.monta_outbound_batch_ids.mapped('monta_create_date'))
+
+        elif pickObj.picking_type_code == 'incoming':
+            date = max(pickObj.monta_log_id.monta_stock_move_ids.monta_inbound_line_ids.monta_batch_ids.mapped('monta_create_date'))
+        if date:
+            pickObj.move_line_ids.write(
+                {
+                    "date_backdating": date,
+                }
+            )
+        return
+
     def partial_validation_from_monta(self, pickObj, res):
         backorderConfirmObj = self.env['stock.backorder.confirmation']
 
-        method = "https://api-v6.monta.nl/inboundforecast/group/"+pickObj.name
-
-        response = self.env['picking.from.odooto.monta'].call_monta_interface("GET", method)
         approved = []
-        if response.status_code == 200:
-            response_data = json.loads(response.text)
-            approved = [val['Approved'] for i, val in enumerate(response_data['InboundForecasts']) if not val['Approved']]
-        if len(approved) == 0:
+        if pickObj.picking_type_code == 'incoming':
+            method = "https://api-v6.monta.nl/inboundforecast/group/"+pickObj.name
+            response = self.env['picking.from.odooto.monta'].call_monta_interface("GET", method)
+            if response.status_code == 200:
+                response_data = json.loads(response.text)
+                approved = [val['Approved'] for i, val in enumerate(response_data['InboundForecasts']) if not val['Approved']]
+
+        if len(approved) == 0: #for outgoing shipment no check required
+            self.apply_backdate(pickObj)
             ctx = res['context']
             # cancel backorder and validate picking
             line_fields = [f for f in backorderConfirmObj._fields.keys()]
@@ -419,6 +458,7 @@ class MontaInboundtoOdooMove(models.Model):
                     sku = dt['Sku']
                     inboundRef = dt['InboundForecastReference']
                     inboundQty = dt['Quantity']
+                    monta_create_date = self.env['picking.from.odooto.monta'].convert_TZ_UTC(dt['Created'])
                     odoo_inbound_obj = self.env['stock.move.from.odooto.monta'].search(
                         [('product_id.default_code', '=', sku), ('monta_move_id.monta_order_name', '=', inboundRef)])
                     if odoo_inbound_obj:
@@ -426,7 +466,7 @@ class MontaInboundtoOdooMove(models.Model):
                         batch_ref = False
                         if dt.get('Batch', False):
                             batch_ref = dt['Batch']['Reference']
-                            inbound_data['monta_batch_ids'] = [(0, 0, {'batch_ref':batch_ref, 'batch_quantity':dt['Batch']['Quantity']})]
+                            inbound_data['monta_batch_ids'] = [(0, 0, {'batch_ref':batch_ref, 'batch_quantity':dt['Batch']['Quantity'], 'monta_create_date':monta_create_date})]
                         newObj = self.create(inbound_data)
                         stockMove |= odoo_inbound_obj.move_id
                         inboundMoveData[newObj]=[odoo_inbound_obj.move_id, inboundQty, batch_ref]

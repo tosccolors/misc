@@ -15,6 +15,8 @@ class MontaStockLot(models.Model):
     monta_inbound_id = fields.Many2one('monta.inboundto.odoo.move')
     monta_outbound_id = fields.Many2one('stock.move.from.odooto.monta')
     monta_product_lot_id = fields.Many2one('monta.product.stock.lot')
+    monta_create_date = fields.Datetime(string="Monta Creation Date")
+    
 
 class MontaProductStockLot(models.Model):
     _name ='monta.product.stock.lot'
