@@ -21,6 +21,9 @@ class FTPConfig(models.Model):
     server = fields.Char(string='Server', help="Servername, including protocol, e.g. https://prod.barneveldsekrant.nl")
     directory = fields.Char(string='Server subdir', help="Directory starting with slash, e.g. /api/v1, or empty")
     tempdir = fields.Char(string='Local temp dir', help="Local temporary directory. e.g. /home/odoo")
+    ftp = fields.Boolean(string='Use FTP', help="Enable when using FTP")
+    sftp = fields.Boolean(string='Use SFTP', help="Enable when using SFTP instead of FTP")
+    port = fields.Char(string='Port', help="For ftp use port 21, for SFT use port 22")
     user = fields.Char(string='User')
     password = fields.Char(string='Password')
 
@@ -65,19 +68,47 @@ class FTPConfig(models.Model):
                     f.write(data)
                 f = None  # to force releasing the file handle
 
-            except Exception:
+            except Exception, e:
                 config.log_exception(msg, "Invalid Directory, quiting...")
                 continue
 
+        if self.sftp:
+            port_int = int(config.port)
+            # Initiate SFTP File Transfer Connection
+            try:
+                ssh = paramiko.SSHClient()
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                ssh.connect(hostname=config.server, port=port_int, username=config.user, password=config.password, look_for_keys=False)
+                sftp = ssh.open_sftp()
+            except Exception, e:
+                self.log_exception(msg, "Invalid FTPs configuration/credentials")
+                return False
+            try:
+                _logger.info("Transferring " + filename)
+                if config.directory:
+                    target = str(config.directory)
+                else:
+                    target = '/'
+                source = config.tempdir + '/'
+                sftp.put(source + filename, target + filename)
+                sftp.close()
+                ssh.close()
+            except Exception, e:
+                config.log_exception(msg, "Transfer failed, quiting....%s" % (e))
+                sftp.close()
+                ssh.close()
 
-            # Initiate File Transfer Connection
+                return False
+
+        elif self.ftp:
+            # Initiate FTP File Transfer Connection
             try:
                 # ftpServer = ftplib.FTP(config.server, config.user, config.password)
                 # ftpServer.encoding = "utf-8"
-                port_session_factory = ftputil.session.session_factory(port=21, use_passive_mode=True)
+                port_session_factory = ftputil.session.session_factory(port=config.port, use_passive_mode=True)
                 ftpServer = ftputil.FTPHost(config.server, config.user, config.password, session_factory=port_session_factory)
 
-            except Exception:
+            except Exception, e:
                 config.log_exception(msg, "Invalid FTP configuration, quiting...")
                 return False
 
@@ -98,24 +129,22 @@ class FTPConfig(models.Model):
                 # # ============================
 
                 ftpServer.upload(source + filename, target + filename)
-
-            except Exception:
-                config.log_exception(msg, "Transfer failed, quiting....%s"%(e))
                 ftpServer.close()
+
+            except Exception, e:
+                config.log_exception(msg, "Transfer failed, quiting....%s" % (e))
+                ftpServer.close()
+
                 return False
 
-            ftpServer.close()
-
         return True
-
-
     
     def automated_run(self):
         configurations = self.search([])
         for config in configurations:
             try:
                 config.do_send()
-            except Exception:
+            except Exception, e:
                 pass
 
     
@@ -173,7 +202,7 @@ class FTPConfig(models.Model):
 
                     OkFiles += 1
 
-                except Exception:
+                except Exception, e:
                     ErrFiles += 1
                     config.log_exception(msg, "Error executing SQL (%s) :: %s"%(se.name, e))
                     continue
