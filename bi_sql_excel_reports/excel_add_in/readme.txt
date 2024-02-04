@@ -4,7 +4,7 @@ This directory contains files which are used by the wizard. The wizard presents 
 - OdooJsonToCsv.exe
 
 Odoo-reports.xlam
-This is the Microsoft Excel add-in which contains Visual Basic for Applications (VBA) code and a menu definition so the Odoo sub-menu appears in the Excel (Home) ribbon. Applicable for both Windows and Apple MacOS. See the wizard view for information on how to install is explained to the user.
+This is the Microsoft Excel add-in which contains Visual Basic for Applications (VBA) code and a menu definition so the Odoo sub-menu appears in the Excel (Home) ribbon. Applicable for both Windows and Apple MacOS. See the wizard view for information on how to install.
 
 OdooJsonToCsv
 This is an optional helper program written in C (source code in OdooJsonToCsv.c) which is called by the Excel add-in to convert the Json file received from Odoo into a CSV file. The helper program is much faster compared to the same logic within the add-in (in VBA) and serves as an accelerator. The file OdooJsonToCsv (without extension) is the compiled version for Apple MacOS, OdooJsonToCsv.exe is the compiled version for Windows (64 bit).

@@ -20,6 +20,10 @@ class BiSqlExcelReportField(models.Model):
         return self.env.context.get('parent_report_is_csv_download', False)
 
     @api.model
+    def _get_default_data_table(self):
+        return self.env.context.get('parent_report_data_table', False)
+
+    @api.model
     def _get_default_sequence(self):  # only works on records saved to the database ..
         new_seq = 1
         report_id = self.env.context.get('parent_report_id', False)
@@ -66,6 +70,13 @@ class BiSqlExcelReportField(models.Model):
         related='report_id.is_csv_download',
         default=_get_default_is_csv_download,
         help="Reference to the report field is_csv_download")
+
+    report_data_table = fields.Boolean(
+        string='Rpt Excel data table',
+        copy=True,
+        related='report_id.data_table',
+        default=_get_default_data_table,
+        help="Reference to the report field data_table")
 
     sequence = fields.Integer(
         string='Sequence',
