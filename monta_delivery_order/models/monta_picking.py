@@ -111,9 +111,9 @@ class PickingfromOdootoMonta(models.Model):
         invoice_add  = self.partner_invoice_address_id if self.sale_id else self.partner_delivery_address_id
         blocked = False
         blocked_msg = ''
-        if self.sale_id and self.sale_id.delivery_block_id:
+        if self.sale_id and self.sale_id.monta_delivery_block_id:
             blocked = True
-            blocked_msg = self.sale_id.delivery_block_id.name
+            blocked_msg = self.sale_id.monta_delivery_block_id.name
 
         payload = {
             "WebshopOrderId": self.monta_order_name,
