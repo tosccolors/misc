@@ -11,7 +11,7 @@
             <xpath expr="//page[@name='customer_signature']" position="before">
                 <page string="Monta Delivery Block" name="monta_delivery_block">
                     <group>
-                        <field name="delivery_block_id"/>
+                        <field name="monta_delivery_block_id"/>
                     </group>
                 </page>
             </xpath>
