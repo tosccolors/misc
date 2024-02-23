@@ -35,7 +35,7 @@ class MontaProductStockWizard(models.TransientModel):
                     qty = batch['Quantity']
                     batch_dt.append((0, 0, {'batch_ref':ref, 'batch_quantity': qty}))
                 prod_dt['monta_stock_lot_ids'] = batch_dt
-                lot = self.env['monta.pproductroduct.stock.lot'].search([('sku', '=', product['Sku'])])
+                lot = self.env['monta.product.stock.lot'].search([('sku', '=', product['Sku'])])
                 if lot:
                     write_vals[lot] = prod_dt
                 else:
