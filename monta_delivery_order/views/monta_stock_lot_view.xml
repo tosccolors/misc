@@ -4,7 +4,7 @@
         <field name="name">monta.product.stock.lot.form</field>
         <field name="model">monta.product.stock.lot</field>
         <field name="arch" type="xml">
-            <form string="Monta Products Stock" create="0" edit="0" delete="0" duplicate="0">
+            <form string="Monta Products Stock" create="0" edit="0" duplicate="0">
                 <sheet>
                     <group>
                         <group>
@@ -50,7 +50,7 @@
         <field name="name">monta.product.stock.lot.tree</field>
         <field name="model">monta.product.stock.lot</field>
         <field name="arch" type="xml">
-            <tree string="Monta Products Stock Lot" create="0" edit="0" delete="0" duplicate="0" js_class="monta_product_stock_lot_list">
+            <tree string="Monta Products Stock Lot" create="0" edit="0" duplicate="0" js_class="monta_product_stock_lot_list">
                 <field name="sku"/>
                 <field name="stock_inbound_forecasted"/>
                 <field name="stock_quarantaine"/>
