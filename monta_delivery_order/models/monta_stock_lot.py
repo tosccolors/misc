@@ -54,6 +54,7 @@ class MontaProductStockLot(models.Model):
             bt.batches_count = batch_count.get(bt.id, 0)
 
     def map_odoo_product(self):
+        self.ensure_one()
         if self.product_id:
             return
         pro_obj = self.env['product.product']
