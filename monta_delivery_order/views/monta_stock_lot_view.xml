@@ -21,6 +21,7 @@
                             <field name="stock_available"/>
                             <field name="stock_whole_saler"/>
                             <field name="stock_open"/>
+                            <field name="batches_count" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -50,7 +51,8 @@
         <field name="name">monta.product.stock.lot.tree</field>
         <field name="model">monta.product.stock.lot</field>
         <field name="arch" type="xml">
-            <tree string="Monta Products Stock Lot" create="0" edit="0" duplicate="0" js_class="monta_product_stock_lot_list">
+            <tree string="Monta Products Stock Lot" create="0" edit="0" duplicate="0" js_class="monta_product_stock_lot_list"
+            decoration-danger="batches_count == 0">
                 <field name="sku"/>
                 <field name="stock_inbound_forecasted"/>
                 <field name="stock_quarantaine"/>
@@ -61,6 +63,7 @@
                 <field name="stock_available"/>
                 <field name="stock_whole_saler"/>
                 <field name="stock_open"/>
+                <field name="batches_count" invisible="1"/>
             </tree>
         </field>
     </record>

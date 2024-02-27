@@ -43,6 +43,15 @@ class MontaProductStockLot(models.Model):
     stock_whole_saler = fields.Float('Stock Whole Saler')
     stock_open = fields.Float('Stock Open')
     monta_stock_lot_ids = fields.One2many('monta.stock.lot', 'monta_product_lot_id', string="Monta Stock Lot")
+    batches_count = fields.Integer(compute='_compute_batches_count')
+
+    @api.depends('monta_stock_lot_ids')
+    def _compute_batches_count(self):
+        batches_data = self.env['monta.stock.lot']._read_group([('monta_product_lot_id', 'in', self.ids)], ['monta_product_lot_id'],
+                                                                           ['monta_product_lot_id'])
+        batch_count = {x['monta_product_lot_id'][0]: x['monta_product_lot_id_count'] for x in batches_data}
+        for bt in self:
+            bt.batches_count = batch_count.get(bt.id, 0)
 
     def map_odoo_product(self):
         if self.product_id:
