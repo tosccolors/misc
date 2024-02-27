@@ -8,7 +8,7 @@ class MontaProductStockWizard(models.TransientModel):
     _description = 'Monta Stock Wizard'
 
     name = fields.Char('SKU(s)')
-    is_sku = fields.Boolean('Fetch Stock Selected From Sku?')
+    is_sku = fields.Boolean('Fetch Stock From Selected Sku?')
 
     def action_fetch_stock(self):
         domain = [('default_code', '!=', False)]
