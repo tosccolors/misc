@@ -43,6 +43,15 @@ class MontaProductStockLot(models.Model):
     stock_whole_saler = fields.Float('Stock Whole Saler')
     stock_open = fields.Float('Stock Open')
     monta_stock_lot_ids = fields.One2many('monta.stock.lot', 'monta_product_lot_id', string="Monta Stock Lot")
+    batches_count = fields.Integer(compute='_compute_batches_count')
+
+    @api.depends('monta_stock_lot_ids')
+    def _compute_batches_count(self):
+        batches_data = self.env['monta.stock.lot']._read_group([('monta_product_lot_id', 'in', self.ids)], ['monta_product_lot_id'],
+                                                                           ['monta_product_lot_id'])
+        batch_count = {x['monta_product_lot_id'][0]: x['monta_product_lot_id_count'] for x in batches_data}
+        for bt in self:
+            bt.batches_count = batch_count.get(bt.id, 0)
 
     def map_odoo_product(self):
         if self.product_id:
@@ -65,7 +74,27 @@ class MontaProductStockLot(models.Model):
         for batch_obj in self.monta_stock_lot_ids:
             # name = product.default_code+'_'+batch_obj.batch_ref
             name = batch_obj.batch_ref
+            company_id = self.env.company.id
+
             sQuant_obj = stockQuant.search([('product_id', '=', product.id), ('lot_id.name','=',name), ('location_id.usage', 'in', ['internal', 'transit'])])
+            if not sQuant_obj:
+                lot_dic= {
+                    'company_id': company_id,
+                    'name': name,
+                    'product_id': product.id
+                }
+                lot_obj = self.env['stock.lot'].create(lot_dic)
+
+                location = self.env['stock.location']. \
+                    search([('usage', 'in', ['internal', 'transit']),
+                            ('company_id', '=', company_id), ('replenish_location', '=', True)], limit=1)
+                sQuant_obj = sQuant_obj.create(
+                    {'product_id':product.id,
+                     'lot_id':lot_obj.id,
+                     'location_id':location.id
+                     }
+                )
+
             if sQuant_obj.quantity != batch_obj.batch_quantity:
                 sQuant_obj.inventory_quantity = batch_obj.batch_quantity
                 adjustment_applied_quant |= sQuant_obj
