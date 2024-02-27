@@ -65,7 +65,27 @@ class MontaProductStockLot(models.Model):
         for batch_obj in self.monta_stock_lot_ids:
             # name = product.default_code+'_'+batch_obj.batch_ref
             name = batch_obj.batch_ref
+            company_id = self.env.company.id
+
             sQuant_obj = stockQuant.search([('product_id', '=', product.id), ('lot_id.name','=',name), ('location_id.usage', 'in', ['internal', 'transit'])])
+            if not sQuant_obj:
+                lot_dic= {
+                    'company_id': company_id,
+                    'name': name,
+                    'product_id': product.id
+                }
+                lot_obj = self.env['stock.lot'].create(lot_dic)
+
+                location = self.env['stock.location']. \
+                    search([('usage', 'in', ['internal', 'transit']),
+                            ('company_id', '=', company_id), ('replenish_location', '=', True)], limit=1)
+                sQuant_obj = sQuant_obj.create(
+                    {'product_id':product.id,
+                     'lot_id':lot_obj.id,
+                     'location_id':location.id
+                     }
+                )
+
             if sQuant_obj.quantity != batch_obj.batch_quantity:
                 sQuant_obj.inventory_quantity = batch_obj.batch_quantity
                 adjustment_applied_quant |= sQuant_obj
