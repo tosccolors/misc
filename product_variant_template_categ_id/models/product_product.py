@@ -11,7 +11,7 @@ class ProductProduct(models.Model):
 
     categ_id = fields.Many2one(
         'product.category', 'Internal Category',
-        change_default=True, domain="[('type','=','normal')]",
+        change_default=True,
         required=True, help="Select category for the current product")
 
     @api.model
