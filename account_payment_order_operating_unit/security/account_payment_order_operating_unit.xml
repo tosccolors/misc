@@ -1,0 +1,26 @@
+<odoo>
+    <record id="rule_payment_order" model="ir.rule">
+        <field name="name">Payment order OU</field>
+        <field name="model_id" ref="account_payment_order.model_account_payment_order" />
+        <field name="domain_force">['|', ('operating_unit_id', '=', False), ('operating_unit_id', 'in', user.operating_unit_ids.ids)]</field>
+    </record>
+    <record id="rule_payment_line" model="ir.rule">
+        <field name="name">Payment line OU</field>
+        <field name="model_id" ref="account_payment_order.model_account_payment_line" />
+        <field name="domain_force">['|', ('order_id.operating_unit_id', '=', False), ('order_id.operating_unit_id', 'in', user.operating_unit_ids.ids)]</field>
+    </record>
+    <record id="rule_payment_mode" model="ir.rule">
+        <field name="name">Payment mode OU</field>
+        <field name="model_id" ref="account_payment_order.model_account_payment_line" />
+        <field name="domain_force">[
+            '|',
+                '&amp;',
+                    ('bank_account_link', '=', 'fixed'),
+                    '|',
+                        ('fixed_journal_id.operating_unit_id', '=', False)
+                        ('fixed_journal_id.operating_unit_id', 'in', user.operating_unit_ids.ids)
+                ('bank_account_link', '!=', 'fixed')
+
+        </field>
+    </record>
+</odoo>
