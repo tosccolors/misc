@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_invoice_payment_order_view_invoice_payment_order_view,invoice_payment_order_view.invoice_payment_order_view,model_invoice_payment_order_view_invoice_payment_order_view,,1,0,0,0

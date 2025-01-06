@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- FIXME: Not needed at the moment -->
+<!--<record id="account_cutoff_form" model="ir.ui.view">-->
+<!--    <field name="name">account.cutoff.form</field>-->
+<!--    <field name="model">account.cutoff</field>-->
+<!--    <field name="inherit_id" ref="account_cutoff_base.account_cutoff_form"/>-->
+<!--    <field name="arch" type="xml">-->
+<!--        <button name="get_lines" position="after">-->
+<!--            <button class="btn-primary" name="get_lines_sql" string="Re-Generate Lines SQL" type="object" states="draft"/>-->
+<!--        </button>-->
+<!--    </field>-->
+<!--</record>-->
+
+    <record id="account_cutoff_import_job_queue" model="ir.ui.view">
+        <field name="name">account.cutoff.job.queue.form</field>
+        <field name="model">account.cutoff</field>
+        <field name="inherit_id" ref="account_cutoff_base.account_cutoff_form"/>
+        <field name="arch" type="xml">
+            <field name="cutoff_date" position="after">
+                <field name="job_queue"/>
+            </field>
+        </field>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,39 @@
+<odoo>
+<data>
+    <record model="ir.ui.view" id="supplier_bank_change_approval.list">
+        <field name="name">supplier_bank_change_approval list</field>
+        <field name="model">res.partner.bank</field>
+        <field name="inherit_id" ref="base.view_partner_bank_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" states="draft" class="oe_highlight"
+                            groups="supplier_bank_change_approval.bank_account_manager"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_supplier" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="action_supplier_bank_change_approval">
+        <field name="name">Bank Account Approval</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner.bank</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">['&amp;',('is_supplier', '=', 'True'),('state', '=', 'draft')]</field>
+    </record>
+
+
+    <menuitem id="menu_bank_account_approval" name="Bank Account Approval"
+              parent="account.menu_finance_payables"
+              action="action_supplier_bank_change_approval" sequence="200"
+              groups='supplier_bank_change_approval.bank_account_manager'/>
+
+
+</data>
+</odoo>

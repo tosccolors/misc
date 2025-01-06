@@ -1,0 +1,89 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* supplier_bank_change_approval
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-09 11:14+0000\n"
+"PO-Revision-Date: 2024-12-09 11:14+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: supplier_bank_change_approval
+#: model:ir.actions.act_window,name:supplier_bank_change_approval.action_supplier_bank_change_approval
+#: model:ir.ui.menu,name:supplier_bank_change_approval.menu_bank_account_approval
+msgid "Bank Account Approval"
+msgstr ""
+
+#. module: supplier_bank_change_approval
+#: model:res.groups,name:supplier_bank_change_approval.bank_account_manager
+msgid "Bank Account Manager"
+msgstr ""
+
+#. module: supplier_bank_change_approval
+#: model:ir.model,name:supplier_bank_change_approval.model_res_partner_bank
+msgid "Bank Accounts"
+msgstr "Bankrekeningen"
+
+#. module: supplier_bank_change_approval
+#: model_terms:ir.ui.view,arch_db:supplier_bank_change_approval.list
+msgid "Confirm"
+msgstr ""
+
+#. module: supplier_bank_change_approval
+#: model:ir.model.fields.selection,name:supplier_bank_change_approval.selection__res_partner_bank__state__confirmed
+msgid "Confirmed"
+msgstr ""
+
+#. module: supplier_bank_change_approval
+#: model:ir.model.fields.selection,name:supplier_bank_change_approval.selection__res_partner_bank__state__draft
+msgid "Draft"
+msgstr ""
+
+#. module: supplier_bank_change_approval
+#: model:ir.model.fields,field_description:supplier_bank_change_approval.field_account_setup_bank_manual_config__is_supplier
+#: model:ir.model.fields,field_description:supplier_bank_change_approval.field_res_partner_bank__is_supplier
+msgid "Is a Supplier"
+msgstr ""
+
+#. module: supplier_bank_change_approval
+#: model:ir.model,name:supplier_bank_change_approval.model_account_move
+msgid "Journal Entry"
+msgstr "Boeking"
+
+#. module: supplier_bank_change_approval
+#. odoo-python
+#: code:addons/supplier_bank_change_approval/models/supplier_bank_change_approval.py:0
+#, python-format
+msgid "Partner Bank Account has not been approved %s"
+msgstr "Partner bankrekening [ %s ] is nog niet goedgekeurd!"
+
+#. module: supplier_bank_change_approval
+#: model:ir.model,name:supplier_bank_change_approval.model_account_payment_order
+msgid "Payment Order"
+msgstr "Betalingsopdracht"
+
+#. module: supplier_bank_change_approval
+#: model:ir.model,name:supplier_bank_change_approval.model_account_payment
+msgid "Payments"
+msgstr "Betalingen"
+
+#. module: supplier_bank_change_approval
+#. odoo-python
+#: code:addons/supplier_bank_change_approval/models/supplier_bank_change_approval.py:0
+#: code:addons/supplier_bank_change_approval/models/supplier_bank_change_approval.py:0
+#, python-format
+msgid "Please approve the Bank account [ %s ] to proceed further !"
+msgstr "Keur bankrekening [ %s ] goed om door te gaan!"
+
+#. module: supplier_bank_change_approval
+#: model:ir.model.fields,field_description:supplier_bank_change_approval.field_account_setup_bank_manual_config__state
+#: model:ir.model.fields,field_description:supplier_bank_change_approval.field_res_partner_bank__state
+msgid "Status"
+msgstr ""
