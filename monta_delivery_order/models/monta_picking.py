@@ -147,6 +147,7 @@ class PickingfromOdootoMonta(models.Model):
             "WebshopOrderId": self.monta_order_name,
             "Reference": self.client_order_ref or '',
             "Origin": config.origin,
+            "orderCreate": '',
             "ConsumerDetails":{
                 "DeliveryAddress": {
                         "Company": delivery_add.name,
@@ -183,7 +184,7 @@ class PickingfromOdootoMonta(models.Model):
                 "ShippingComment": self.shipping_comment or ''
             },
             "PlannedShipmentDate": planned_shipment_date,
-            "ShipOnPlannedShipmentDate": planned_shipment_date,
+            "ShipOnPlannedShipmentDate": True if planned_shipment_date else False,
             "Blocked": blocked,
             "BlockedMessage": blocked_msg,
             "Quarantaine": '',
@@ -225,7 +226,7 @@ class PickingfromOdootoMonta(models.Model):
         for sol in sale_obj.order_line:
             tax_obj = sol.tax_id[0] if sol.tax_id else self.env['account.tax']
             sol_item = {
-                "Quantity": sol.product_uom_qty,
+                "Quantity": int(sol.product_uom_qty),
                 "TaxPercentage": tax_obj.amount,
                 "TaxAmount": sol.price_tax,
                 "TaxDescription": tax_obj.name,
