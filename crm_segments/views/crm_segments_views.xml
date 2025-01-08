@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+            Segment 1
+    -->
+    <record id="view_segment_one_tree" model="ir.ui.view">
+         <field name="name">segment.one</field>
+         <field name="model">segment.one</field>
+         <field name="arch" type="xml">
+             <tree editable="bottom">
+                 <field name="sequence" widget="handle"/>
+                 <field name="name"/>
+             </tree>
+        </field>
+	</record>
+	
+	<record id="action_segment_one" model="ir.actions.act_window">
+        <field name="name">Segment 1</field>
+        <field name="res_model">segment.one</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+            Click to create a new Segment.
+            </p><p>
+            </p>
+        </field>
+    </record>
+
+    <!--
+            Segment 2
+    -->
+    <record id="view_segment_two_tree" model="ir.ui.view">
+     <field name="name">segment.two</field>
+     <field name="model">segment.two</field>
+     <field name="arch" type="xml">
+         <tree editable="bottom">
+             <field name="sequence" widget="handle"/>
+             <field name="name" required="1"/>
+         </tree>
+    </field>
+	</record>
+	
+	<record id="action_segment_two" model="ir.actions.act_window">
+    <field name="name">Segment 2</field>
+    <field name="res_model">segment.two</field>
+    <field name="view_mode">tree</field>
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+        Click to create a new Segment.
+        </p><p>
+        </p>
+    </field>
+    </record>
+
+    <!--
+            Segment 3
+    -->
+    <record id="view_segment_three_tree" model="ir.ui.view">
+         <field name="name">segment.three</field>
+         <field name="model">segment.three</field>
+         <field name="arch" type="xml">
+         <tree editable="bottom">
+             <field name="sequence" widget="handle"/>
+             <field name="name"/>
+         </tree>
+        </field>
+	</record>
+	
+	<record id="action_segment_three" model="ir.actions.act_window">
+        <field name="name">Segment 3</field>
+        <field name="res_model">segment.three</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+            Click to create a new Segment.
+            </p><p>
+            </p>
+        </field>
+    </record>
+
+    
+    <!--
+            Segment 4
+    -->
+    <record id="view_segment_four_tree" model="ir.ui.view">
+     <field name="name">segment.four</field>
+     <field name="model">segment.four</field>
+     <field name="arch" type="xml">
+         <tree editable="bottom">
+             <field name="sequence" widget="handle"/>
+             <field name="name"/>
+         </tree>
+    </field>
+	</record>
+	
+	<record id="action_segment_four" model="ir.actions.act_window">
+        <field name="name">Segment 4</field>
+        <field name="res_model">segment.four</field>
+        <field name="view_mode">tree</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+            Click to create a new Segment.
+            </p><p>
+            </p>
+        </field>
+    </record>
+
+
+	<menuitem id="main_menu_id"
+            parent="sale.menu_sale_config" groups="crm_segments.group_sale_segments"
+            sequence="4" name="Segments"/>
+
+        <menuitem id="menu_segment_one" parent="main_menu_id"
+                action="action_segment_one"
+                sequence="1"/>
+
+        <menuitem id="menu_segment_two" parent="main_menu_id"
+                action="action_segment_two"
+                sequence="2"/>
+
+        <menuitem id="menu_segment_three" parent="main_menu_id"
+                action="action_segment_three"
+                sequence="3"/>
+
+        <menuitem id="menu_segment_four" parent="main_menu_id"
+                action="action_segment_four"
+                sequence="4"/>
+
+
+	
+</odoo>
