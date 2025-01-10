@@ -1,0 +1,11 @@
+<odoo>
+  <data>
+      <record model="ir.ui.menu" id="base.menu_administration">
+            <field name="groups_id" eval="[(4, ref('user_management.group_user_management'))]"/>
+      </record>
+
+      <!--&lt;!&ndash;<menuitem id="base.menu_action_res_users" parent="base.menu_users,group_user_management"/>&ndash;&gt;-->
+      <!--<menuitem id="base.menu_action_res_groups" groups="base.group_no_one,group_user_management"/>-->
+
+  </data>
+</odoo>

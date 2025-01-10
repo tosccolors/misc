@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_users_mgmt,access_res_users_mgmt,base.model_res_users,"group_user_management",1,1,1,1
+access_res_users_mgmt_cmp,access_res_users_mgmt_cmp,base.model_res_company,"group_user_management",1,1,1,1
+access_res_users_role_mgmt,access_res_users_role_mgmt,base_user_role.model_res_users_role,"group_user_management",1,1,1,1
+access_res_users_role_line_mgmt,access_res_users_role_line_mgmt,base_user_role.model_res_users_role_line,"group_user_management",1,1,1,1
+access_wizard_create_role_from_user_mgmt,access_wizard_create_role_from_user_mgmt,base_user_role.model_wizard_create_role_from_user,"group_user_management",1,1,1,1
+
