@@ -24,7 +24,6 @@ class AccountMove(models.Model):
             # Copy 'ref' to 'payment_reference'
             record.payment_reference = record.ref
 
-    @api.multi
     def request_validation(self):
         # Run pre-validation checks
         self._precheck_validation()
