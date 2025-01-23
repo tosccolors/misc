@@ -82,7 +82,7 @@ class Payment(models.Model):
     def _check_vendor_Bank(self):
         "Check if Vendor Bank account has been confirmed"
         for case in self:
-            if case.partner_bank_id and self.partner_id.is_supplier:
+            if case.partner_bank_id and case.partner_id.is_supplier:
                 if case.partner_bank_id.state != 'confirmed':
                     raise ValidationError(
                         _("Please approve the Bank account [ %s ] to proceed further !")
