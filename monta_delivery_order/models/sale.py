@@ -29,8 +29,9 @@ class Sale(models.Model):
                 missing_attribute.append('Name')
             if not self.partner_shipping_id.street:
                 missing_attribute.append('Street')
-            if not self.partner_shipping_id.street_number:
-                missing_attribute.append('Street Number')
+# TODO: temporarily disabled until street number parsing is fixed
+#            if not self.partner_shipping_id.street_number:
+#                missing_attribute.append('Street Number')
             if not self.partner_shipping_id.zip:
                 missing_attribute.append('Zip')
             if not self.partner_shipping_id.city:
