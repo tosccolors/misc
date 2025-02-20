@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="auditfile_template_inherit" inherit_id="l10n_nl_xaf_auditfile_export.auditfile_template">
+
+
+        <xpath expr='//companyIdent' position="replace">
+            <t t-set="cou" t-value="(self.operating_unit_id.partner_id if self.operating_unit_id else self.company_id)"/>
+
+            <companyIdent><t
+                t-esc="cou.coc_registration_number if self.operating_unit_id else cou.company_registry"
+                t-options='{"widget": "auditfile.string35"}'
+            /></companyIdent>
+        </xpath>
+
+        <xpath expr='//companyName' position="replace" >
+            <companyName><t
+                t-esc="self.operating_unit_id.name if self.operating_unit_id else cou.name"
+                t-options='{"widget": "auditfile.string999"}'
+            /></companyName>
+        </xpath>
+
+        <xpath expr='//taxRegistrationCountry' position="replace">
+            <taxRegistrationCountry><t
+                t-esc="cou.country_id.code"
+            /></taxRegistrationCountry>
+        </xpath>
+
+        <xpath expr='//taxRegIdent' position="replace">
+            <taxRegIdent><t
+                    t-esc="cou.vat"
+                    t-options='{"widget": "auditfile.string30"}'
+                /></taxRegIdent>
+        </xpath>
+
+        <xpath expr='//streetAddress' position="replace">
+            <streetAddress>
+                <streetname><t
+                                t-esc="cou.street_name if self.operating_unit_id else cou.street"
+                                t-options='{"widget": "auditfile.string999"}'
+                            /></streetname>
+                <number />
+                <numberExtension />
+                <property />
+                <city><t
+                                t-esc="cou.city"
+                                t-options='{"widget": "auditfile.string50"}'
+                            /></city>
+                <postalCode><t
+                                t-esc="cou.zip"
+                                t-options='{"widget": "auditfile.string15"}'
+                            /></postalCode>
+                <region><t
+                                t-esc="cou.state_id.name"
+                                t-options='{"widget": "auditfile.string50"}'
+                            /></region>
+                <country t-if="cou.country_id"><t
+                                t-esc="cou.country_id.code"
+                            /></country>
+            </streetAddress>
+        </xpath>
+
+    </template>
+
+
+</odoo>
