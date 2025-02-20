@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <!--
+            Auditfile: (tree)
+    -->
+    <record id="tree_xaf_auditfile_export_inherit" model="ir.ui.view">
+        <field name="model">xaf.auditfile.export</field>
+        <field name="inherit_id" ref="l10n_nl_xaf_auditfile_export.tree_xaf_auditfile_export" />
+        <field name="arch" type="xml">
+            <field name="date_generated" position="after">
+                <field
+                    name="operating_unit_id"
+                    groups="operating_unit.group_multi_operating_unit"
+                />
+            </field>
+        </field>
+    </record>
+
+    <!--
+            Auditfile: (form)
+    -->
+    <record id="form_xaf_auditfile_export_inherit" model="ir.ui.view">
+        <field name="model">xaf.auditfile.export</field>
+        <field name="inherit_id" ref="l10n_nl_xaf_auditfile_export.form_xaf_auditfile_export" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field
+                    name="operating_unit_id"
+                    options="{'no_create': True}"
+                    attrs="{'readonly': [('auditfile', '!=', False)]}"
+                    groups="operating_unit.group_multi_operating_unit"
+                />
+            </field>
+        </field>
+    </record>
+
+
+
+</odoo>
