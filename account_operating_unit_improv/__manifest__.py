@@ -7,6 +7,7 @@
     "depends": [
         'account_operating_unit',
         'account_reconciliation_widget',
+        'account_financial_report',
     ],
     "data": [
         "views/account_move.xml",
