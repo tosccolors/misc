@@ -13,11 +13,18 @@ class AccountMove(models.Model):
 
     @api.onchange("operating_unit_id")
     def _onchange_operating_unit(self):
-        """Keep lines' OUs regardless of changed move OU"""
+        """
+        Keep lines' OUs regardless of changed move OU.
+        Also keep journal if it didn't have an OU, as super will overwrite it with one
+        that does, which is undesired behavior.
+        """
         line2ou = {line: line.operating_unit_id for line in self.line_ids}
+        journal = self.journal_id
         result = super()._onchange_operating_unit()
         for line in self.line_ids:
             line.operating_unit_id = line2ou[line]
+        if journal and not journal.operating_unit_id:
+            self.journal_id = journal
         return result
 
     @api.onchange("invoice_line_ids")
