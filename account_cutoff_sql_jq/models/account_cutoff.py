@@ -69,7 +69,11 @@ class AccountCutoff(models.Model):
                 'debit': counterpart_amount < 0 and counterpart_amount * -1 or 0,
                 'credit': counterpart_amount >= 0 and counterpart_amount or 0,
             }
-            if "analytic_distribution" in dict:
+            add_analytic = (
+                "analytic_policy" not in self.cutoff_account_id._fields
+                or self.cutoff_account_id.analytic_policy != "never"
+            )
+            if "analytic_distribution" in dict and add_analytic:
                 if isinstance(dict["analytic_distribution"], str):
                     vals['analytic_distribution'] = json.loads(dict["analytic_distribution"])
                 else:
