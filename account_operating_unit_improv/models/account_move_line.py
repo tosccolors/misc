@@ -26,3 +26,10 @@ class AccountMoveLine(models.Model):
 
         moves.invalidate_cache(fnames=['operating_unit_id'], ids=moves.ids)
         return result
+
+    def _create_exchange_difference_move(self):
+        """
+        Make sure exchange difference move has self's OU set
+        """
+        self = self.with_context(default_operating_unit_id=self.operating_unit_id[:1].id)
+        return super()._create_exchange_difference_move()
