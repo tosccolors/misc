@@ -1,0 +1,11 @@
+<odoo>
+    <record id="view_account_type_form" model="ir.ui.view">
+        <field name="model">account.account.type</field>
+        <field name="inherit_id" ref="account_analytic_required.view_account_type_form" />
+        <field name="arch" type="xml">
+            <field name="property_analytic_policy" position="after">
+                <field name="property_default_account" attrs="{'invisible': [('property_analytic_policy', '!=', 'always')]}" />
+            </field>
+        </field>
+    </record>
+</odoo>
