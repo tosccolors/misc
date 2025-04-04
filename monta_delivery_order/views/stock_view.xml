@@ -7,9 +7,9 @@
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
             <xpath expr="//button[@name='action_cancel']" position="after">
-                <button string="Update Monta Interface" class="btn btn-secondary"
+                <button string="Send to Monta" class="btn btn-secondary"
                         attrs="{'invisible': [('state', 'in', ('done','cancel'))]}"
-                        name="action_update_monta_interface" type="object"/>
+                        name="action_send2monta_interface" type="object"/>
             </xpath>
             <xpath expr="//page[last()]" position="after">
                 <page name="monta_interface" string="Monta POST Response">
