@@ -16,3 +16,14 @@ class Purchase(models.Model):
         for pick in self.picking_ids:
             pick.transfer_picking_to_monta()
         return res
+
+
+    def write(self, vals):
+        res = super().write(vals)
+
+        for record in self:
+            # Exclusive for updating Monta Shipment date
+            if 'date_planned' in vals:
+                for pick in self.picking_ids:
+                    pick.scheduled_date = vals['date_planned']
+        return res
