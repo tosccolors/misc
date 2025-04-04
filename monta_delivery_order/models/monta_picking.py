@@ -86,6 +86,9 @@ class PickingfromOdootoMonta(models.Model):
     batches_status = fields.Selection([('no_batches', 'No Batches Received'), ('received', 'Batches Received'),
                               ('partial_received', 'Partial Batches Received')], string='Batch Status', readonly=True, store=True, compute=_compute_batch_status)
 
+    method_type = fields.Selection([('create', 'CREATE'), ('update', 'Update')], help="API method type"
+                                   , string='API Method', default='create', copy=False)
+
     def write_response(self, message=None):
         if message is None:
             return
@@ -124,6 +127,40 @@ class PickingfromOdootoMonta(models.Model):
                     if line_dt:
                         monta_lines.append((1, line.id, {'monta_inbound_forecast_id':line_dt['InboundForecastId']}))
                 dic['monta_stock_move_ids'] = monta_lines
+                self.message_post(body=_("Original Response ===> %s" % (response)))
+                self.message_post(body=_("JSON Response ===> %s" % (response_data)))
+            self.write(dic)
+        except Exception as e:
+            raise AccessError(
+                _('Error Monta Interface call: %s') % (e))
+        return response
+
+    def update_monta_interface(self, request, method):
+        config = self.env['monta.config'].search([], limit=1)
+
+        payload = self.json_payload
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        url = config.host
+
+        if url.endswith("/"):
+            url += method + '/' + self.monta_order_name
+        else:
+            url += '/' + method + '/' + self.monta_order_name
+        user = config.username
+        pwd = config.password
+        response = False
+        try:
+            response = requests.request(request, url, headers=headers, data=payload, auth=HTTPBasicAuth(user, pwd))
+            if response.status_code == 200 and 'GET' in method:
+                return response
+
+            dic = {
+                'monta_response_code': response.status_code,
+                'monta_response_message': response.text,
+            }
             self.write(dic)
         except Exception as e:
             raise AccessError(
@@ -299,17 +336,38 @@ class PickingfromOdootoMonta(models.Model):
             response = self.call_monta_interface("POST", "inboundforecast/group")
             return response
 
-    def generate_payload(self):
-        if self.picking_type_code == 'outgoing' and self.sale_id:
-            self.monta_good_receipt_content(True)
-        elif self.picking_type_code == 'incoming' and self.purchase_id:
-            self.monta_inbound_forecast_content(True)
+
+    def monta_inbound_forecast_update_content(self, button_action=False):
+        "Update content, for now it would be for Planned Shipment"
+        planned_shipment_date = self.planned_shipment_date.isoformat()
+        payload = {
+                "ExpectedDeliveryDate": planned_shipment_date
+            }
+        payload = json.dumps(payload)
+        self.write({"json_payload": payload})
+        response = self.update_monta_interface("PUT", "inboundforecast/group")
+        return response
+
+    # def generate_payload(self):
+    #     if self.mothod_type == 'create':
+    #         if self.picking_type_code == 'outgoing' and self.sale_id:
+    #             self.monta_good_receipt_content(True)
+    #         elif self.picking_type_code == 'incoming' and self.purchase_id:
+    #             self.monta_inbound_forecast_content(True)
 
     def action_call_monta_interface(self):
+        # FIXME: Not needed, commented in the view
         if self.picking_type_code == 'outgoing' and self.sale_id:
             self.call_monta_interface("POST", "order")
         elif self.picking_type_code == 'incoming' and self.purchase_id:
             self.call_monta_interface("POST", "inboundforecast/group")
+
+    # def action_update_monta_interface(self):
+    #     # TODO: If Outbound update required in future:
+    #     # if self.picking_type_code == 'outgoing' and self.sale_id:
+    #     #     self.update_monta_interface("PUT", "order")
+    #     if self.picking_type_code == 'incoming' and self.purchase_id:
+    #         self.update_monta_interface("PUT", "inboundforecast/group")
 
     def convert_TZ_UTC(self, TZ_datetime):
         shipped_date = datetime.strptime(TZ_datetime, '%Y-%m-%dT%H:%M:%S.%f').strftime('%Y-%m-%d %H:%M:%S')

@@ -7,8 +7,9 @@
             <field name="arch" type="xml">
                 <form string="Monta Picking" create="0" edit="0" delete="0" duplicate="0">
                     <header>
-                        <button string="Generate Payload" name="generate_payload" type="object"/>
-                        <button string="Call Monta Interface" name="action_call_monta_interface" type="object"/>
+<!--                        <button string="Generate Payload" name="generate_payload" type="object"/>-->
+<!--                        <button string="Call Monta Interface" name="action_call_monta_interface" type="object"/>-->
+<!--                        <button string="Update Monta Interface" name="action_update_monta_interface" type="object" attrs="{'invisible':[('method_type','!=','update')]}"/>-->
                         <field name="status" widget="statusbar" statusbar_visible="draft,successful,failed" statusbar_colors='{"draft":"blue","successful":"blue", "failed":"red"}'/>
                     </header>
                     <sheet>
@@ -30,6 +31,7 @@
                                 <field name="planned_shipment_date" string="Planned Date"/>
                                 <field name="shipped" string="Shipped or Received Date"/>
                                 <field name="monta_order_name" readonly="True"/>
+                                <field name="method_type" readonly="True"/>
                             </group>
                         </group>
                         <group>
@@ -105,11 +107,15 @@
                                 <field name="shipping_comment"/>
                             </page>
                             <page name="payload" string="Monta Payload">
-                                <field name="json_payload" readonly="True"/>
+                                <group>
+                                    <field name="json_payload" readonly="True"/>
+                                </group>
                             </page>
-                            <!--<page name="monta_response_message" string="Monta Response Message">-->
-                                <!--<field name="monta_response_message" readonly="True"/>-->
-                            <!--</page>-->
+                            <page name="monta_response_message" string="Monta Response Message">
+                                <group>
+                                    <field name="monta_response_message" readonly="True"/>
+                                </group>
+                            </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">

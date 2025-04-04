@@ -1,15 +1,23 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 import json
+from odoo.exceptions import UserError
 
 class Picking(models.Model):
     _inherit = 'stock.picking'
 
-    monta_log_id = fields.Many2one('picking.from.odooto.monta', copy=False)
-    response_code = fields.Integer(related="monta_log_id.monta_response_code", string='Response Code')
-    response_message = fields.Text(related="monta_log_id.monta_response_message", string='Response Message')
+    monta_log_id = fields.Many2one('picking.from.odooto.monta', copy=False, string="Monta Log (Create)")
+    response_code = fields.Integer(related="monta_log_id.monta_response_code", string='Response Code (Create)')
+    response_status = fields.Selection(related="monta_log_id.status", string='Response Status (Create)')
+    response_message = fields.Text(related="monta_log_id.monta_response_message", string='Response Message (Create)')
     monta_carrier_tracking_url = fields.Char(string='Monta Tracking URL')
+
+
+    update_monta_log_id = fields.Many2one('picking.from.odooto.monta', copy=False, string="Monta Log (Update)")
+    update_response_code = fields.Integer(related="update_monta_log_id.monta_response_code", string='Response Code (Update)')
+    update_response_status = fields.Selection(related="update_monta_log_id.status", string='Response Status (Update)')
+    update_response_message = fields.Text(related="update_monta_log_id.monta_response_message", string='Response Message (Update)')
 
     def transfer_picking_to_monta(self):
         monta_picking_obj = self.env['picking.from.odooto.monta']
@@ -30,6 +38,29 @@ class Picking(models.Model):
             monta_picking_id.monta_inbound_forecast_content()
         return monta_picking_id
 
+    def update_picking_to_monta(self):
+        """
+        Update Call to Monta, usually for change in Planned Date
+        """
+        monta_picking_obj = self.env['picking.from.odooto.monta']
+        if not (self.sale_id or self.purchase_id) or not self.monta_log_id:
+            return
+
+        if self.state in ('done', 'cancel'):
+            return
+
+        monta_picking_id = monta_picking_obj.create(
+            {'picking_id': self.id, 'status': 'draft', 'method_type': 'update'})
+
+        self.write({'update_monta_log_id': monta_picking_id})
+
+        # TODO: If Outbound update required in future:
+        # if self.picking_type_code == 'outgoing' and self.sale_id:
+        #     monta_picking_id.monta_good_receipt_content()
+
+        if self.picking_type_code == 'incoming' and self.purchase_id:
+            monta_picking_id.monta_inbound_forecast_update_content()
+        return monta_picking_id
 
     def button_validate(self):
         res = super().button_validate()
@@ -89,3 +120,20 @@ class Picking(models.Model):
                                                 'notification_type': 'inbox'})]
 
         return
+
+
+    def action_update_monta_interface(self):
+        """ Call Update to Monta"""
+        if not self.monta_log_id:
+            return
+
+        return self.update_picking_to_monta()
+
+
+    def write(self, vals):
+        res = super().write(vals)
+        for record in self:
+            # Call to update Monta
+            if 'scheduled_date' in vals:
+                record.update_picking_to_monta()
+        return res

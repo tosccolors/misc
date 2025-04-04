@@ -6,13 +6,28 @@
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_cancel']" position="after">
+                <button string="Update Monta Interface" class="btn btn-secondary"
+                        attrs="{'invisible': [('state', 'in', ('done','cancel'))]}"
+                        name="action_update_monta_interface" type="object"/>
+            </xpath>
             <xpath expr="//page[last()]" position="after">
                 <page name="monta_interface" string="Monta POST Response">
                     <group>
-                        <field name="monta_log_id" readonly="True"/>
-                        <field name="response_code"/>
-                        <field name="response_message"/>
-                        <field name="monta_carrier_tracking_url" readonly="True"/>
+
+                        <group string="Create Log">
+                            <field name="monta_log_id" readonly="True"/>
+                            <field name="response_code"/>
+                            <field name="response_status"/>
+                            <field name="response_message" groups="base.group_no_one"/>
+                            <field name="monta_carrier_tracking_url" readonly="True"/>
+                        </group>
+                        <group string="Update Log">
+                            <field name="update_monta_log_id" readonly="True"/>
+                            <field name="update_response_code"/>
+                            <field name="update_response_status"/>
+                            <field name="update_response_message" groups="base.group_no_one"/>
+                        </group>
                     </group>
                 </page>
             </xpath>
