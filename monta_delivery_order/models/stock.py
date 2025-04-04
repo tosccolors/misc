@@ -122,12 +122,19 @@ class Picking(models.Model):
         return
 
 
-    def action_update_monta_interface(self):
+    def action_send2monta_interface(self):
         """ Call Update to Monta"""
-        if not self.monta_log_id:
+
+        if self.state in ('done', 'cancel'):
             return
 
-        return self.update_picking_to_monta()
+        # Call Create:
+        if not self.monta_log_id or self.monta_log_id.monta_response_code != 200:
+            return self.transfer_picking_to_monta()
+
+        # Call Update:
+        if self.monta_log_id:
+            return self.update_picking_to_monta()
 
 
     def write(self, vals):
