@@ -387,6 +387,10 @@ class PickingfromOdootoMonta(models.Model):
         method = "order/%s/batches"
         monta_move_obj = odoo_outbound_lines_obj = self.env['stock.move.from.odooto.monta']
         monta_outbond_obj = self.env['monta.stock.lot']
+        prod_obj = self.env['product.product']
+        emailTemplate = self.env.ref("monta_delivery_order.email_template_notify_monta_exception", raise_if_not_found=False)
+
+
         for obj in self.search([('picking_id.picking_type_code', '=', 'outgoing'),
                                 ('picking_id.state', 'not in', ('draft', 'done', 'cancel')), ('status', '=', 'successful')]):
             try:
@@ -426,8 +430,21 @@ class PickingfromOdootoMonta(models.Model):
                             [('product_id.default_code', '=', sku), ('monta_move_id.monta_order_name', '=', obj.monta_order_name)])
                         if odoo_outbound_line:
                             odoo_outbound_lines_obj |= odoo_outbound_line
-                            batch_ref = batch_content['Title']
-                            batch_id = batch_content['Id']
+
+                            batch_ref = batch_id = ''
+                            if batch_content:
+                                batch_ref = batch_content['Title']
+                                batch_id = batch_content['Id']
+
+                            # Non tracking products:
+                            if not batch_ref:
+                                product = prod_obj.search([('default_code', '=', sku)])
+                                if product.product_tmpl_id.tracking == 'none':
+                                    continue
+                                else:
+                                    # Notify Salesperson:
+                                    emailTemplate.send_mail(obj.id, force_send=True)
+                                    continue
 
                             batch_qty_total = 0
                             batch_ids = odoo_outbound_line.monta_outbound_batch_ids

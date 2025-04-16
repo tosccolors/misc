@@ -53,5 +53,41 @@
         <value eval="{'noupdate': True}" />
     </function>
 
+
+
+    <!--
+        Mail: Monta: Notify unprocessed Batch details
+    -->
+    <record id="email_template_notify_monta_exception" model="mail.template">
+            <field name="name">NUUD | Notify salesperson: missing batch information in Montaportal</field>
+            <field name="model_id" ref="model_picking_from_odooto_monta"/>
+            <field name="subject">Error: missing batch information in Montaportal for order {{ object.monta_order_name or 'n/a' }}</field>
+            <field name="email_from">{{ (object.sale_id.company_id.email_formatted or       user.email_formatted) }}</field>
+            <field name="partner_to">{{ object.sale_id.user_id.id }}</field>
+            <field name="description">Used to notify salespeople when outbound orders are failed to be processed in Odoo due to Batch issue</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="box-sizing:border-box;margin: 0px; padding: 0px; font-size: 13px;">
+
+        Hi <t t-if="object.sale_id.user_id.name">
+                <span style="font-weight:bold;" t-out="object.sale_id.user_id.name or ''"></span>,
+            </t>
+        <br/><br/>
+        Unfortunately, order <span style="font-weight:bold;" t-out="object.monta_order_name or ''"></span> cannot be processed in Odoo due to missing batch information in the Monta portal.
+        Please reach out to the Monta Servicedesk to make sure that the required batch information is added to this order in the Monta portal.
+        Once the batch information is complete in the Monta portal, the order will be processed automatically in Odoo.
+        <br/><br/>
+        Thank you!
+
+        <br/>
+    </p><div style="text-align: left;"><strong style="box-sizing:border-box;font-weight:500;">nuud | fresh armpits worldwide</strong></div>
+    <p style="margin:0px 0 12px 0;box-sizing:border-box;"></p>
+</div>
+            </field>
+            <field name="lang">{{ object.sale_id.user_id.lang }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+
 </data>
 </odoo>
