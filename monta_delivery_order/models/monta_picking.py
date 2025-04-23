@@ -480,7 +480,8 @@ class PickingfromOdootoMonta(models.Model):
                 _logger.info(
                     error_message
                 )
-                obj.picking_id.post_admin_notification(error_message, 'Outbound')
+                # obj.picking_id.post_admin_notification(error_message, 'Outbound')
+                obj.picking_id.message_post(body=_("%s" % (error_message)))
         if odoo_outbound_lines_obj:
             self.env['monta.inboundto.odoo.move'].validate_picking_from_monta_qty(outboundMoveData=odoo_outbound_lines_obj)
 
@@ -597,8 +598,23 @@ class MontaInboundtoOdooMove(models.Model):
 
                 if ('lot_name' in data) or ('lot_id' in data):
                     movelineObj = moveObj.move_line_ids
-                    moveObj.write({'move_line_ids': [(0, 0, data)]})
-                    return moveObj.move_line_ids-movelineObj
+
+                    # Update "Done Qty" - found matched Lot Moveline
+                    if ('lot_id' in data):
+                        mln = moveObj.move_line_ids.filtered(lambda x: x.lot_id.id == data['lot_id'])
+                        mln.qty_done = qty
+                    else:
+                        mln = moveObj.move_line_ids.filtered(lambda x: x.lot_id.name == data['lot_name'])
+                        mln.qty_done = qty
+
+                    # If Moveline not found, create New Line.
+                    if not mln.id:
+                        moveObj.write({'move_line_ids': [(0, 0, data)]})
+                        mln = moveObj.move_line_ids-movelineObj
+
+                    # moveObj.write({'move_line_ids': [(0, 0, data)]})
+                    # return moveObj.move_line_ids-movelineObj
+                    return mln
             except Exception as e:
                 _logger.info(
                     "\nError: Monta Assigning LOT %s,\n" % (e)
@@ -644,6 +660,13 @@ class MontaInboundtoOdooMove(models.Model):
                     except Exception as e:
                         msg += "Error: Outbound lot/serial number assigning: %s''!!\n" % (e)
 
+                # Non tracking products:
+                if not odoo_outbound_line.monta_outbound_batch_ids:
+                    product = moveObj.product_id
+                    if product.product_tmpl_id.tracking == 'none':
+                        mln = moveObj.move_line_ids.filtered(lambda x: x.product_id.id == product.id)
+                        mln.qty_done = odoo_outbound_line.ordered_quantity # FIXME: what if partial Qty shipped?
+
                 update_picking_msg[monta_log_id] = msg
                 monta_obj |= monta_log_id
 
@@ -660,6 +683,7 @@ class MontaInboundtoOdooMove(models.Model):
                 if pickObj.picking_type_code == 'incoming':
                     self.partial_validation_from_monta(pickObj, ctx)
                 else:
+                    # ctx.update({'picking_ids_not_to_backorder':pickObj.ids})
                     pickObj.with_context(ctx).button_validate()
                     
                 # _logger.info(
