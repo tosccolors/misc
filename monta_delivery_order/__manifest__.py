@@ -16,7 +16,7 @@
     # Check https://github.com/odoo/odoo/blob/10.0/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Stock',
-    'version': '16.0.3.3',
+    'version': '16.0.3.5',
 
     # any module necessary for this one to work correctly
     'depends': ['sale_stock', 'partner_firstname', 'purchase_stock', 'base_address_extended',
@@ -36,6 +36,7 @@
         'views/delivery_carrier_view.xml',
         'views/monta_delivery_block_view.xml',
         'views/sale_view.xml',
+        'views/purchase_views.xml',
         'views/menuitem.xml',
         'views/delivery_portal_template.xml',
         # 'views/templates.xml',

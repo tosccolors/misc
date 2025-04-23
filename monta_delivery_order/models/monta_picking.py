@@ -438,8 +438,10 @@ class PickingfromOdootoMonta(models.Model):
 
                             # Non tracking products:
                             if not batch_ref:
-                                product = prod_obj.search([('default_code', '=', sku)])
-                                if product.product_tmpl_id.tracking == 'none':
+                                # product = prod_obj.search([('default_code', '=', sku)])
+                                # if product.product_tmpl_id.tracking == 'none':
+                                if odoo_outbound_line.product_tracking == 'none':
+                                    odoo_outbound_line.done_quantity = qty
                                     continue
                                 else:
                                     # Notify Salesperson:
@@ -496,6 +498,8 @@ class PickingLinefromOdootoMonta(models.Model):
     monta_move_id = fields.Many2one('picking.from.odooto.monta', required=True)
     product_id = fields.Many2one('product.product', related='move_id.product_id')
     ordered_quantity = fields.Float(related='move_id.product_qty', string='Ordered Quantity')
+    done_quantity = fields.Float(string='Done Quantity')
+    product_tracking = fields.Selection(related='move_id.product_id.tracking', store=True)
     monta_inbound_forecast_id = fields.Char("Monta Inbound Forecast Id")
     monta_inbound_line_ids = fields.One2many('monta.inboundto.odoo.move', 'monta_move_line_id')
     monta_outbound_batch_ids = fields.One2many('monta.stock.lot', 'monta_outbound_id')
