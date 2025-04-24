@@ -16,7 +16,7 @@
     # Check https://github.com/odoo/odoo/blob/10.0/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Stock',
-    'version': '16.0.3.6',
+    'version': '16.0.3.7',
 
     # any module necessary for this one to work correctly
     'depends': ['sale_stock', 'partner_firstname', 'purchase_stock', 'base_address_extended',
