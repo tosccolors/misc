@@ -432,43 +432,48 @@ class PickingfromOdootoMonta(models.Model):
                             odoo_outbound_lines_obj |= odoo_outbound_line
 
                             batch_ref = batch_id = ''
+
+                            # tracking products
                             if batch_content:
                                 batch_ref = batch_content['Title']
                                 batch_id = batch_content['Id']
 
+                                batch_qty_total = 0
+                                batch_ids = odoo_outbound_line.monta_outbound_batch_ids
+                                batch_obj = odoo_outbound_line.monta_outbound_batch_ids.\
+                                    search([('id', 'in', batch_ids.ids),
+                                            ('batch_id', '=', batch_id),
+                                            ('batch_ref', '=', batch_ref)])
+                                if batch_obj:
+                                    batch_qty_total = sum(batch_obj.mapped('batch_quantity'))
+
+                                if batch_qty_total >= odoo_outbound_line.ordered_quantity:
+                                    continue
+
+                                data = {'batch_id':batch_id,
+                                        'batch_ref':batch_ref,
+                                        'batch_quantity':qty,
+                                        'monta_outbound_id': odoo_outbound_line.id}
+
+                                if shipped_date:
+                                    data.update({'monta_create_date': shipped_date})
+                                # batch created
+                                monta_outbond_obj.create(data)
+
                             # Non tracking products:
-                            if not batch_ref:
-                                # product = prod_obj.search([('default_code', '=', sku)])
-                                # if product.product_tmpl_id.tracking == 'none':
+                            elif not batch_ref:
                                 if odoo_outbound_line.product_tracking == 'none':
                                     odoo_outbound_line.done_quantity = qty
-                                    continue
+                                    if shipped_date:
+                                        odoo_outbound_line.monta_shipped_date = shipped_date
                                 else:
                                     # Notify Salesperson:
                                     emailTemplate.send_mail(obj.id, force_send=True)
                                     continue
 
-                            batch_qty_total = 0
-                            batch_ids = odoo_outbound_line.monta_outbound_batch_ids
-                            batch_obj = odoo_outbound_line.monta_outbound_batch_ids.\
-                                search([('id', 'in', batch_ids.ids),
-                                        ('batch_id', '=', batch_id),
-                                        ('batch_ref', '=', batch_ref)])
-                            if batch_obj:
-                                batch_qty_total = sum(batch_obj.mapped('batch_quantity'))
+                                if qty > odoo_outbound_line.ordered_quantity:
+                                    continue
 
-                            if batch_qty_total >= odoo_outbound_line.ordered_quantity:
-                                continue
-
-                            data = {'batch_id':batch_id,
-                                    'batch_ref':batch_ref,
-                                    'batch_quantity':qty,
-                                    'monta_outbound_id': odoo_outbound_line.id}
-
-                            if shipped_date:
-                                data.update({'monta_create_date': shipped_date})
-                            # batch created
-                            monta_outbond_obj.create(data)
                     obj.write_response(message)
 
                 if obj.picking_id.sale_id and track_dic:
@@ -498,7 +503,8 @@ class PickingLinefromOdootoMonta(models.Model):
     monta_move_id = fields.Many2one('picking.from.odooto.monta', required=True)
     product_id = fields.Many2one('product.product', related='move_id.product_id')
     ordered_quantity = fields.Float(related='move_id.product_qty', string='Ordered Quantity')
-    done_quantity = fields.Float(string='Done Quantity')
+    done_quantity = fields.Float(string='Done Quantity', help="Shipped Qty, captured for Non Tracking SKU")
+    monta_shipped_date = fields.Datetime(string="Monta Shipped Date", help="Monta Shipped date, captured for Non Tracking SKU")
     product_tracking = fields.Selection(related='move_id.product_id.tracking', store=True)
     monta_inbound_forecast_id = fields.Char("Monta Inbound Forecast Id")
     monta_inbound_line_ids = fields.One2many('monta.inboundto.odoo.move', 'monta_move_line_id')
@@ -520,12 +526,17 @@ class MontaInboundtoOdooMove(models.Model):
     def apply_backdate(self, pickObj):
         date = False
         if pickObj.picking_type_code == 'outgoing':
+
             date = max(pickObj.monta_log_id.monta_stock_move_ids.
-                       monta_outbound_batch_ids.mapped('monta_create_date'))
+                       monta_outbound_batch_ids.mapped('monta_create_date')
+                   + pickObj.monta_log_id.monta_stock_move_ids.monta_shipped_date
+                   , default=None)
 
         elif pickObj.picking_type_code == 'incoming':
             date = max(pickObj.monta_log_id.monta_stock_move_ids.
-                       monta_inbound_line_ids.monta_batch_ids.mapped('monta_create_date'))
+                       monta_inbound_line_ids.monta_batch_ids.mapped('monta_create_date')
+                     , default=None)
+                        # FIXME: Check if Inbound needs NON tacking SKU shipped date?
         if date:
             pickObj.move_line_ids.write(
                 {
@@ -669,7 +680,7 @@ class MontaInboundtoOdooMove(models.Model):
                     product = moveObj.product_id
                     if product.product_tmpl_id.tracking == 'none':
                         mln = moveObj.move_line_ids.filtered(lambda x: x.product_id.id == product.id)
-                        mln.qty_done = odoo_outbound_line.ordered_quantity # FIXME: what if partial Qty shipped?
+                        mln.qty_done = odoo_outbound_line.done_quantity
 
                 update_picking_msg[monta_log_id] = msg
                 monta_obj |= monta_log_id
