@@ -527,10 +527,18 @@ class MontaInboundtoOdooMove(models.Model):
         date = False
         if pickObj.picking_type_code == 'outgoing':
 
-            date = max(pickObj.monta_log_id.monta_stock_move_ids.
-                       monta_outbound_batch_ids.mapped('monta_create_date')
-                   + pickObj.monta_log_id.monta_stock_move_ids.monta_shipped_date
-                   , default=None)
+            allDates = []
+            moves = pickObj.monta_log_id.monta_stock_move_ids
+
+            # Batched SKUs: Shipped dates
+            if moves.monta_outbound_batch_ids.mapped('monta_create_date'):
+                allDates += moves.monta_outbound_batch_ids.mapped('monta_create_date')
+
+            # Non Tracking SKUs: Shipped dates
+            if moves.mapped('monta_shipped_date'):
+                allDates += moves.mapped('monta_shipped_date')
+
+            date = max(allDates, default=None)
 
         elif pickObj.picking_type_code == 'incoming':
             date = max(pickObj.monta_log_id.monta_stock_move_ids.
