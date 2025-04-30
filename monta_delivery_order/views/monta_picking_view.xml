@@ -52,6 +52,7 @@
                                              <field name="product_tracking"/>
                                              <field name="ordered_quantity"/>
                                              <field name="done_quantity" attrs="{'invisible':[('product_tracking','!=', 'none')]}"/>
+                                             <field name="monta_shipped_date" attrs="{'invisible':[('product_tracking','!=', 'none')]}"/>
                                              <field name="monta_inbound_forecast_id"/>
                                         </group>
                                          <notebook>
