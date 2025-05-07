@@ -5,6 +5,7 @@
     "website": "http://www.tosc.nl",
     "author": "The Open Source Company",
     "depends": [
+        'account_asset_operating_unit',
         'account_operating_unit',
         'account_reconciliation_widget',
         'account_financial_report',
