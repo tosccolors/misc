@@ -771,9 +771,6 @@ class MontaInboundtoOdooMove(models.Model):
                         [('product_id.default_code', '=', sku),
                          ('monta_move_id.monta_order_name', '=', inboundRef)])
 
-
-                    if inboundRef != 'P00206 MI00203': continue
-
                     if odoo_inbound_obj:
                         picking_obj = odoo_inbound_obj.move_id.picking_id
                         message = 'Inbound Schedular Batches Response: '+json.dumps(dt)
