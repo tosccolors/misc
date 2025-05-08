@@ -62,7 +62,7 @@
             <field name="name">NUUD | Notify salesperson/buyer: missing batch information in Montaportal</field>
             <field name="model_id" ref="model_picking_from_odooto_monta"/>
             <field name="subject">Error: missing batch information in Montaportal for order {{ object.monta_order_name or 'n/a' }}</field>
-            <field name="email_from">{{ (object.sale_id.company_id.email_formatted if object.sale_id else object.purchase_id.company_id.email_formatted or  user.email_formatted) }}</field>
+            <field name="email_from">{{ ((object.sale_id.company_id.email_formatted if object.sale_id else object.purchase_id.company_id.email_formatted) or  user.email_formatted) }}</field>
             <field name="partner_to">{{ object.sale_id.user_id.id if object.sale_id else object.purchase_id.user_id.id}}</field>
             <field name="description">Used to notify salespeople/buyer when outbound/inbound orders are failed to be processed in Odoo due to Batch issue</field>
             <field name="body_html" type="html">
