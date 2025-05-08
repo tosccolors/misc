@@ -348,15 +348,13 @@ class PickingfromOdootoMonta(models.Model):
         response = self.update_monta_interface("PUT", "inboundforecast/group")
         return response
 
-    # def generate_payload(self):
-    #     if self.mothod_type == 'create':
-    #         if self.picking_type_code == 'outgoing' and self.sale_id:
-    #             self.monta_good_receipt_content(True)
-    #         elif self.picking_type_code == 'incoming' and self.purchase_id:
-    #             self.monta_inbound_forecast_content(True)
+    def generate_payload(self):
+        if self.picking_type_code == 'outgoing' and self.sale_id:
+            self.monta_good_receipt_content(True)
+        elif self.picking_type_code == 'incoming' and self.purchase_id:
+            self.monta_inbound_forecast_content(True)
 
     def action_call_monta_interface(self):
-        # FIXME: Not needed, commented in the view
         if self.picking_type_code == 'outgoing' and self.sale_id:
             self.call_monta_interface("POST", "order")
         elif self.picking_type_code == 'incoming' and self.purchase_id:

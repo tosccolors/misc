@@ -7,9 +7,8 @@
             <field name="arch" type="xml">
                 <form string="Monta Picking" create="0" edit="0" delete="0" duplicate="0">
                     <header>
-<!--                        <button string="Generate Payload" name="generate_payload" type="object"/>-->
-<!--                        <button string="Call Monta Interface" name="action_call_monta_interface" type="object"/>-->
-<!--                        <button string="Update Monta Interface" name="action_update_monta_interface" type="object" attrs="{'invisible':[('method_type','!=','update')]}"/>-->
+                        <button string="Generate Payload" name="generate_payload" type="object" groups="base.group_no_one"/>
+                        <button string="Call Monta Interface" name="action_call_monta_interface" type="object" groups="base.group_no_one"/>
                         <field name="status" widget="statusbar" statusbar_visible="draft,successful,failed" statusbar_colors='{"draft":"blue","successful":"blue", "failed":"red"}'/>
                     </header>
                     <sheet>
