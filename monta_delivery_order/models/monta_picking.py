@@ -752,6 +752,9 @@ class MontaInboundtoOdooMove(models.Model):
         config = self.env['monta.config'].search([], limit=1)
         if config.inbound_id:
             method = "inbounds?sinceid=" + config.inbound_id
+
+        emailTemplate = self.env.ref("monta_delivery_order.email_template_notify_monta_exception", raise_if_not_found=False)
+
         response = self.env['picking.from.odooto.monta'].call_monta_interface("GET", method)
         if response.status_code == 200:
             monta_inbound_ids = []
@@ -794,6 +797,10 @@ class MontaInboundtoOdooMove(models.Model):
                             if self.product_id.product_tmpl_id.tracking == 'none':
                                 odoo_inbound_obj.done_quantity = inboundQty
                                 odoo_inbound_obj.monta_shipped_date = monta_create_date
+                            else:
+                                # Notify Buyer:
+                                emailTemplate.send_mail(odoo_inbound_obj.monta_move_id.id, force_send=True)
+                                continue
 
                         self.create(inbound_data)
 
