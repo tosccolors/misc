@@ -7,9 +7,8 @@
             <field name="arch" type="xml">
                 <form string="Monta Picking" create="0" edit="0" delete="0" duplicate="0">
                     <header>
-<!--                        <button string="Generate Payload" name="generate_payload" type="object"/>-->
-<!--                        <button string="Call Monta Interface" name="action_call_monta_interface" type="object"/>-->
-<!--                        <button string="Update Monta Interface" name="action_update_monta_interface" type="object" attrs="{'invisible':[('method_type','!=','update')]}"/>-->
+                        <button string="Generate Payload" name="generate_payload" type="object" groups="base.group_no_one"/>
+                        <button string="Call Monta Interface" name="action_call_monta_interface" type="object" groups="base.group_no_one"/>
                         <field name="status" widget="statusbar" statusbar_visible="draft,successful,failed" statusbar_colors='{"draft":"blue","successful":"blue", "failed":"red"}'/>
                     </header>
                     <sheet>
@@ -133,7 +132,8 @@
             <field name="model">picking.from.odooto.monta</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Monta Picking" create="0" edit="0" duplicate="0" delete="0">
+                <tree string="Monta Picking" create="0" edit="0" duplicate="0" delete="0" decoration-muted="picking_status in ('done','cancel')">
+                    <field name="create_date"/>
                     <field name="picking_id"/>
                     <field name="partner_delivery_address_id"/>
                     <field name="partner_invoice_address_id" />
@@ -142,7 +142,9 @@
                     <field name="planned_shipment_date" string="Planned Date"/>
                     <field name="shipped" string="Shipped or Received Date"/>
                     <field name="status" string="Sent To Monta status"/>
-                    <field name="picking_status" />
+                    <field name="picking_status" widget="badge" decoration-danger="picking_status=='cancel'" decoration-info="picking_status == 'assigned'"
+                           decoration-muted="picking_status == 'draft'" decoration-success="picking_status == 'done'"
+                           decoration-warning="picking_status not in ('draft','cancel','done','assigned')"/>
                     <field name="batches_status" />
                 </tree>
             </field>

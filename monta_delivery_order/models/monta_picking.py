@@ -127,8 +127,8 @@ class PickingfromOdootoMonta(models.Model):
                     if line_dt:
                         monta_lines.append((1, line.id, {'monta_inbound_forecast_id':line_dt['InboundForecastId']}))
                 dic['monta_stock_move_ids'] = monta_lines
-                self.message_post(body=_("Original Response ===> %s" % (response)))
-                self.message_post(body=_("JSON Response ===> %s" % (response_data)))
+                # self.message_post(body=_("Original Response ===> %s" % (response)))
+                # self.message_post(body=_("JSON Response ===> %s" % (response_data)))
             self.write(dic)
         except Exception as e:
             raise AccessError(
@@ -348,15 +348,13 @@ class PickingfromOdootoMonta(models.Model):
         response = self.update_monta_interface("PUT", "inboundforecast/group")
         return response
 
-    # def generate_payload(self):
-    #     if self.mothod_type == 'create':
-    #         if self.picking_type_code == 'outgoing' and self.sale_id:
-    #             self.monta_good_receipt_content(True)
-    #         elif self.picking_type_code == 'incoming' and self.purchase_id:
-    #             self.monta_inbound_forecast_content(True)
+    def generate_payload(self):
+        if self.picking_type_code == 'outgoing' and self.sale_id:
+            self.monta_good_receipt_content(True)
+        elif self.picking_type_code == 'incoming' and self.purchase_id:
+            self.monta_inbound_forecast_content(True)
 
     def action_call_monta_interface(self):
-        # FIXME: Not needed, commented in the view
         if self.picking_type_code == 'outgoing' and self.sale_id:
             self.call_monta_interface("POST", "order")
         elif self.picking_type_code == 'incoming' and self.purchase_id:
@@ -541,10 +539,23 @@ class MontaInboundtoOdooMove(models.Model):
             date = max(allDates, default=None)
 
         elif pickObj.picking_type_code == 'incoming':
-            date = max(pickObj.monta_log_id.monta_stock_move_ids.
-                       monta_inbound_line_ids.monta_batch_ids.mapped('monta_create_date')
-                     , default=None)
-                        # FIXME: Check if Inbound needs NON tacking SKU shipped date?
+            # date = max(pickObj.monta_log_id.monta_stock_move_ids.
+            #            monta_inbound_line_ids.monta_batch_ids.mapped('monta_create_date')
+            #          , default=None)
+
+            allDates = []
+            moves = pickObj.monta_log_id.monta_stock_move_ids
+
+            # Batched SKUs: Shipped dates
+            if moves.monta_outbound_batch_ids.mapped('monta_create_date'):
+                allDates += moves.monta_inbound_line_ids.mapped('monta_create_date')
+
+            # Non Tracking SKUs: Shipped dates
+            if moves.mapped('monta_shipped_date'):
+                allDates += moves.mapped('monta_shipped_date')
+
+            date = max(allDates, default=None)
+
         if date:
             pickObj.move_line_ids.write(
                 {
@@ -662,6 +673,16 @@ class MontaInboundtoOdooMove(models.Model):
                             batch_obj.stock_move_line = new_move_line
                     except Exception as e:
                         msg += "Error: Inbound lot/serial number assigning: %s''!!\n" % (e)
+
+                # Non tracking products:
+                if not odoo_inbound_line.monta_outbound_batch_ids:
+                    product = moveObj.product_id
+                    inline = odoo_inbound_line.monta_inbound_line_ids.filtered(lambda x: x.product_id.id == product.id)
+                    odoo_inbound_line.done_quantity = inline and inline.inbound_quantity or 0
+                    if product.product_tmpl_id.tracking == 'none':
+                        mln = moveObj.move_line_ids.filtered(lambda x: x.product_id.id == product.id)
+                        mln.qty_done = odoo_inbound_line.done_quantity
+
                 update_picking_msg[monta_log_id] = msg
 
             monta_obj |= monta_log_id
@@ -735,6 +756,7 @@ class MontaInboundtoOdooMove(models.Model):
         if response.status_code == 200:
             monta_inbound_ids = []
             response_data = json.loads(response.text)
+
             for dt in response_data:
                 picking_obj = self.env['stock.picking']
                 try:
@@ -742,12 +764,16 @@ class MontaInboundtoOdooMove(models.Model):
                     monta_inbound_ids.append(int(inboundID))
                     sku = dt['Sku']
                     inboundRef = dt['InboundForecastReference']
-                    inboundQty = dt['Quantity']
+                    inboundQty = dt['Quantity'] # Concluded: NO partial qty shipment
                     monta_create_date = self.env['picking.from.odooto.monta'].convert_TZ_UTC(dt['Created'])
 
                     odoo_inbound_obj = self.env['stock.move.from.odooto.monta'].search(
                         [('product_id.default_code', '=', sku),
                          ('monta_move_id.monta_order_name', '=', inboundRef)])
+
+
+                    if inboundRef != 'P00206 MI00203': continue
+
                     if odoo_inbound_obj:
                         picking_obj = odoo_inbound_obj.move_id.picking_id
                         message = 'Inbound Schedular Batches Response: '+json.dumps(dt)
@@ -759,12 +785,19 @@ class MontaInboundtoOdooMove(models.Model):
                         inbound_data = {'monta_move_line_id': odoo_inbound_obj.id,
                                         'inbound_id': inboundID,
                                         'inbound_quantity': inboundQty}
+
+                        # Tracked SKU:
                         if dt.get('Batch', False):
                             batch_ref = dt['Batch']['Reference']
                             inbound_data['monta_batch_ids'] = [(0, 0,
                                                                 {'batch_ref':batch_ref,
                                                                  'batch_quantity':dt['Batch']['Quantity'],
                                                                  'monta_create_date':monta_create_date})]
+                        else: # Non Tracking SKU
+                            if self.product_id.product_tmpl_id.tracking == 'none':
+                                odoo_inbound_obj.done_quantity = inboundQty
+                                odoo_inbound_obj.monta_shipped_date = monta_create_date
+
                         self.create(inbound_data)
 
                 except Exception as e:
@@ -772,7 +805,9 @@ class MontaInboundtoOdooMove(models.Model):
                     _logger.info(
                         error_message
                     )
-                    picking_obj.post_admin_notification(error_message, 'Inbound')
+                    # picking_obj.post_admin_notification(error_message, 'Inbound')
+                    picking_obj.message_post(body=_("%s" % (error_message)))
+
             if response_data:
                 new_inbound_id = False
                 inboundIds = [int(id) for id in self.search([]).filtered(lambda l: l.inbound_id).mapped('inbound_id')]
