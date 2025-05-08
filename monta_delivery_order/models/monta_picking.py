@@ -675,7 +675,7 @@ class MontaInboundtoOdooMove(models.Model):
                         msg += "Error: Inbound lot/serial number assigning: %s''!!\n" % (e)
 
                 # Non tracking products:
-                if not odoo_inbound_line.monta_outbound_batch_ids:
+                if odoo_inbound_line.product_tracking == 'none':
                     product = moveObj.product_id
                     inline = odoo_inbound_line.monta_inbound_line_ids.filtered(lambda x: x.product_id.id == product.id)
                     odoo_inbound_line.done_quantity = inline and inline.inbound_quantity or 0
