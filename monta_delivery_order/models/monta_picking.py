@@ -523,9 +523,9 @@ class MontaInboundtoOdooMove(models.Model):
 
     def apply_backdate(self, pickObj):
         date = False
-        if pickObj.picking_type_code == 'outgoing':
+        allDates = []
 
-            allDates = []
+        if pickObj.picking_type_code == 'outgoing':
             moves = pickObj.monta_log_id.monta_stock_move_ids
 
             # Batched SKUs: Shipped dates
@@ -536,25 +536,22 @@ class MontaInboundtoOdooMove(models.Model):
             if moves.mapped('monta_shipped_date'):
                 allDates += moves.mapped('monta_shipped_date')
 
-            date = max(allDates, default=None)
-
         elif pickObj.picking_type_code == 'incoming':
-            # date = max(pickObj.monta_log_id.monta_stock_move_ids.
-            #            monta_inbound_line_ids.monta_batch_ids.mapped('monta_create_date')
-            #          , default=None)
-
-            allDates = []
             moves = pickObj.monta_log_id.monta_stock_move_ids
 
             # Batched SKUs: Shipped dates
-            if moves.monta_outbound_batch_ids.mapped('monta_create_date'):
-                allDates += moves.monta_inbound_line_ids.mapped('monta_create_date')
+            if moves.monta_inbound_line_ids.monta_batch_ids.mapped('monta_create_date'):
+                allDates += moves.monta_inbound_line_ids.monta_batch_ids.mapped('monta_create_date')
 
             # Non Tracking SKUs: Shipped dates
             if moves.mapped('monta_shipped_date'):
                 allDates += moves.mapped('monta_shipped_date')
 
-            date = max(allDates, default=None)
+        allDates = list(set(allDates))
+        if False in allDates:
+            allDates.remove(False)
+
+        date = max(allDates, default=None)
 
         if date:
             pickObj.move_line_ids.write(
@@ -677,8 +674,6 @@ class MontaInboundtoOdooMove(models.Model):
                 # Non tracking products:
                 if odoo_inbound_line.product_tracking == 'none':
                     product = moveObj.product_id
-                    inline = odoo_inbound_line.monta_inbound_line_ids.filtered(lambda x: x.product_id.id == product.id)
-                    odoo_inbound_line.done_quantity = inline and inline.inbound_quantity or 0
                     if product.product_tmpl_id.tracking == 'none':
                         mln = moveObj.move_line_ids.filtered(lambda x: x.product_id.id == product.id)
                         mln.qty_done = odoo_inbound_line.done_quantity
@@ -794,7 +789,7 @@ class MontaInboundtoOdooMove(models.Model):
                                                                  'batch_quantity':dt['Batch']['Quantity'],
                                                                  'monta_create_date':monta_create_date})]
                         else: # Non Tracking SKU
-                            if self.product_id.product_tmpl_id.tracking == 'none':
+                            if odoo_inbound_obj.product_tracking == 'none':
                                 odoo_inbound_obj.done_quantity = inboundQty
                                 odoo_inbound_obj.monta_shipped_date = monta_create_date
                             else:
