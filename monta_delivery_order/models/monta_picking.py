@@ -575,12 +575,14 @@ class MontaInboundtoOdooMove(models.Model):
                 # pickObj.monta_log_id.write_response(message)
                 pickObj.message_post(body=message)
                 approved = [val['Approved'] for i, val in enumerate(response_data['InboundForecasts']) if not val['Approved']]
+
             else:
                 message = "Inbound Schedular 'API inboundforecast/group' Response "+ str(response.status_code)
                 # return pickObj.monta_log_id.write_response(message)
                 return pickObj.message_post(body=message)
 
         if len(approved) == 0:
+
             res = pickObj.with_context(ctx).button_validate()
             if res is True:
                 return res
@@ -604,6 +606,7 @@ class MontaInboundtoOdooMove(models.Model):
         picking_obj = self.env['stock.picking']
         update_picking_msg = {}
         monta_obj = self.env['picking.from.odooto.monta']
+        BatchMissing = False
 
         def _assign_lot(moveObj, lotRef, qty):
             try:
@@ -658,9 +661,10 @@ class MontaInboundtoOdooMove(models.Model):
             monta_log_id = moveObj.picking_id.monta_log_id
             msg = ''
             if moveObj.state in ('confirmed', 'partially_available', 'assigned'):
-                picking_obj |= moveObj.picking_id
+                # picking_obj |= moveObj.picking_id
 
-                for batch_obj in odoo_inbound_line.monta_inbound_line_ids.mapped('monta_batch_ids'):
+                batchIds = odoo_inbound_line.monta_inbound_line_ids.mapped('monta_batch_ids')
+                for batch_obj in batchIds:
                     if batch_obj.stock_move_line:
                         continue
                     batch_quantity = batch_obj.monta_inbound_id.inbound_quantity
@@ -678,6 +682,13 @@ class MontaInboundtoOdooMove(models.Model):
                         mln = moveObj.move_line_ids.filtered(lambda x: x.product_id.id == product.id)
                         mln.qty_done = odoo_inbound_line.done_quantity
 
+                # Batch data missing
+                elif not batchIds:
+                    BatchMissing = True
+
+                if not BatchMissing:
+                    picking_obj |= moveObj.picking_id
+
                 update_picking_msg[monta_log_id] = msg
 
             monta_obj |= monta_log_id
@@ -688,8 +699,10 @@ class MontaInboundtoOdooMove(models.Model):
             monta_log_id = moveObj.picking_id.monta_log_id
             msg =''
             if moveObj.state in ('confirmed', 'partially_available', 'assigned'):
-                picking_obj |= moveObj.picking_id
-                for batch_obj in odoo_outbound_line.monta_outbound_batch_ids:
+                # picking_obj |= moveObj.picking_id
+
+                batchIds = odoo_outbound_line.monta_outbound_batch_ids
+                for batch_obj in batchIds:
                     if batch_obj.stock_move_line:
                         continue
                     try:
@@ -700,11 +713,18 @@ class MontaInboundtoOdooMove(models.Model):
                         msg += "Error: Outbound lot/serial number assigning: %s''!!\n" % (e)
 
                 # Non tracking products:
-                if not odoo_outbound_line.monta_outbound_batch_ids:
+                if odoo_outbound_line.product_tracking == 'none':
                     product = moveObj.product_id
                     if product.product_tmpl_id.tracking == 'none':
                         mln = moveObj.move_line_ids.filtered(lambda x: x.product_id.id == product.id)
                         mln.qty_done = odoo_outbound_line.done_quantity
+
+                # Batch data missing
+                elif not batchIds:
+                    BatchMissing = True
+
+                if not BatchMissing:
+                    picking_obj |= moveObj.picking_id
 
                 update_picking_msg[monta_log_id] = msg
                 monta_obj |= monta_log_id
