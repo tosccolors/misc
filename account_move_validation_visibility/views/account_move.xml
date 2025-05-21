@@ -1,0 +1,11 @@
+<odoo>
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id' and @groups]" position="attributes">
+                <attribute name="groups" add="account_move_validation_visibility.group_move_validator" separator="," />
+            </xpath>
+        </field>
+    </record>
+</odoo>
