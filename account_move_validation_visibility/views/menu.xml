@@ -4,6 +4,15 @@
         <field name="res_model">account.move</field>
         <field name="groups_id" eval="[Command.link(ref('group_move_validator'))]" />
         <field name="view_mode">tree,form</field>
+        <field name="domain">
+            [
+                '|', '|', '|',
+                ('review_ids.python_reviewer_ids', '=', user.id),
+                ('review_ids.definition_id.reviewer_id', '=', user.id),
+                ('review_ids.definition_id.reviewer_group_id', 'in', user.groups_id.ids),
+                ('review_ids.done_by', '=', user.id),
+            ]
+        </field>
     </record>
     <menuitem id="menu_move_validator_root"
         name="Move validation"
