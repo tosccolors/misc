@@ -1,0 +1,6 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"account_analytic_line_validator","account_analytic_line_validator","analytic.model_account_analytic_line","group_move_validator",1,0,0,0
+"account_journal_validator","account_journal_validator","account.model_account_journal","group_move_validator",1,0,0,0
+"account_move_line_validator","account_move_line_validator","account.model_account_move_line","group_move_validator",1,0,0,0
+"account_move_validator","account_move_validator","account.model_account_move","group_move_validator",1,0,0,0
+"account_partial_reconcile_validator","account_partial_reconcile_validator","account.model_account_partial_reconcile","group_move_validator",1,0,0,0
