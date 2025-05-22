@@ -2,8 +2,15 @@
 <odoo>
 	<data>
 
-    <!-- Stock > Inventory        -->
+    <!-- Inventory >> Valuation       -->
     <record id="stock_account.menu_valuation" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('stock.group_stock_user'))]" />
+    </record>
+
+
+
+    <!-- > Inventory >> Stock Moves       -->
+    <record id="stock.stock_move_menu" model="ir.ui.menu">
         <field name="groups_id" eval="[(4, ref('stock.group_stock_user'))]" />
     </record>
 
