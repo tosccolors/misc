@@ -15,6 +15,18 @@
     </record>
 
 
+    <!-- Stock Moves (list)       -->
+    <record id="stock_view_move_tree_inherit" model="ir.ui.view">
+        <field name="name">stock moves list</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_tree" />
+        <field name="arch" type="xml">
+            <field name="reference" position="after">
+                <field name="origin"/>
+            </field>
+        </field>
+    </record>
+
 
 
     </data>
