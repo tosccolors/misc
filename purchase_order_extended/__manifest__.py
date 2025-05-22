@@ -16,15 +16,16 @@
     # Check https://github.com/odoo/odoo/blob/16.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Inventory/Purchase',
-    'version': '16.0.0.0.1',
+    'version': '16.0.2.0.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['purchase_stock'],
+    'depends': ['purchase_stock', 'stock', 'stock_account'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'views/purchase_views.xml',
+        'views/stock_views.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
