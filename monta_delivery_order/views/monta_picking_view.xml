@@ -160,6 +160,7 @@
                     <field name="product_id"/>
                     <field name="inbound_quantity"/>
                     <field name="inbound_id"/>
+                    <field name="create_date"/>
                 </tree>
             </field>
         </record>
