@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+    <!-- Inventory >> Valuation       -->
+    <record id="stock_account.menu_valuation" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('stock.group_stock_user'))]" />
+    </record>
+
+
+
+    <!-- > Inventory >> Stock Moves       -->
+    <record id="stock.stock_move_menu" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('stock.group_stock_user'))]" />
+    </record>
+
+
+    <!-- Stock Moves (list)       -->
+    <record id="stock_view_move_tree_inherit" model="ir.ui.view">
+        <field name="name">stock moves list</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_tree" />
+        <field name="arch" type="xml">
+            <field name="reference" position="after">
+                <field name="origin"/>
+            </field>
+        </field>
+    </record>
+
+
+
+    </data>
+</odoo>
