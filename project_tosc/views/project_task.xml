@@ -1,0 +1,14 @@
+<odoo>
+    <record id="view_project_task_kanban" model="ir.ui.view">
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban" />
+        <field name="arch" type="xml">
+            <field name="active" position="before">
+                <field name="message_needaction" />
+            </field>
+            <xpath expr="//strong[hasclass('o_kanban_record_title')]/s" position="before">
+                <i t-if="record.message_needaction.raw_value" class="fa fa-envelope-o mr4 text-danger" aria-hidden="true" title="New message"></i>
+            </xpath>
+        </field>
+    </record>
+</odoo>

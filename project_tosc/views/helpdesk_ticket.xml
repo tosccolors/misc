@@ -1,0 +1,24 @@
+<odoo>
+    <record id="view_helpdesk_ticket_kanban" model="ir.ui.view">
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.view_helpdesk_ticket_kanban" />
+        <field name="arch" type="xml">
+            <field name="active" position="before">
+                <field name="message_needaction" />
+            </field>
+            <xpath expr="//div[hasclass('o_kanban_record_headings')]/field" position="before">
+                <i t-if="record.message_needaction.raw_value" class="fa fa-envelope-o mr4 text-danger" aria-hidden="true" title="New message"></i>
+            </xpath>
+        </field>
+    </record>
+    <record id="helpdesk_ticket_view_search" model="ir.ui.view">
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search" />
+        <field name="arch" type="xml">
+            <group position="before">
+                <separator />
+                <filter name="unread_messages" string="Unread Messages" domain="[('message_needaction', '=', True)]" />
+            </group>
+        </field>
+    </record>
+</odoo>
