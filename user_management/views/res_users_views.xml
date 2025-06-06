@@ -1,0 +1,47 @@
+<odoo>
+
+        <record id="view_res_users_form_inherit" model="ir.ui.view">
+            <field name="name">res.users.form.inherit.management</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base_user_role.view_res_users_form_inherit" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="is_user_management_group" invisible="1"/>
+                </xpath>
+                <xpath expr="//page[@name='access_rights']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('is_user_management_group', '=', True)]}</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_totp_form">
+            <field name="name">user form: add totp management</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="auth_totp.view_totp_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='security']" position="attributes">
+                    <attribute name="attrs">{'invisible':['|', ('id', '=', False), ('is_user_management_group', '=', True)]}</attribute>
+                </xpath>
+            </field>
+        </record>
+<!--
+        <template id="listing">
+          <ul>
+            <li t-foreach="objects" t-as="object">
+              <a t-attf-href="#{ root }/objects/#{ object.id }">
+                <t t-esc="object.display_name"/>
+              </a>
+            </li>
+          </ul>
+        </template>
+        <template id="object">
+          <h1><t t-esc="object.display_name"/></h1>
+          <dl>
+            <t t-foreach="object._fields" t-as="field">
+              <dt><t t-esc="field"/></dt>
+              <dd><t t-esc="object[field]"/></dd>
+            </t>
+          </dl>
+        </template>
+-->
+</odoo>
