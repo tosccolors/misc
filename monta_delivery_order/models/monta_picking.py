@@ -612,6 +612,7 @@ class MontaInboundtoOdooMove(models.Model):
             try:
                 product = moveObj.product_id
                 picking = moveObj.picking_id
+                splitQty = False
 
                 data = {'picking_id': picking.id,
                         'product_id': product.id,
@@ -638,11 +639,21 @@ class MontaInboundtoOdooMove(models.Model):
                         mln = moveObj.move_line_ids.filtered(lambda x: x.lot_id.id == data['lot_id'])
                         mln.qty_done = qty
                     else:
-                        mln = moveObj.move_line_ids.filtered(lambda x: x.lot_id.name == data['lot_name'])
+                        mln = moveObj.move_line_ids.filtered(lambda x: x.lot_id.name == data['lot_name'] and x.product_id.id == product.id)
                         mln.qty_done = qty
 
-                    # If Moveline not found, create New Line.
+                    # Check for product: Update Lot & Qty
                     if not mln.id:
+                        mln = moveObj.move_line_ids.filtered(lambda x: x.product_id.id == product.id)
+                        if mln.qty_done != qty:
+                            splitQty = True
+
+                        else:
+                            mln.lot_id = lot.id
+                            mln.qty_done = qty
+
+                    # If Moveline not found, create New Line.
+                    if not mln.id or splitQty:
                         moveObj.write({'move_line_ids': [(0, 0, data)]})
                         mln = moveObj.move_line_ids-movelineObj
 
