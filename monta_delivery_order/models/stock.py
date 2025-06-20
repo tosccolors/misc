@@ -144,3 +144,13 @@ class Picking(models.Model):
             if 'scheduled_date' in vals:
                 record.update_picking_to_monta()
         return res
+
+
+
+class MoveLine(models.Model):
+    _inherit = 'stock.move.line'
+
+    monta_batch_ref = fields.Char('Monta Batch Ref')
+
+
+
