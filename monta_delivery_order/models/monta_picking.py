@@ -636,7 +636,6 @@ class MontaInboundtoOdooMove(models.Model):
             try:
                 product = moveObj.product_id
                 picking = moveObj.picking_id
-                # splitQty = False
 
                 data = {'picking_id': picking.id,
                         'product_id': product.id,
@@ -673,23 +672,15 @@ class MontaInboundtoOdooMove(models.Model):
                     # Check for product: Force Update Lot & Qty
                     if not mln.id:
                         mln = moveObj.move_line_ids.filtered(lambda x: x.product_id.id == product.id and not x.monta_batch_ref)
-                        # if mln.reserved_uom_qty != qty:
-                        #     splitQty = True
-                        #     data['reserved_uom_qty'] = mln.reserved_uom_qty # Update Original Qty
-                        #     mln.unlink() # Remove Original
-                        #
-                        # else:
                         mln.lot_id = lot.id
                         mln.qty_done = qty
                         mln.monta_batch_ref = batchRef
 
                     # If Moveline not found, create New Line.
-                    if not mln.id: # or splitQty:
+                    if not mln.id:
                         moveObj.write({'move_line_ids': [(0, 0, data)]})
                         mln = moveObj.move_line_ids-movelineObj
 
-                    # moveObj.write({'move_line_ids': [(0, 0, data)]})
-                    # return moveObj.move_line_ids-movelineObj
                     return mln
             except Exception as e:
                 _logger.info(
