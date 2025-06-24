@@ -438,12 +438,16 @@ class PickingfromOdootoMonta(models.Model):
 
                                 batch_qty_total = 0
                                 batch_ids = odoo_outbound_line.monta_outbound_batch_ids
-                                batch_obj = odoo_outbound_line.monta_outbound_batch_ids.\
-                                    search([('id', 'in', batch_ids.ids),
-                                            ('batch_id', '=', batch_id),
-                                            ('batch_ref', '=', batch_ref)])
-                                if batch_obj:
-                                    batch_qty_total = sum(batch_obj.mapped('batch_quantity'))
+                                # batch_obj = odoo_outbound_line.monta_outbound_batch_ids.\
+                                #     search([('id', 'in', batch_ids.ids),
+                                #             ('batch_id', '=', batch_id),
+                                #             ('batch_ref', '=', batch_ref)])
+                                # if batch_obj:
+                                #     batch_qty_total = sum(batch_obj.mapped('batch_quantity'))
+                                # This works only for same Batch, defies the purpose.
+
+                                # Total Qty
+                                batch_qty_total = sum(batch_ids.mapped('batch_quantity'))
 
                                 if batch_qty_total >= odoo_outbound_line.ordered_quantity:
                                     continue
@@ -455,8 +459,14 @@ class PickingfromOdootoMonta(models.Model):
 
                                 if shipped_date:
                                     data.update({'monta_create_date': shipped_date})
-                                # batch created
+
+                                # create Batch
                                 monta_outbond_obj.create(data)
+
+                                # # create Batch & Skip if already exists: FIXME: Needed ?
+                                # exists = monta_outbond_obj.search([('batch_id', '=', batch_id), ('batch_ref', '=', batch_ref), ('monta_outbound_id', '=', odoo_outbound_line.id)])
+                                # if not exists.ids:
+                                #     monta_outbond_obj.create(data)
 
                             # Non tracking products:
                             elif not batch_ref:
