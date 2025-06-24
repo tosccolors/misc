@@ -482,18 +482,18 @@ class PickingfromOdootoMonta(models.Model):
                                 if qty > odoo_outbound_line.ordered_quantity:
                                     continue
 
-                            # Found Duplicate Lot? Notify
-                            LotCnt = {}
-                            for ln in obj.monta_stock_move_ids.monta_outbound_batch_ids:
-                                key = (ln.monta_outbound_id, ln.batch_ref)
-                                if not key in LotCnt:
-                                    LotCnt[key] = 1
-                                else:
-                                    LotCnt[key] += 1
-
-                            if max(LotCnt.values(), default=None) > 1:
-                                emailTemplate.send_mail(obj.id, force_send=True)
-                                # FIXME: Need different Email template?
+                            # # Found Duplicate Lot? Notify
+                            # LotCnt = {}
+                            # for ln in obj.monta_stock_move_ids.monta_outbound_batch_ids:
+                            #     key = (ln.monta_outbound_id, ln.batch_ref)
+                            #     if not key in LotCnt:
+                            #         LotCnt[key] = 1
+                            #     else:
+                            #         LotCnt[key] += 1
+                            #
+                            # if max(LotCnt.values(), default=None) > 1:
+                            #     emailTemplate.send_mail(obj.id, force_send=True)
+                            #     # FIXME: Need different Email template?
 
                     obj.write_response(message)
 
