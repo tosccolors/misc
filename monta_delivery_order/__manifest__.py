@@ -9,14 +9,14 @@
         We require a interface between Odoo and a logistical system called 'Monta Portal'. The purpose of this interface is to reflect outgoing and incoming stock movements between Odoo and Monta Portal.
     """,
 
-    'author': "K.Sushma",
+    'author': "K.Sushma, Deepa Venkatesh (DK), The Open Source Company (TOSC)",
     'website': "http://www.tosc.nl",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/10.0/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Stock',
-    'version': '16.0.6.0',
+    'version': '16.0.7.0',
 
     # any module necessary for this one to work correctly
     'depends': ['sale_stock', 'partner_firstname', 'purchase_stock', 'base_address_extended',
