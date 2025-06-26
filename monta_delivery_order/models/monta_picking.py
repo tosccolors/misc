@@ -421,7 +421,7 @@ class PickingfromOdootoMonta(models.Model):
 
 
                     for line in response_data.get('BatchLines', []):
-                        sku = line['Sku']
+                        sku = line['Sku'].strip(" ")
                         batch_content = line['BatchContent']
                         qty = abs(int(line['Quantity']))
                         odoo_outbound_line = monta_move_obj.search(
