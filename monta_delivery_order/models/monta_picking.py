@@ -438,12 +438,16 @@ class PickingfromOdootoMonta(models.Model):
 
                                 batch_qty_total = 0
                                 batch_ids = odoo_outbound_line.monta_outbound_batch_ids
-                                batch_obj = odoo_outbound_line.monta_outbound_batch_ids.\
-                                    search([('id', 'in', batch_ids.ids),
-                                            ('batch_id', '=', batch_id),
-                                            ('batch_ref', '=', batch_ref)])
-                                if batch_obj:
-                                    batch_qty_total = sum(batch_obj.mapped('batch_quantity'))
+                                # batch_obj = odoo_outbound_line.monta_outbound_batch_ids.\
+                                #     search([('id', 'in', batch_ids.ids),
+                                #             ('batch_id', '=', batch_id),
+                                #             ('batch_ref', '=', batch_ref)])
+                                # if batch_obj:
+                                #     batch_qty_total = sum(batch_obj.mapped('batch_quantity'))
+                                # This works only for same Batch, defies the purpose.
+
+                                # Total Qty
+                                batch_qty_total = sum(batch_ids.mapped('batch_quantity'))
 
                                 if batch_qty_total >= odoo_outbound_line.ordered_quantity:
                                     continue
@@ -455,8 +459,14 @@ class PickingfromOdootoMonta(models.Model):
 
                                 if shipped_date:
                                     data.update({'monta_create_date': shipped_date})
-                                # batch created
+
+                                # create Batch
                                 monta_outbond_obj.create(data)
+
+                                # # create Batch & Skip if already exists: FIXME: Needed ?
+                                # exists = monta_outbond_obj.search([('batch_id', '=', batch_id), ('batch_ref', '=', batch_ref), ('monta_outbound_id', '=', odoo_outbound_line.id)])
+                                # if not exists.ids:
+                                #     monta_outbond_obj.create(data)
 
                             # Non tracking products:
                             elif not batch_ref:
@@ -472,7 +482,21 @@ class PickingfromOdootoMonta(models.Model):
                                 if qty > odoo_outbound_line.ordered_quantity:
                                     continue
 
+                            # # Found Duplicate Lot? Notify
+                            # LotCnt = {}
+                            # for ln in obj.monta_stock_move_ids.monta_outbound_batch_ids:
+                            #     key = (ln.monta_outbound_id, ln.batch_ref)
+                            #     if not key in LotCnt:
+                            #         LotCnt[key] = 1
+                            #     else:
+                            #         LotCnt[key] += 1
+                            #
+                            # if max(LotCnt.values(), default=None) > 1:
+                            #     emailTemplate.send_mail(obj.id, force_send=True)
+                            #     # FIXME: Need different Email template?
+
                     obj.write_response(message)
+
 
                 if obj.picking_id.sale_id and track_dic:
                     body = _('Tracking Info:\n %s', track_dic['TrackAndTraceLink'])
@@ -608,15 +632,15 @@ class MontaInboundtoOdooMove(models.Model):
         monta_obj = self.env['picking.from.odooto.monta']
         BatchMissing = False
 
-        def _assign_lot(moveObj, lotRef, qty):
+        def _assign_lot(moveObj, lotRef, qty, batchRef):
             try:
                 product = moveObj.product_id
                 picking = moveObj.picking_id
-                splitQty = False
 
                 data = {'picking_id': picking.id,
                         'product_id': product.id,
-                        'qty_done': qty}
+                        'qty_done': qty,
+                        'monta_batch_ref': batchRef}
 
                 if picking.picking_type_code == 'incoming':
                     data.update({'lot_name': lotRef})
@@ -636,29 +660,27 @@ class MontaInboundtoOdooMove(models.Model):
 
                     # Update "Done Qty" - found matched Lot Moveline
                     if ('lot_id' in data):
-                        mln = moveObj.move_line_ids.filtered(lambda x: x.lot_id.id == data['lot_id'])
+                        mln = moveObj.move_line_ids.filtered(lambda x: x.lot_id.id == data['lot_id'] and not x.monta_batch_ref)
                         mln.qty_done = qty
+                        mln.monta_batch_ref = batchRef
                     else:
-                        mln = moveObj.move_line_ids.filtered(lambda x: x.lot_id.name == data['lot_name'] and x.product_id.id == product.id)
+                        mln = moveObj.move_line_ids.filtered(lambda x: x.lot_id.name == data['lot_name']
+                                                                       and x.product_id.id == product.id and not x.monta_batch_ref)
                         mln.qty_done = qty
+                        mln.monta_batch_ref = batchRef
 
-                    # Check for product: Update Lot & Qty
+                    # Check for product: Force Update Lot & Qty
                     if not mln.id:
-                        mln = moveObj.move_line_ids.filtered(lambda x: x.product_id.id == product.id)
-                        if mln.qty_done != qty:
-                            splitQty = True
-
-                        else:
-                            mln.lot_id = lot.id
-                            mln.qty_done = qty
+                        mln = moveObj.move_line_ids.filtered(lambda x: x.product_id.id == product.id and not x.monta_batch_ref)
+                        mln.lot_id = lot.id
+                        mln.qty_done = qty
+                        mln.monta_batch_ref = batchRef
 
                     # If Moveline not found, create New Line.
-                    if not mln.id or splitQty:
+                    if not mln.id:
                         moveObj.write({'move_line_ids': [(0, 0, data)]})
                         mln = moveObj.move_line_ids-movelineObj
 
-                    # moveObj.write({'move_line_ids': [(0, 0, data)]})
-                    # return moveObj.move_line_ids-movelineObj
                     return mln
             except Exception as e:
                 _logger.info(
@@ -680,7 +702,7 @@ class MontaInboundtoOdooMove(models.Model):
                         continue
                     batch_quantity = batch_obj.monta_inbound_id.inbound_quantity
                     try:
-                        new_move_line = _assign_lot(moveObj, batch_obj.batch_ref, batch_quantity)
+                        new_move_line = _assign_lot(moveObj, batch_obj.batch_ref, batch_quantity, batch_obj.batch_id)
                         if new_move_line:
                             batch_obj.stock_move_line = new_move_line
                     except Exception as e:
@@ -717,7 +739,7 @@ class MontaInboundtoOdooMove(models.Model):
                     if batch_obj.stock_move_line:
                         continue
                     try:
-                        new_move_line = _assign_lot(moveObj, batch_obj.batch_ref, batch_obj.batch_quantity)
+                        new_move_line = _assign_lot(moveObj, batch_obj.batch_ref, batch_obj.batch_quantity, batch_obj.batch_id)
                         if new_move_line:
                             batch_obj.stock_move_line = new_move_line
                     except Exception as e:
