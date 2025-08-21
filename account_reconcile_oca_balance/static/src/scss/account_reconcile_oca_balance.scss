@@ -1,0 +1,11 @@
+.o_account_reconcile_oca {
+    .o_form_view {
+        .o_reconcile_widget_table {
+            .o_reconcile_widget_line {
+                &.suspense {
+                    background: lightcoral;
+                }
+            }
+        }
+    }
+}
