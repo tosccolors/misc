@@ -12,5 +12,6 @@
     ],
     "installable": True,
     "data": [
+        "views/account_move.xml",
     ],
 }
