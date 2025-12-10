@@ -5,13 +5,12 @@
 
 {
     'name': 'External File Location',
-    'version': '10.0.1.0.0',
-    'author': 'Akretion,Odoo Community Association (OCA)',
+    'version': '14.0.2.0.0',
+    'author': 'Akretion,Odoo Community Association (OCA), The Open Source Company (TOSC)',
     'website': 'http://www.akretion.com/',
     'license': 'AGPL-3',
     'category': 'Generic Modules',
     'depends': [
-        # 'attachment_queue',
         'attachment_queue'
     ],
     'external_dependencies': {
