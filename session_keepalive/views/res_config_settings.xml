@@ -1,0 +1,23 @@
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="auth_oauth.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <div id="module_auth_oauth" position="after">
+                <div class="col-12 col-lg-6 o_setting_box"
+                    id="session_keepalive"
+                    attrs="{'invisible': [('module_auth_oauth','=',False)]}">
+                <div class="o_setting_left_pane">
+                </div>
+                <div class="o_setting_right_pane">
+                    <label for="session_keepalive_timeout" />
+                    <div class="text-muted">
+                    Change timeout for keepalive, value given in hours
+                    </div>
+                    <field name="session_keepalive_timeout" widget="float_time"/>
+                </div>
+                </div>
+            </div>
+        </field>
+    </record>
+</odoo>
