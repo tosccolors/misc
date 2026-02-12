@@ -8,3 +8,4 @@ from . import monta_stock_lot
 from . import monta_delivery_block
 from . import sale
 from . import delivery_carrier
+from . import monta_log

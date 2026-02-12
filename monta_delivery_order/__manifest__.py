@@ -16,11 +16,11 @@
     # Check https://github.com/odoo/odoo/blob/10.0/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Stock',
-    'version': '16.0.7.1',
+    'version': '16.0.9.0',
 
     # any module necessary for this one to work correctly
     'depends': ['sale_stock', 'partner_firstname', 'purchase_stock', 'base_address_extended',
-                'stock_picking_customer_ref', 'delivery', 'stock_move_backdating'],
+                'stock_picking_customer_ref', 'delivery', 'stock_move_backdating', 'website_sale'],
 
     # always loaded
     'data': [
@@ -37,6 +37,7 @@
         'views/monta_delivery_block_view.xml',
         'views/sale_view.xml',
         'views/purchase_views.xml',
+        'views/monta_log_views.xml',
         'views/menuitem.xml',
         'views/delivery_portal_template.xml',
         # 'views/templates.xml',

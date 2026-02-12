@@ -380,6 +380,20 @@ class PickingfromOdootoMonta(models.Model):
         dt = user_tz.localize(shipped_date).astimezone(utc).strftime('%Y-%m-%d %H:%M:%S')
         return dt
 
+    def _add_to_log(self, LogMsg, LogStatus):
+        "Insert a record into Monta log"
+        MLog = self.env['monta.sync.log']
+        vals = {'name': self.monta_order_name,
+                'type': 'outbound',
+                'state': LogStatus,
+                'remarks': LogMsg,
+                'sale_id': self.picking_id.sale_id.id,
+                'picking_id': self.picking_id.id
+                }
+        MLog.create(vals)
+        return
+
+
     @api.model
     def _cron_monta_get_outbound_batches(self):
         method = "order/%s/batches"
@@ -390,7 +404,11 @@ class PickingfromOdootoMonta(models.Model):
 
 
         for obj in self.search([('picking_id.picking_type_code', '=', 'outgoing'),
-                                ('picking_id.state', 'not in', ('draft', 'done', 'cancel')), ('status', '=', 'successful')]):
+                                ('picking_id.state', 'not in', ('draft', 'done', 'cancel')),
+                                ('status', '=', 'successful')]):
+            _logger.info("\n Processing Monta Outbound Order %s: "%(obj.monta_order_name))
+            LogStatus = 'process'
+            LogMsg = 'Processing ...'
             try:
                 orderNum = obj.monta_order_name
                 response = self.call_monta_interface("GET", method%orderNum)
@@ -476,7 +494,9 @@ class PickingfromOdootoMonta(models.Model):
                                         odoo_outbound_line.monta_shipped_date = shipped_date
                                 else:
                                     # Notify Salesperson:
-                                    emailTemplate.send_mail(obj.id, force_send=True)
+                                    emailTemplate.send_mail(obj.id, force_send=False)
+                                    LogMsg = 'Email Notified to Salesperson; Batch details Not Found !'
+                                    LogStatus = 'error'
                                     continue
 
                                 if qty > odoo_outbound_line.ordered_quantity:
@@ -504,6 +524,8 @@ class PickingfromOdootoMonta(models.Model):
                     obj.picking_id.\
                         write({'monta_carrier_tracking_url':track_dic['TrackAndTraceLink'],
                                'carrier_tracking_ref':track_dic['TrackAndTraceCode']})
+                    LogStatus = 'ok'
+
             except Exception as e:
                 error_message = "\nError: Monta Outbound scheduler %s\n,"%(e)
                 _logger.info(
@@ -511,8 +533,16 @@ class PickingfromOdootoMonta(models.Model):
                 )
                 # obj.picking_id.post_admin_notification(error_message, 'Outbound')
                 obj.picking_id.message_post(body=_("%s" % (error_message)))
+                LogMsg = 'Error Occured while processing; %s '%(error_message)
+                LogStatus = 'error'
+
+            # Log:
+            obj._add_to_log(LogMsg, LogStatus)
+
+
         if odoo_outbound_lines_obj:
             self.env['monta.inboundto.odoo.move'].validate_picking_from_monta_qty(outboundMoveData=odoo_outbound_lines_obj)
+
 
 
 class PickingLinefromOdootoMonta(models.Model):

@@ -7,3 +7,4 @@ access_monta_stock_lot,monta_monta_stock_lot,model_monta_stock_lot,,1,1,1,1
 access_monta_product_stock_lot,monta_product_stock_lot,model_monta_product_stock_lot,,1,1,1,1
 access_monta_product_stock_wizard,monta_product_stock_wizard,model_monta_product_stock_wizard,,1,1,1,1
 access_monta_delivery_block,monta_delivery_block,model_monta_delivery_block,,1,1,1,1
+access_monta_log,monta_sync_log,model_monta_sync_log,,1,1,1,1
