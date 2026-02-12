@@ -72,7 +72,7 @@ class Invoice(models.Model):
 
                 # Send Email: Check Amount & Transmission Method
                 if invoice.amount_total > 0 and invoice.transmit_method_id.id != self.env.ref('auto_validate_invoice.no_send_mail').id:
-                    invoice._do_invoice_sent_wizard()
+                    invoice.with_delay()._do_invoice_sent_wizard()
 
             except Exception as e:
                 invoice.has_failed2confirm = True
