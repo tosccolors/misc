@@ -61,7 +61,9 @@ class Invoice(models.Model):
     def _cron_auto_validate_invoices(self):
         "Called from Cron, to validate Out-Invoices which are in draft status."
 
-        draftInvoices = self.search([('move_type', '=', 'out_invoice'), ('state', 'in', ('draft', 'sent'))], order='id, invoice_date')
+        draftInvoices = self.search([('move_type', '=', 'out_invoice'), ('state', 'in', ('draft', 'sent')),
+                                    '|', ('invoice_date', '<=', fields.Date.today())
+                                       , ('invoice_date', '=', None)], order='id, invoice_date')
 
         for invoice in draftInvoices:
             try:

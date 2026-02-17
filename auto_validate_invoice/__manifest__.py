@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Auto Validate Invoices',
-    'version': '14.0.3.0',
+    'version': '14.0.4.0',
     'category': 'Invoice',
     'description': """
 This module automatically validates draft Invoices with the help of Cron.
