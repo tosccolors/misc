@@ -10,7 +10,7 @@
         <field name="domain_force">
             [
                 '|', '|', '|',
-                ('review_ids.python_reviewer_ids', '=', user.id),
+                ('review_ids.reviewer_ids', '=', user.id),
                 ('review_ids.definition_id.reviewer_id', '=', user.id),
                 ('review_ids.definition_id.reviewer_group_id', 'in', user.groups_id.ids),
                 ('review_ids.done_by', '=', user.id),
@@ -25,7 +25,7 @@
         <field name="domain_force">
             [
                 '|', '|', '|',
-                ('move_line_id.move_id.review_ids.python_reviewer_ids', '=', user.id),
+                ('move_line_id.move_id.review_ids.reviewer_ids', '=', user.id),
                 ('move_line_id.move_id.review_ids.definition_id.reviewer_id', '=', user.id),
                 ('move_line_id.move_id.review_ids.definition_id.reviewer_group_id', 'in', user.groups_id.ids),
                 ('move_line_id.move_id.review_ids.done_by', '=', user.id),
@@ -40,7 +40,7 @@
         <field name="domain_force">
             [
                 '|', '|', '|',
-                ('move_id.review_ids.python_reviewer_ids', '=', user.id),
+                ('move_id.review_ids.reviewer_ids', '=', user.id),
                 ('move_id.review_ids.definition_id.reviewer_id', '=', user.id),
                 ('move_id.review_ids.definition_id.reviewer_group_id', 'in', user.groups_id.ids),
                 ('move_id.review_ids.done_by', '=', user.id),
@@ -54,11 +54,11 @@
         <field name="domain_force">
             [
                 '|', '|','|', '|', '|', '|', '|',
-                ('debit_move_id.move_id.review_ids.python_reviewer_ids', '=', user.id),
+                ('debit_move_id.move_id.review_ids.reviewer_ids', '=', user.id),
                 ('debit_move_id.move_id.review_ids.definition_id.reviewer_id', '=', user.id),
                 ('debit_move_id.move_id.review_ids.definition_id.reviewer_group_id', 'in', user.groups_id.ids),
                 ('debit_move_id.move_id.review_ids.done_by', '=', user.id),
-                ('credit_move_id.move_id.review_ids.python_reviewer_ids', '=', user.id),
+                ('credit_move_id.move_id.review_ids.reviewer_ids', '=', user.id),
                 ('credit_move_id.move_id.review_ids.definition_id.reviewer_id', '=', user.id),
                 ('credit_move_id.move_id.review_ids.definition_id.reviewer_group_id', 'in', user.groups_id.ids),
                 ('credit_move_id.move_id.review_ids.done_by', '=', user.id),
