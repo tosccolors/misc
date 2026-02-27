@@ -9,8 +9,8 @@
                             attrs="{'invisible': [('method_type', '!=', 'import')]}"/>
                     <button name="run_export" type="object" string="Run" icon="gtk-execute"
                             attrs="{'invisible': [('method_type', '!=', 'export')]}"/>
-                    <button name="run_im_export" type="object" string="Run" icon="gtk-execute"
-                            attrs="{'invisible': [('method_type', '!=', 'impexp')]}"/>
+<!--                    <button name="run_im_export" type="object" string="Run" icon="gtk-execute"-->
+<!--                            attrs="{'invisible': [('method_type', '!=', 'impexp')]}"/> FIXME: method not found-->
                 </header>
                 <sheet>
                         <div class="oe_title" style="width: 390px;" colspan="4">
