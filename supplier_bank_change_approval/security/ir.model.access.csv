@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_supplier_bank_change_approval_supplier_bank_change_approval,supplier_bank_change_approval.supplier_bank_change_approval,model_supplier_bank_change_approval_supplier_bank_change_approval,,1,0,0,0

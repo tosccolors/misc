@@ -1,3 +1,4 @@
-# -*- coding: utf-8 -*-
-
-from . import supplier_bank_change_approval
+from . import res_partner_bank
+from . import account_move
+from . import account_payment
+from . import account_payment_order
