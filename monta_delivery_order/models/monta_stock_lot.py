@@ -17,6 +17,7 @@ class MontaStockLot(models.Model):
     monta_product_lot_id = fields.Many2one('monta.product.stock.lot')
     monta_create_date = fields.Datetime(string="Monta Creation Date")
     stock_move_line = fields.Many2one('stock.move.line')
+    expiry_date = fields.Datetime(string="Expiry Date")
     
 
 class MontaProductStockLot(models.Model):

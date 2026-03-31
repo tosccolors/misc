@@ -840,7 +840,9 @@ class MontaInboundtoOdooMove(models.Model):
                             inbound_data['monta_batch_ids'] = [(0, 0,
                                                                 {'batch_ref':batch_ref,
                                                                  'batch_quantity':dt['Batch']['Quantity'],
-                                                                 'monta_create_date':monta_create_date})]
+                                                                 'monta_create_date':monta_create_date,
+                                                                 'expiry_date': self.env['picking.from.odooto.monta'].convert_TZ_UTC(dt['Batch']['BestBeforeDate'])
+                                                                 })]
                         else: # Non Tracking SKU
                             if odoo_inbound_obj.product_tracking == 'none':
                                 odoo_inbound_obj.done_quantity = inboundQty
