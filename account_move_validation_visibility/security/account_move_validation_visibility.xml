@@ -1,0 +1,68 @@
+<odoo>
+    <record id="group_move_validator" model="res.groups">
+        <field name="name">Move validator</field>
+    </record>
+
+    <record id="rule_move_validator_account_move" model="ir.rule">
+        <field name="name">Move validator - account.move</field>
+        <field name="model_id" ref="account.model_account_move" />
+        <field name="groups" eval="[(4, ref('group_move_validator'))]" />
+        <field name="domain_force">
+            [
+                '|', '|', '|',
+                ('review_ids.reviewer_ids', '=', user.id),
+                ('review_ids.definition_id.reviewer_id', '=', user.id),
+                ('review_ids.definition_id.reviewer_group_id', 'in', user.groups_id.ids),
+                ('review_ids.done_by', '=', user.id),
+            ]
+        </field>
+    </record>
+
+    <record id="rule_move_validator_account_analytic_line" model="ir.rule">
+        <field name="name">Move validator - account.analytic.line</field>
+        <field name="model_id" ref="analytic.model_account_analytic_line" />
+        <field name="groups" eval="[(4, ref('group_move_validator'))]" />
+        <field name="domain_force">
+            [
+                '|', '|', '|',
+                ('move_line_id.move_id.review_ids.reviewer_ids', '=', user.id),
+                ('move_line_id.move_id.review_ids.definition_id.reviewer_id', '=', user.id),
+                ('move_line_id.move_id.review_ids.definition_id.reviewer_group_id', 'in', user.groups_id.ids),
+                ('move_line_id.move_id.review_ids.done_by', '=', user.id),
+            ]
+        </field>
+    </record>
+
+    <record id="rule_move_validator_account_move_line" model="ir.rule">
+        <field name="name">Move validator - account.move.line</field>
+        <field name="model_id" ref="account.model_account_move_line" />
+        <field name="groups" eval="[(4, ref('group_move_validator'))]" />
+        <field name="domain_force">
+            [
+                '|', '|', '|',
+                ('move_id.review_ids.reviewer_ids', '=', user.id),
+                ('move_id.review_ids.definition_id.reviewer_id', '=', user.id),
+                ('move_id.review_ids.definition_id.reviewer_group_id', 'in', user.groups_id.ids),
+                ('move_id.review_ids.done_by', '=', user.id),
+            ]
+        </field>
+    </record>
+    <record id="rule_move_validator_account_partial_reconcile" model="ir.rule">
+        <field name="name">Move validator - account.partial.reconcile</field>
+        <field name="model_id" ref="account.model_account_partial_reconcile" />
+        <field name="groups" eval="[(4, ref('group_move_validator'))]" />
+        <field name="domain_force">
+            [
+                '|', '|','|', '|', '|', '|', '|',
+                ('debit_move_id.move_id.review_ids.reviewer_ids', '=', user.id),
+                ('debit_move_id.move_id.review_ids.definition_id.reviewer_id', '=', user.id),
+                ('debit_move_id.move_id.review_ids.definition_id.reviewer_group_id', 'in', user.groups_id.ids),
+                ('debit_move_id.move_id.review_ids.done_by', '=', user.id),
+                ('credit_move_id.move_id.review_ids.reviewer_ids', '=', user.id),
+                ('credit_move_id.move_id.review_ids.definition_id.reviewer_id', '=', user.id),
+                ('credit_move_id.move_id.review_ids.definition_id.reviewer_group_id', 'in', user.groups_id.ids),
+                ('credit_move_id.move_id.review_ids.done_by', '=', user.id),
+            ]
+        </field>
+    </record>
+</odoo>

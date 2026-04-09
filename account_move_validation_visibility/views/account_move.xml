@@ -1,0 +1,11 @@
+<odoo>
+    <record id="view_account_invoice_filter" model="ir.ui.view">
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account_move_tier_validation.view_account_invoice_filter" />
+        <field name="arch" type="xml">
+            <filter name="tier_validated" position="before">
+                <filter name="has_reviews" string="Has reviews" domain="[('review_ids', '!=', False)]" />
+            </filter>
+        </field>
+    </record>
+</odoo>
