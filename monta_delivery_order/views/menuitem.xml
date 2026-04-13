@@ -53,6 +53,14 @@
             action="action_monta_inbounds_get"
             sequence="3"/>
 
+    <menuitem
+            id="action_monta_logs_menu"
+            name="Sync Logs"
+            parent="monta_picking_root"
+            action="action_monta_logs"
+            sequence="4"/>
+
+
     <menuitem id="monta_stock_root"
               name="Monta Stock"
               parent="monta_root_menu"
