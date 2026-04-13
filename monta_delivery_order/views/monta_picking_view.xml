@@ -92,6 +92,7 @@
                                                                             <field name="batch_ref"/>
                                                                             <field name="batch_quantity"/>
                                                                             <field name="monta_create_date"/>
+                                                                            <field name="expiry_date"/>
                                                                             <field name="stock_move_line"/>
                                                                         </tree>
                                                                     </field>
