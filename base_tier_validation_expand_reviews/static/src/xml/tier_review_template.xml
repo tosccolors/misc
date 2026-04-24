@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-inherit="base_tier_validation.tier.review.Collapse" t-inherit-mode="extension">
+        <a class="o_info_btn" position="attributes">
+            <attribute name="href" />
+            <attribute name="role">button</attribute>
+            <attribute name="class" remove="collapsed" separator=" " />
+        </a>
+        <div class="panel-heading" position="attributes">
+            <attribute name="class" add="active" separator=" " />
+        </div>
+        <div id="collapse1" position="attributes">
+            <attribute name="class" add="show" separator=" " />
+        </div>
+    </t>
+</templates>
