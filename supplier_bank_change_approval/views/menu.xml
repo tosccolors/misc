@@ -1,5 +1,5 @@
 <odoo>
     <menuitem name="Sensitive Fields Approval" id="sensitive_fields_approval"/>
 
-    <menuitem id="sensitive_fields_approval_1" name="Bank Account Approval" parent="sensitive_fields_approval" action="supplier_bank_change_approval.action_window" sequence="3" groups='supplier_bank_change_approval.bank_account_manager'/>
+    <menuitem id="sensitive_fields_approval_1" name="Bank Account Approval" parent="sensitive_fields_approval" action="supplier_bank_change_approval.action_window" sequence="3" groups='supplier_bank_change_approval.bank_account_manager' web_icon="account,static/description/icon.png"/>
 </odoo>
