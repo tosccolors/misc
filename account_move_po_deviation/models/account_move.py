@@ -30,10 +30,24 @@ class AccountMove(models.Model):
         store=True,
         compute_sudo=True,
     )
+    po_total_difference_percentage = fields.Float(
+        compute="_compute_po_total_difference_percentage",
+        store=True,
+        compute_sudo=True,
+        copy=False,
+    )
+    po_total_cumulative_difference_percentage = fields.Float(
+        compute="_compute_po_total_difference_percentage",
+        store=True,
+        compute_sudo=True,
+        copy=False,
+    )
 
     def write(self, vals):
         # drop writes to invoice_lines_differ_po* to make the fields reliable
         drop_fields = {
+            "po_total_difference_percentage",
+            "po_total_cumulative_difference_percentage",
             "invoice_lines_differ_po_price_unit",
             "invoice_lines_differ_po_quantity",
         }
@@ -100,3 +114,24 @@ class AccountMove(models.Model):
                     * 100,
                 )
             )
+
+    @api.depends(
+        "invoice_line_ids.purchase_line_id.order_id.amount_total",
+        "invoice_line_ids.purchase_line_id.order_id.order_line.invoice_lines."
+        "move_id.amount_total",
+    )
+    def _compute_po_total_difference_percentage(self):
+        for this in self:
+            orders = this.mapped("invoice_line_ids.purchase_line_id.order_id")
+            this.po_total_difference_percentage = (
+                this.amount_total / (sum(orders.mapped("amount_total")) or math.inf) - 1
+            ) * 100
+            this.po_total_cumulative_difference_percentage = (
+                sum(
+                    orders.mapped("order_line.invoice_lines.move_id")
+                    .filtered(lambda x: x.state != "cancel")
+                    .mapped("amount_total")
+                )
+                / (sum(orders.mapped("amount_total")) or math.inf)
+                - 1
+            ) * 100
