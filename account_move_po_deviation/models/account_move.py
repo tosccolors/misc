@@ -1,3 +1,5 @@
+import math
+
 from odoo import api, fields, models
 
 
@@ -5,15 +7,47 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     invoice_lines_differ_po_price_unit = fields.Boolean(
-        compute="_compute_invoice_lines_differ_po", store=True, compute_sudo=True
+        string="Has Price Difference With Origin PO",
+        compute="_compute_invoice_lines_differ_po",
+        store=True,
+        compute_sudo=True,
+    )
+    invoice_lines_differ_po_price_unit_percentage = fields.Float(
+        string="Price Difference Percentage With Origin PO",
+        compute="_compute_invoice_lines_differ_po",
+        store=True,
+        compute_sudo=True,
     )
     invoice_lines_differ_po_quantity = fields.Boolean(
-        compute="_compute_invoice_lines_differ_po", store=True, compute_sudo=True
+        string="Has Quantity Difference With Origin PO",
+        compute="_compute_invoice_lines_differ_po",
+        store=True,
+        compute_sudo=True,
+    )
+    invoice_lines_differ_po_quantity_percentage = fields.Float(
+        string="Quantity Difference Percentage With Origin PO",
+        compute="_compute_invoice_lines_differ_po",
+        store=True,
+        compute_sudo=True,
+    )
+    po_total_difference_percentage = fields.Float(
+        compute="_compute_po_total_difference_percentage",
+        store=True,
+        compute_sudo=True,
+        copy=False,
+    )
+    po_total_cumulative_difference_percentage = fields.Float(
+        compute="_compute_po_total_difference_percentage",
+        store=True,
+        compute_sudo=True,
+        copy=False,
     )
 
     def write(self, vals):
         # drop writes to invoice_lines_differ_po* to make the fields reliable
         drop_fields = {
+            "po_total_difference_percentage",
+            "po_total_cumulative_difference_percentage",
             "invoice_lines_differ_po_price_unit",
             "invoice_lines_differ_po_quantity",
         }
@@ -24,11 +58,18 @@ class AccountMove(models.Model):
         return super().write(vals)
 
     @api.depends(
-        "invoice_line_ids.purchase_line_id",
+        "invoice_line_ids.purchase_line_id.price_unit",
+        "invoice_line_ids.purchase_line_id.product_qty",
         "invoice_line_ids.quantity",
         "invoice_line_ids.price_unit",
     )
     def _compute_invoice_lines_differ_po(self):
+        trivial_difference = dict(
+            invoice_lines_differ_po_price_unit=True,
+            invoice_lines_differ_po_quantity=True,
+            invoice_lines_differ_po_price_unit_percentage=100,
+            invoice_lines_differ_po_quantity_percentage=100,
+        )
         for this in self:
             def _comparison_dict(lines, field_name):
                 return {line.product_id.id: line[field_name] for line in lines}
@@ -41,24 +82,56 @@ class AccountMove(models.Model):
             )
 
             if not po_lines:
-                this.invoice_lines_differ_po_price_unit = True
-                this.invoice_lines_differ_po_quantity = True
+                this.update(trivial_difference)
                 continue
 
             if invoice_lines.filtered(lambda x: not x.purchase_line_id):
-                this.invoice_lines_differ_po_price_unit = True
-                this.invoice_lines_differ_po_quantity = True
+                this.update(trivial_difference)
                 continue
 
             if po_lines.order_id.order_line - po_lines:
-                this.invoice_lines_differ_po_price_unit = True
-                this.invoice_lines_differ_po_quantity = True
+                this.update(trivial_difference)
                 continue
 
-            this.invoice_lines_differ_po_price_unit = _comparison_dict(
-                invoice_lines, "price_unit"
-            ) != _comparison_dict(po_lines, "price_unit")
+            po_price_unit_percentage = 0.0
+            po_quantity_percentage = 0.0
 
-            this.invoice_lines_differ_po_quantity = _comparison_dict(
-                invoice_lines, "quantity"
-            ) != _comparison_dict(po_lines, "product_qty")
+            for line in invoice_lines:
+                po_price_unit_percentage += abs(
+                    1 - line.price_unit / (line.purchase_line_id.price_unit or math.inf)
+                )
+                po_quantity_percentage += abs(
+                    1 - line.quantity / (line.purchase_line_id.product_qty or math.inf)
+                )
+
+            this.update(
+                dict(
+                    invoice_lines_differ_po_price_unit=po_price_unit_percentage != 0,
+                    invoice_lines_differ_po_quantity=po_quantity_percentage != 0,
+                    invoice_lines_differ_po_price_unit_percentage=po_price_unit_percentage
+                    * 100,
+                    invoice_lines_differ_po_quantity_percentage=po_quantity_percentage
+                    * 100,
+                )
+            )
+
+    @api.depends(
+        "invoice_line_ids.purchase_line_id.order_id.amount_total",
+        "invoice_line_ids.purchase_line_id.order_id.order_line.invoice_lines."
+        "move_id.amount_total",
+    )
+    def _compute_po_total_difference_percentage(self):
+        for this in self:
+            orders = this.mapped("invoice_line_ids.purchase_line_id.order_id")
+            this.po_total_difference_percentage = (
+                this.amount_total / (sum(orders.mapped("amount_total")) or math.inf) - 1
+            ) * 100
+            this.po_total_cumulative_difference_percentage = (
+                sum(
+                    orders.mapped("order_line.invoice_lines.move_id")
+                    .filtered(lambda x: x.state != "cancel")
+                    .mapped("amount_total")
+                )
+                / (sum(orders.mapped("amount_total")) or math.inf)
+                - 1
+            ) * 100
