@@ -11,6 +11,7 @@ class AccountPayment(models.Model):
     @api.constrains('partner_id')
     def _check_partner_id(self):
         bank_payment_list=[]
-        if self.partner_id.supplier_rank:
-            if not any(state == 'confirmed' for state in self.partner_id.bank_ids.mapped('state')):
-                raise UserError(_('The supplier has changed bank details which are not yet approved.'))
+        for this in self:
+            if this.partner_id.supplier_rank:
+                if not any(state == 'confirmed' for state in this.partner_id.bank_ids.mapped('state')):
+                    raise UserError(_('The supplier has changed bank details which are not yet approved.'))
