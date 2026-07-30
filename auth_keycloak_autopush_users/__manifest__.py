@@ -11,6 +11,8 @@
         "auth_keycloak",
     ],
     "data": [
-        "views/auth_oauth.xml"
+        "views/auth_oauth.xml",
+        "views/res_users.xml",
+        "templates/portal.xml",
     ],
 }

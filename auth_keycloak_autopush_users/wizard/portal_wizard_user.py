@@ -23,7 +23,6 @@ class PortalWizardUser(models.TransientModel):
             return self.partner_id.user_ids[:1].action_reset_password()
         return super().action_invite_again()
 
-
     def _get_push_wizard(self):
         user = self.partner_id.user_ids[:1]
         if user:
