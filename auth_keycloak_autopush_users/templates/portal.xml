@@ -1,0 +1,8 @@
+<odoo>
+    <template id="portal_layout" inherit_id="portal.portal_layout">
+        <a href="/my/security" position="attributes">
+            <attribute name="href" />
+            <attribute name="t-att-href">user_id._get_my_security_link()</attribute>
+        </a>
+    </template>
+</odoo>
