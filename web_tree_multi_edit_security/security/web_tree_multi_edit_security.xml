@@ -1,0 +1,7 @@
+<odoo>
+    <record id="group_multi_edit" model="res.groups">
+        <field name="name">Multi Edit In List Views</field>
+        <field name="category_id" ref="base.module_category_hidden" />
+        <field name="users" eval="[Command.link(ref('base.user_admin'))]" />
+    </record>
+</odoo>
