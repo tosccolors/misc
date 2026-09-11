@@ -9,6 +9,8 @@
     'data': [
         'security/supplier_bank_change_approval.xml',
         'views/res_partner_bank.xml',
+        'views/account_move.xml',
+        'views/account_payment_line.xml',
         'views/menu.xml',
     ],
 }

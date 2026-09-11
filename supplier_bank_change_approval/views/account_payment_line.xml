@@ -1,0 +1,12 @@
+<odoo>
+    <record id="account_payment_line_form" model="ir.ui.view">
+        <field name="name">account.payment.line.form - only confirmed bank accounts</field>
+        <field name="model">account.payment.line</field>
+        <field name="inherit_id" ref="account_payment_order.account_payment_line_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_bank_id" position="attributes">
+                <attribute name="domain">[('partner_id', '=', partner_id), ('state', '=', 'confirmed'), '|', ('company_id', '=', company_id), ('company_id', '=', False)]</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>

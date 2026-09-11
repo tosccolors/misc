@@ -1,17 +1,24 @@
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo import models, api
+
 
 class AccountMove(models.Model):
-    # Update vendor bank account in account invoice on_change checking
-    
-    _inherit = 'account.move'
-        
-    @api.constrains('partner_id')
-    def _check_partner_id(self):
-        bank_list=[]
-        for this in self:
-            if this.move_type != 'in_invoice':
-                continue
 
-            if not any(state == 'confirmed' for state in this.partner_id.bank_ids.mapped('state')):
-                raise UserError(_('The supplier has changed bank details which are not yet approved.'))
+    # A bank account can only be used on an invoice once it is confirmed
+
+    _inherit = 'account.move'
+
+    @api.depends('bank_partner_id')
+    def _compute_partner_bank_id(self):
+        # Core picks the first bank account of the partner; never default to
+        # one that is still awaiting approval.
+        super()._compute_partner_bank_id()
+        for move in self:
+            if move.partner_bank_id and move.partner_bank_id.state != 'confirmed':
+                move.partner_bank_id = move.bank_partner_id.bank_ids.filtered(
+                    lambda bank: bank.state == 'confirmed'
+                    and bank.company_id.id in (False, move.company_id.id)
+                )[:1]
+
+    @api.constrains('partner_bank_id')
+    def _check_partner_bank_id(self):
+        self.partner_bank_id._check_approved()
