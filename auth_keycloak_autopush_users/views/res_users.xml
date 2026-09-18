@@ -1,0 +1,18 @@
+<odoo>
+    <record id="view_users_form" model="ir.ui.view">
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="auth_keycloak.view_users_form" />
+        <field name="arch" type="xml">
+            <button name="button_push_to_keycloak" position="after">
+                <button
+                    string="Send OTP mail"
+                    type="object"
+                    name="action_send_keycloak_otp_mail"
+                    class="btn btn-primary"
+                    help="Send mail to set up OTP for this user via keycloak"
+                    attrs="{'invisible': [('oauth_uid', '=', False)]}"
+                />
+            </button>
+        </field>
+    </record>
+</odoo>
