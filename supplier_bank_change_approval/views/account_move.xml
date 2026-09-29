@@ -1,14 +1,17 @@
 <odoo>
     <record id="view_move_form" model="ir.ui.view">
-        <field name="name">account.move.form - only confirmed bank accounts</field>
+        <field name="name">account.move.form - only approved bank accounts</field>
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
+            <!-- Only supplier bank accounts need approval, so accounts of a
+                 non-supplier partner (a customer, or the company itself on a
+                 customer invoice) stay selectable. -->
             <xpath expr="(//field[@name='partner_bank_id'])[1]" position="attributes">
-                <attribute name="domain">[('partner_id', '=', bank_partner_id), ('state', '=', 'confirmed')]</attribute>
+                <attribute name="domain">[('partner_id', '=', bank_partner_id), '|', ('partner_id.is_supplier', '=', False), ('state', '=', 'confirmed')]</attribute>
             </xpath>
             <xpath expr="(//field[@name='partner_bank_id'])[2]" position="attributes">
-                <attribute name="domain">[('partner_id', '=', bank_partner_id), ('state', '=', 'confirmed')]</attribute>
+                <attribute name="domain">[('partner_id', '=', bank_partner_id), '|', ('partner_id.is_supplier', '=', False), ('state', '=', 'confirmed')]</attribute>
             </xpath>
         </field>
     </record>

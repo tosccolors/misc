@@ -4,8 +4,8 @@
     'author': "TOSC",
     'website': "http://www.tosc.nl",
     'category': 'Uncategorized',
-    'version': '14.0.1.0.0',
-    'depends': ['base','account','account_payment_order'],
+    'version': '14.0.1.1.0',
+    'depends': ['base','account','account_payment_order','partner_manual_rank'],
     'data': [
         'security/supplier_bank_change_approval.xml',
         'views/res_partner_bank.xml',
