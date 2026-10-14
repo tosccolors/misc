@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t
+        t-inherit="account_reconcile_oca.ReconcileDataWidget"
+        t-inherit-mode="extension"
+    >
+        <xpath expr="//div[hasclass('o_field_account_reconcile_oca_balance_original_float')]" position="after">
+            <div
+                t-if="reconcile_line.amount &gt; 0 and reconcile_line.original_amount"
+            >
+                <button
+                    role="button"
+                    class="btn btn-secondary"
+                    t-on-click="(ev) => this.onFullyPaidSuspense(ev, reconcile_line)">
+                    Mark Fully Paid
+                </button>
+            </div>
+        </xpath>
+        <xpath expr="(//div[hasclass('o_field_account_reconcile_oca_balance_original_float')])[2]" position="after">
+            <div
+                t-if="reconcile_line.amount &lt; 0 and reconcile_line.original_amount"
+            >
+                <button
+                    role="button"
+                    class="btn btn-secondary"
+                    t-on-click="(ev) => this.onFullyPaidSuspense(ev, reconcile_line)">
+                    Mark Fully Paid
+                </button>
+            </div>
+        </xpath>
+    </t>
+</templates>

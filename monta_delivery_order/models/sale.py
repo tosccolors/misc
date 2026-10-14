@@ -42,9 +42,11 @@ class Sale(models.Model):
                 missing_attribute.append('Country Code')
             if not self.partner_shipping_id.email:
                 missing_attribute.append('Email')
+            if not self.partner_shipping_id.phone or not self.partner_shipping_id.mobile:
+                missing_attribute.append('Phone/Mobile')
 
             if missing_attribute:
-                raise UserError(_('Please make sure the Delivery Address is correctly set. The following field(s) are missing: "%s". Please update the Delivery Address before confirming the order.', missing_attribute))
+                raise UserError(_('Please make sure the Delivery Address is correctly set. The following field(s) are missing: "%s". Please update the Delivery Address before confirming the order.', missing_attribute))
 
         if (self.commitment_date and self.commitment_date.date() <= fields.Datetime.now().date())\
                 or not self.commitment_date:

@@ -1,0 +1,6 @@
+<odoo noupdate="1">
+    <record id="config_parameter_session_keepalive_timeout" model="ir.config_parameter">
+        <field name="key">session_keepalive.timeout</field>
+        <field name="value">.25</field>
+    </record>
+</odoo>

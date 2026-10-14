@@ -1,0 +1,9 @@
+<odoo>
+    <record id="action_reevaluate" model="ir.actions.server">
+        <field name="model_id" ref="base_tier_validation.model_tier_definition" />
+        <field name="name">Reevaluate pending validations</field>
+        <field name="state">code</field>
+        <field name="code">records._reevaluate_pending_reviews()</field>
+        <field name="binding_model_id" ref="base_tier_validation.model_tier_definition" />
+    </record>
+</odoo>

@@ -198,7 +198,7 @@ class PickingfromOdootoMonta(models.Model):
                         "City": delivery_add.city,
                         "State": delivery_add.state_id.code or '',
                         "CountryCode": delivery_add.country_id.code,
-                        "PhoneNumber": delivery_add.mobile or '',
+                        "PhoneNumber": delivery_add.mobile or delivery_add.phone,
                         "EmailAddress": delivery_add.email
                 },
                 "InvoiceAddress": {
@@ -213,7 +213,7 @@ class PickingfromOdootoMonta(models.Model):
                     "City": invoice_add.city,
                     "State": invoice_add.state_id.code or '',
                     "CountryCode": invoice_add.country_id.code,
-                    "PhoneNumber": invoice_add.mobile or '',
+                    "PhoneNumber": invoice_add.mobile or delivery_add.phone,
                     "EmailAddress": invoice_add.email
                 },
                 "InvoiceDebtorNumber": '',
