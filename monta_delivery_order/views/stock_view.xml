@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!--
+            Stock
+     -->
     <record id="stock_picking_form_inherit" model="ir.ui.view">
         <field name="name">stock.picking.form.inherit</field>
         <field name="model">stock.picking</field>
@@ -9,7 +12,53 @@
             <xpath expr="//button[@name='action_cancel']" position="after">
                 <button string="Send to Monta" class="btn btn-secondary"
                         attrs="{'invisible': [('state', 'in', ('done','cancel'))]}"
-                        name="action_send2monta_interface" type="object"/>
+                        name="action_send2monta_interface" type="object"
+                        groups="stock.group_stock_manager"/>
+            </xpath>
+            <xpath expr="//button[@name='action_confirm']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_assign']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='button_validate'][1]" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='button_validate'][2]" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_set_quantities_to_reservation']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_clear_quantities_to_zero']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='do_print_picking']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_open_label_type']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='%(stock.action_report_delivery)d']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='%(stock.act_stock_return_picking)d']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='do_unreserve']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='button_scrap']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_toggle_is_locked'][1]" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_toggle_is_locked'][2]" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_cancel']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
             </xpath>
             <xpath expr="//page[last()]" position="after">
                 <page name="monta_interface" string="Monta POST Response">
@@ -33,5 +82,37 @@
             </xpath>
         </field>
     </record>
+
+   <!--
+        Stock (stock_move_backdating)
+   -->
+    <record id="stock_picking_view_form_inherit_backdating" model="ir.ui.view">
+        <field name="name">stock.picking.backdating.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock_move_backdating.stock_picking_view_form_inherit_backdating"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='%(stock_move_backdating.action_view_fill_backdating)d']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+        </field>
+    </record>
+
+   <!--
+        Stock (delivery)
+   -->
+    <record id="stock_picking_view_form_inherit_delivery" model="ir.ui.view">
+        <field name="name">stock.picking.delivery.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='send_to_shipper']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='print_return_label']" position="attributes">
+                <attribute name="groups">stock.group_stock_manager</attribute>
+            </xpath>
+        </field>
+    </record>
+
 
 </odoo>
