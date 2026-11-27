@@ -1,0 +1,9 @@
+<odoo>
+    <template id="template_key_message">
+        <div>
+            Link for <span t-out="user.name" />: <a t-att-href="link" t-out="link" />
+        </div>
+        <div t-if="expires">(expires <t t-out="expires" t-options="{'widget': 'datetime'}" />)</div>
+    </template>
+</odoo>
+

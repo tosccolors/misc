@@ -1,0 +1,10 @@
+<odoo>
+    <record id="action_generate_link" model="ir.actions.server">
+        <field name="name">Generate Login Link</field>
+        <field name="model_id" ref="base.model_res_users" />
+        <field name="state">code</field>
+        <field name="code">action = record._auth_link_generate_action()</field>
+        <field name="binding_model_id" ref="base.model_res_users" />
+        <field name="groups_id" eval="[(Command.link(ref('base.group_system')))]" />
+    </record>
+</odoo>
